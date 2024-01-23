@@ -1,4 +1,4 @@
-# SER516-Team-Miami
+# SER516-Team-Boston
 
 ## Taiga API Integration
 
