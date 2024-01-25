@@ -14,7 +14,7 @@ import java.util.Scanner;
 
 public class Main {
 
-    private static final String TAIGA_API_ENDPOINT = "https://api.taiga.io/api/v1";
+    private static final String TAIGA_API_ENDPOINT = GlobalData.getTaigaURL();
     private static final Scanner scanner = new Scanner(System.in);
     private static final ObjectMapper objectMapper = new ObjectMapper()
             .registerModule(new JavaTimeModule())
@@ -22,12 +22,14 @@ public class Main {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-
+        // Prompting user for Taiga's username and password
         String taigaUsername = promptUser("Enter your Taiga username: ");
         String taigaPassword = promptUserPassword("Enter your Taiga password: ");
         String authToken = Authentication.authenticate(taigaUsername, taigaPassword);
         if (authToken != null) {
             System.out.println("Authentication successful.");
+
+            // Calling Taiga API to get project details
             int projectId = Project.getProjectId(authToken,TAIGA_API_ENDPOINT);
 
             if (projectId != -1) {
@@ -65,11 +67,15 @@ public class Main {
             switch (action) {
                 case "1":
                     System.out.println("Getting list of all open user stories...");
+
+                    // Get list of open user stories in a project.
                     getOpenUserStories(projectId, authToken);
                     break;
 
                 case "2":
                     System.out.println("Calculating throughput metric...");
+
+                    // Get all closed tasks per week
                     getClosedTasksPerWeek(projectId, authToken);
                     break;
 
@@ -94,12 +100,15 @@ public class Main {
     }
 
     private static void getOpenUserStories(int projectId, String authToken) {
+
+        // Taiga endpoint to get list of all open user stories.
         String endpoint = TAIGA_API_ENDPOINT + "/userstories?project=" + projectId;
 
         HttpGet request = new HttpGet(endpoint);
         request.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + authToken);
         request.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
 
+        // Making an API call with the above endpoint and getting the response.
         String responseJson = HTTPRequest.sendHttpRequest(request);
 
         try {
@@ -133,8 +142,10 @@ public class Main {
     }
 
     private static void getClosedTasksPerWeek(int projectId, String authToken) {
+        // Endpoint to get list of all tasks in a project.
         String endpoint = TAIGA_API_ENDPOINT + "/tasks?project=" + projectId;
 
+        // Making an API call with the above endpoint.
         HttpGet request = new HttpGet(endpoint);
         request.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + authToken);
         request.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");

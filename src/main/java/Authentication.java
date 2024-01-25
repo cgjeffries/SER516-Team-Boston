@@ -1,7 +1,5 @@
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -15,15 +13,14 @@ import java.io.InputStreamReader;
 import java.util.Base64;
 
 public class Authentication {
-    private static final String TAIGA_API_ENDPOINT = "https://api.taiga.io/api/v1";
+    private static final String TAIGA_API_ENDPOINT = GlobalData.getTaigaURL();
     public static String authenticate(String username, String password) {
-        String authHeader = getAuthHeader(username, password);
 
+        // Endpoint to authenticate taiga's username and password
         String authEndpoint = TAIGA_API_ENDPOINT + "/auth";
-        HttpPost request = new HttpPost(authEndpoint);
-//        request.setHeader(HttpHeaders.AUTHORIZATION, authHeader);
-//        request.setHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
 
+        // Making an API call
+        HttpPost request = new HttpPost(authEndpoint);
         String payload = "{\"type\":\"normal\",\"username\":\"" + username + "\",\"password\":\"" + password + "\"}";
         request.setEntity(new StringEntity(payload, ContentType.APPLICATION_JSON));
 
@@ -56,10 +53,4 @@ public class Authentication {
             return null;
         }
     }
-
-    private static String getAuthHeader(String username, String password) {
-        String credentials = username + ":" + password;
-        return "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes());
-    }
-
 }
