@@ -60,4 +60,34 @@ public class Project {
 
         return -1;
     }
+
+    // Show all of the available projects to a username
+    // Current issue 1/31: it is somehow getting projects I don't think I own
+    public static void listAvailableProjects(String authToken, String TAIGA_API_ENDPOINT) {
+        String endpoint = TAIGA_API_ENDPOINT + "/projects";
+
+        HttpGet request = new HttpGet(endpoint);
+        request.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + authToken);
+        request.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+
+        String responseJson = HTTPRequest.sendHttpRequest(request);
+
+        if (responseJson != null) {
+            try {
+                JsonNode projectsArray = objectMapper.readTree(responseJson);
+                System.out.println("Available Projects:");
+                for (JsonNode projectNode : projectsArray) {
+                    int projectId = projectNode.get("id").asInt();
+                    String projectName = projectNode.get("name").asText();
+                    String projectSlug = projectNode.get("slug").asText();
+                    System.out.println("ID: " + projectId + ", Name: " + projectName + ", Slug: " + projectSlug);
+                }
+            } catch (Exception e) {
+                System.out.println("Error when parsing the project list response.");
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Failed to retrieve the list of available projects.");
+        }
+    }
 }

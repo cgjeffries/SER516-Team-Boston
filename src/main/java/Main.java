@@ -29,6 +29,9 @@ public class Main {
         if (authToken != null) {
             System.out.println("Authentication successful.");
 
+            // List the available projects based on authentication details
+            Project.listAvailableProjects(authToken, TAIGA_API_ENDPOINT);
+
             // Calling Taiga API to get project details
             int projectId = Project.getProjectId(authToken,TAIGA_API_ENDPOINT);
 
