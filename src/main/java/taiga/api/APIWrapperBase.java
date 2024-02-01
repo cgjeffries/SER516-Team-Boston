@@ -133,9 +133,8 @@ public abstract class APIWrapperBase {
             HttpRequest.Builder request =
                     HttpRequest.newBuilder()
                             .uri(new URI(apiBaseURL + apiEndpoint + query))
-                            .header("Content-Type", "application/json")
-                            .header("x-disable-pagination", "true")
-                            .timeout(Duration.ofSeconds(5));
+                            .header("Content-Type", "application/json");
+                            //.header("x-disable-pagination", "true"); //TODO: make this optional. It's super important for some calls (like user stories), but breaks some other calls (like GET /projects)
 
             // Add token to header if we have one
             if (getAuthToken() != null) {

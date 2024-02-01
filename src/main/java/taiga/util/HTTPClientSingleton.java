@@ -13,7 +13,7 @@ public class HTTPClientSingleton {
      */
     public static HttpClient getInstance() {
         if (client == null) {
-            client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build();
+            client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(20)).build();
         }
         return client;
     }
