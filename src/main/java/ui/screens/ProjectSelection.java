@@ -1,21 +1,23 @@
 package ui.screens;
 
-import atlantafx.base.controls.Tile;
-import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
 import ui.ScreenManager;
-import ui.components.Icon;
 import ui.components.Screen;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class MetricSelection extends Screen<VBox> {
-    private static final VBox root = new VBox();
-    @FXML
-    private Tile burndown_tile;
+public class ProjectSelection extends Screen<VBox> {
 
-    public MetricSelection(ScreenManager screenManager, String name) {
+    private static final VBox root = new VBox();
+
+    /**
+     * Create a screen instance
+     *
+     * @param screenManager a ScreenManager instance
+     * @param name          A unique name for the scene.
+     */
+    public ProjectSelection(ScreenManager screenManager, String name) {
         super(screenManager, name);
     }
 
@@ -31,7 +33,6 @@ public class MetricSelection extends Screen<VBox> {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        burndown_tile.setGraphic(new Icon("bx-line-chart-down", 48));
-        burndown_tile.setActionHandler(() -> screenManager.switchScreen("project_selection"));
+
     }
 }

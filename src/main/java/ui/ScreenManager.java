@@ -31,15 +31,15 @@ public class ScreenManager {
     public void addScreen(Screen<? extends Parent> screen, boolean shouldSwitch) {
         screenHashMap.put(screen.getName(), screen);
         if (shouldSwitch) {
-            switchScreen(screen);
+            switchScreen(screen.getName());
         }
     }
 
-    public Screen<? extends Parent> getScreen(Screen<? extends Parent> screen) {
-        return this.screenHashMap.get(screen.getName());
+    public Screen<? extends Parent> getScreen(String screen) {
+        return this.screenHashMap.get(screen);
     }
 
-    public void switchScreen(Screen<? extends Parent> screen) {
+    public void switchScreen(String screen) {
         Screen<? extends Parent> targetScreen = getScreen(screen);
         targetScreen.load();
         scene.setRoot(targetScreen.getRoot());
