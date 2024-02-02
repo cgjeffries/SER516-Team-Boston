@@ -44,7 +44,7 @@ public class DefaultLogoResolver {
      * Resolves a default project logo given a project slug and id
      *
      * @param gravatarId the gravatar id of the user
-     * @return the resource path for the default project logo image
+     * @return the resource path for the default user logo image
      */
     public static String getDefaultUserLogo(String gravatarId) {
         long idx = MurMurHash3.hash(gravatarId, HASH_SEED) % DEFAULT_USER_LOGOS.length;
