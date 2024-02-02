@@ -20,6 +20,6 @@
             <Insets bottom="10.0" />
          </VBox.margin>
       </Label>
-      <CustomTextField fx:id="project_textfield" promptText="Enter Project URL..." />
+      <CustomTextField fx:id="project_textfield" onAction="#handleSearch" promptText="Enter Project URL..." />
    </children>
 </fx:root>
