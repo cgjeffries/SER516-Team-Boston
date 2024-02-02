@@ -44,4 +44,15 @@ public class ProjectAPI extends APIWrapperBase {
         return queryAsync("/by_slug?slug=" + slug, Project.class).thenAccept(callback);
     }
 
+    /**
+     * List the projects that the given user is a member of asynchronously.
+     *
+     * @param id id of user.
+     * @param callback Consumer function to execute upon receiving query result.
+     * @return void future which can be joined to wait for call to complete.
+     */
+    public CompletableFuture<Void> listUserProjects(
+        int id, Consumer<APIResponse<ProjectListEntry[]>> callback) {
+        return queryAsync("?member=" + id, ProjectListEntry[].class).thenAccept(callback);
+    }
 }
