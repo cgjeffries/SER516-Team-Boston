@@ -1,5 +1,7 @@
 package ui.screens;
 
+import atlantafx.base.controls.CustomTextField;
+import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
 import ui.ScreenManager;
 import ui.components.Screen;
@@ -10,6 +12,9 @@ import java.util.ResourceBundle;
 public class ProjectSelection extends Screen<VBox> {
 
     private static final VBox root = new VBox();
+
+    @FXML
+    private CustomTextField project_textfield;
 
     /**
      * Create a screen instance

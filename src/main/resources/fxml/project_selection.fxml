@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import atlantafx.base.controls.CustomTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
@@ -19,5 +20,6 @@
             <Insets bottom="10.0" />
          </VBox.margin>
       </Label>
+      <CustomTextField fx:id="project_textfield" promptText="Enter Project URL..." />
    </children>
 </fx:root>
