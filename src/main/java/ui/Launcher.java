@@ -25,4 +25,9 @@ public class Launcher extends Application {
         stage.setScene(screenManager.getScene());
         stage.show();
     }
+
+    @Override
+    public void stop() {
+        Settings.get().save();
+    }
 }
