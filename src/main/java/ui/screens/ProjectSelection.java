@@ -16,6 +16,7 @@ import taiga.api.ProjectAPI;
 import ui.ScreenManager;
 import ui.components.Icon;
 import ui.components.Screen;
+import ui.util.DefaultLogoResolver;
 
 import java.net.URL;
 import java.util.ResourceBundle;
