@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.VBox;
 import taiga.api.ProjectAPI;
@@ -23,9 +24,12 @@ public class ProjectSelection extends Screen<VBox> {
     private static final VBox root = new VBox();
 
     @FXML
-    private CustomTextField project_textfield;
+    private CustomTextField project_search_bar;
 
-    private final StringProperty project_textfield_value;
+    private final StringProperty project_search_bar_value;
+
+    @FXML
+    private Button project_search_btn;
 
     private final ProgressIndicator progress;
 
@@ -37,7 +41,7 @@ public class ProjectSelection extends Screen<VBox> {
      */
     public ProjectSelection(ScreenManager screenManager, String name) {
         super(screenManager, name);
-        project_textfield_value = new SimpleStringProperty();
+        project_search_bar_value = new SimpleStringProperty();
         progress = new ProgressIndicator(-1d);
     }
 
@@ -53,11 +57,13 @@ public class ProjectSelection extends Screen<VBox> {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        project_textfield.setLeft(new Icon("bx-search", 16));
+        project_search_bar.setLeft(new Icon("bx-search", 16));
+        project_search_btn.setGraphic(new Icon("bx-search", 16));
+        project_search_btn.getStyleClass().add(Styles.ACCENT);
         progress.setMaxSize(16, 16);
         progress.setVisible(false);
-        project_textfield.setRight(progress);
-        project_textfield.textProperty().bindBidirectional(project_textfield_value);
+        project_search_bar.setRight(progress);
+        project_search_bar.textProperty().bindBidirectional(project_search_bar_value);
     }
 
     private String extractSlug(String value) {
@@ -78,18 +84,21 @@ public class ProjectSelection extends Screen<VBox> {
 
     @FXML
     public void handleSearch(ActionEvent ae) {
-        project_textfield.setEditable(false);
-        project_textfield.pseudoClassStateChanged(Styles.STATE_DANGER, false);
-        String value = project_textfield_value.getValue();
+        project_search_bar.setEditable(false);
+        project_search_btn.setDisable(true);
+        project_search_bar.pseudoClassStateChanged(Styles.STATE_DANGER, false);
+        String value = project_search_bar_value.getValue();
         String slug = extractSlug(value);
         if (slug == null) {
-            project_textfield.setEditable(true);
-            project_textfield.pseudoClassStateChanged(Styles.STATE_DANGER, true);
+            project_search_bar.setEditable(true);
+            project_search_btn.setDisable(false);
+            project_search_bar.pseudoClassStateChanged(Styles.STATE_DANGER, true);
             return;
         }
         progress.setVisible(true);
         new ProjectAPI().getProject(slug, result -> {
-            project_textfield.setEditable(true);
+            project_search_bar.setEditable(true);
+            project_search_btn.setDisable(false);
             progress.setVisible(false);
             if (result.getStatus() == 200) {
                 System.out.println(result.getContent());
