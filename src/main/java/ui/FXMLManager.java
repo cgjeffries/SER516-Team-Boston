@@ -6,23 +6,11 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class FXMLManager {
-    private static FXMLManager manager;
 
-    private FXMLManager() {
-
-    }
-
-    public static FXMLManager getInstance() {
-        if (manager == null) {
-            manager = new FXMLManager();
-        }
-        return manager;
-    }
-
-    public void load(String fxmlPath, Object o) {
-        FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(fxmlPath)));
-        loader.setRoot(o);
-        loader.setController(o);
+    public static void load(String fxmlPath, Object root, Object controller) {
+        FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(FXMLManager.class.getResource(fxmlPath)));
+        loader.setRoot(root);
+        loader.setController(controller);
         try {
             loader.load();
         } catch (IOException e) {

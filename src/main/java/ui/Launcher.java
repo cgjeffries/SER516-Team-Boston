@@ -2,7 +2,6 @@ package ui;
 
 import atlantafx.base.theme.PrimerLight;
 import javafx.application.Application;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 import ui.screens.MetricSelection;
 
@@ -13,11 +12,13 @@ public class Launcher extends Application {
     }
 
     @Override
-    public void start(Stage stage)  {
+    public void start(Stage stage) {
         Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
-        Scene scene = new Scene(new MetricSelection(), 800, 600);
+        ScreenManager screenManager = new ScreenManager();
+        screenManager.addStartScreen(new MetricSelection(screenManager, "metric_selection"));
+
         stage.setTitle("SER516 Team Boston");
-        stage.setScene(scene);
+        stage.setScene(screenManager.getScene());
         stage.show();
     }
 }
