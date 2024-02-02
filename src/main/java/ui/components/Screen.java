@@ -2,11 +2,11 @@ package ui.components;
 
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import ui.FXMLManager;
-import ui.ScreenManager;
+import ui.util.FXMLManager;
+import ui.util.ScreenManager;
 
 /**
- * A screen is a managed container for UI content. To facilitate transitions between screens, see {@link ui.ScreenManager ScreenManager}
+ * A screen is a managed container for UI content. To facilitate transitions between screens, see {@link ScreenManager ScreenManager}
  * @param <T> The type of root component this screen should have. This needs to be the same as the root element in the corresponding FXML.
  */
 public abstract class Screen<T extends Parent> implements Initializable {

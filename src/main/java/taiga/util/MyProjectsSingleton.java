@@ -2,7 +2,6 @@ package taiga.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import taiga.api.ProjectAPI;
 import taiga.model.query.project.Project;
@@ -40,12 +39,10 @@ public class MyProjectsSingleton {
         return false;
     }
 
-    public boolean addSlug(String newSlug) {
+    public void addSlug(String newSlug) {
         if(!projectSlugs.contains(newSlug)) {
             projectSlugs.add(newSlug);
-            return true;
         }
-        return false;
     }
 
     public boolean setCurrentProject(String slug) {

@@ -4,7 +4,7 @@ import atlantafx.base.controls.Tile;
 import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.boxicons.BoxiconsRegular;
-import ui.ScreenManager;
+import ui.util.ScreenManager;
 import ui.components.Icon;
 import ui.components.Screen;
 

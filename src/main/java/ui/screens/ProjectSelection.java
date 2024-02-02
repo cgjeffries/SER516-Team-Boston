@@ -10,13 +10,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
 import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 import taiga.api.ProjectAPI;
-import ui.ScreenManager;
+import ui.util.ScreenManager;
 import ui.components.Icon;
 import ui.components.Screen;
-import ui.util.DefaultLogoResolver;
 
 import java.net.URL;
 import java.util.ResourceBundle;
