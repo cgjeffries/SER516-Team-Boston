@@ -2,6 +2,7 @@ package ui.screens;
 
 import atlantafx.base.controls.CustomTextField;
 import atlantafx.base.theme.Styles;
+import atlantafx.base.util.Animations;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
@@ -9,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 import taiga.api.ProjectAPI;
 import ui.ScreenManager;
@@ -98,6 +100,7 @@ public class ProjectSelection extends Screen<VBox> {
         if (slug == null) {
             project_search_bar.setEditable(true);
             project_search_btn.setDisable(false);
+            Animations.shakeX(project_search_bar, 6).playFromStart();
             project_search_bar.pseudoClassStateChanged(Styles.STATE_DANGER, true);
             return;
         }
