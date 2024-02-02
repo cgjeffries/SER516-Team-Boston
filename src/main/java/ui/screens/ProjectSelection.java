@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.VBox;
+import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 import taiga.api.ProjectAPI;
 import ui.ScreenManager;
 import ui.components.Icon;
@@ -57,8 +58,8 @@ public class ProjectSelection extends Screen<VBox> {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        project_search_bar.setLeft(new Icon("bx-search", 16));
-        project_search_btn.setGraphic(new Icon("bx-search", 16));
+        project_search_bar.setLeft(new Icon(BoxiconsRegular.SEARCH, 16));
+        project_search_btn.setGraphic(new Icon(BoxiconsRegular.SEARCH, 16));
         project_search_btn.getStyleClass().add(Styles.ACCENT);
         progress.setMaxSize(16, 16);
         progress.setVisible(false);

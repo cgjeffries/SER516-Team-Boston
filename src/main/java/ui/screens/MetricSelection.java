@@ -3,6 +3,7 @@ package ui.screens;
 import atlantafx.base.controls.Tile;
 import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
+import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 import ui.ScreenManager;
 import ui.components.Icon;
 import ui.components.Screen;
@@ -31,7 +32,7 @@ public class MetricSelection extends Screen<VBox> {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        burndown_tile.setGraphic(new Icon("bx-line-chart-down", 48));
+        burndown_tile.setGraphic(new Icon(BoxiconsRegular.LINE_CHART_DOWN, 48));
         burndown_tile.setActionHandler(() -> screenManager.switchScreen("project_selection"));
     }
 }
