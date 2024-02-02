@@ -46,6 +46,7 @@ public abstract class Screen<T extends Parent> implements Initializable {
             return;
         }
         FXMLManager.load("/fxml/" + name + ".fxml", getRoot(), getController());
+        this.loaded = true;
     }
 
     public String getName() {
