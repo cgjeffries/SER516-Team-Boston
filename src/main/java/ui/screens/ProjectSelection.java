@@ -75,6 +75,9 @@ public class ProjectSelection extends Screen<VBox> {
     }
 
     private String extractSlug(String value) {
+        if (value == null) {
+            return null;
+        }
         Pattern urlPattern =
                 Pattern.compile("https://tree\\.taiga\\.io/project/(?<slug>\\w+-[\\w-]+)");
         Matcher urlMatcher = urlPattern.matcher(value);
