@@ -32,6 +32,9 @@ public class ProjectSelection extends Screen<VBox> {
     @FXML
     private Button project_search_btn;
 
+    @FXML
+    private Button project_back_btn;
+
     private final ProgressIndicator progress;
 
     /**
@@ -61,6 +64,8 @@ public class ProjectSelection extends Screen<VBox> {
         project_search_bar.setLeft(new Icon(BoxiconsRegular.SEARCH, 16));
         project_search_btn.setGraphic(new Icon(BoxiconsRegular.SEARCH, 16));
         project_search_btn.getStyleClass().add(Styles.ACCENT);
+        project_back_btn.setText("Back");
+        project_back_btn.setGraphic(new Icon(BoxiconsRegular.ARROW_BACK, 16));
         progress.setMaxSize(16, 16);
         progress.setVisible(false);
         project_search_bar.setRight(progress);
@@ -105,5 +110,10 @@ public class ProjectSelection extends Screen<VBox> {
                 System.out.println(result.getContent());
             }
         });
+    }
+
+    @FXML
+    public void goBack(ActionEvent ae) {
+        screenManager.switchScreen("metric_selection");
     }
 }
