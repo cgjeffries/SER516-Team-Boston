@@ -1,8 +1,12 @@
 # SER516 - Team Boston Peer Review
 
-## US:
+
+
+### US:
 
 ### Description of Changes:
+Description here..
+
 
 ### Peer Review Checklist:
 - [ ] Taiga updated
@@ -17,8 +21,6 @@
 - [ ] All task requirements are fulfilled
 - [ ] All user story requirements are fulfilled
 
-## Reviewer Template:
-```markdown
 
 ### Reviewer Comments:
-Reviewed.
+Review here..
