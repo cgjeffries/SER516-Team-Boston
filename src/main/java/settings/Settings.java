@@ -14,9 +14,9 @@ import java.nio.file.Paths;
 public class Settings {
     private final String SETTINGS_FILE = "settings.json";
     private final Path SETTINGS_PATH = Paths.get(System.getProperty("user.home"), ".boston");
-    private final Path FULL_SETTINGS_PATH = SETTINGS_PATH.resolve(SETTINGS_FILE);
+    protected final Path FULL_SETTINGS_PATH = SETTINGS_PATH.resolve(SETTINGS_FILE);
     private static Settings settings;
-    private AppModel appModel;
+    protected AppModel appModel;
 
     private Settings() {
 
