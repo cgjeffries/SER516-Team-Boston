@@ -3,15 +3,23 @@ package ui.screens;
 import atlantafx.base.controls.CustomTextField;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.util.Animations;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.boxicons.BoxiconsRegular;
+import settings.Settings;
 import taiga.api.ProjectAPI;
+import taiga.model.query.project.Project;
+import ui.util.DefaultLogoResolver;
 import ui.util.ScreenManager;
 import ui.components.Icon;
 import ui.components.Screen;
@@ -35,6 +43,9 @@ public class ProjectSelection extends Screen<VBox> {
 
     @FXML
     private Button project_back_btn;
+
+    @FXML
+    private ListView<Project> project_list;
 
     private final ProgressIndicator progress;
 
@@ -60,6 +71,10 @@ public class ProjectSelection extends Screen<VBox> {
         return this;
     }
 
+    private void updateProjectList() {
+        Platform.runLater(() -> project_list.setItems(FXCollections.observableArrayList(Settings.get().getAppModel().getProjects())));
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         project_search_bar.setLeft(new Icon(BoxiconsRegular.SEARCH, 16));
@@ -71,6 +86,18 @@ public class ProjectSelection extends Screen<VBox> {
         progress.setVisible(false);
         project_search_bar.setRight(progress);
         project_search_bar.textProperty().bindBidirectional(project_search_bar_value);
+        updateProjectList();
+        project_list.setCellFactory(projectListView -> new ListCell<>() {
+            @Override
+            protected void updateItem(Project project, boolean empty) {
+                super.updateItem(project, empty);
+                if (empty) {
+                    return;
+                }
+                setGraphic(new ImageView(DefaultLogoResolver.getProjectLogoImage(project, 32, 32)));
+                setText(project.getName());
+            }
+        });
     }
 
     private String extractSlug(String value) {
@@ -112,7 +139,8 @@ public class ProjectSelection extends Screen<VBox> {
             project_search_btn.setDisable(false);
             progress.setVisible(false);
             if (result.getStatus() == 200) {
-                System.out.println(result.getContent());
+                Settings.get().getAppModel().addProject(result.getContent());
+                updateProjectList();
             }
         });
     }

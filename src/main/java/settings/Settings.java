@@ -1,6 +1,7 @@
 package settings;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import settings.appmodel.AppModel;
 
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 public class Settings {
     private final String SETTINGS_FILE = "settings.json";
@@ -35,7 +37,7 @@ public class Settings {
 
     public void load() {
         System.out.println("Loading settings");
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         try {
             Files.createDirectories(SETTINGS_PATH);
             boolean created = FULL_SETTINGS_PATH.toFile().createNewFile();
@@ -44,7 +46,8 @@ public class Settings {
             }
             try (FileReader fileReader = new FileReader(FULL_SETTINGS_PATH.toFile())) {
                 JsonReader jsonReader = new JsonReader(fileReader);
-                appModel = gson.fromJson(jsonReader, AppModel.class);
+                AppModel result = gson.fromJson(jsonReader, AppModel.class);
+                appModel = Objects.requireNonNullElseGet(result, () -> new AppModel());
             }
         } catch (IOException e) {
             System.err.println(e);
@@ -53,7 +56,7 @@ public class Settings {
 
     public void save() {
         System.out.println("Saving settings");
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         try (FileWriter fileWriter = new FileWriter(FULL_SETTINGS_PATH.toFile())) {
             gson.toJson(appModel, fileWriter);
         } catch (IOException e) {
