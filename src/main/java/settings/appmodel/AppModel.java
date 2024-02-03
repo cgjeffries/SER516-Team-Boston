@@ -47,4 +47,8 @@ public class AppModel {
         Optional<Project> project = projects.stream().findFirst().filter(p::equals);
         project.ifPresent(prj -> currentProject = prj);
     }
+
+    public Project getCurrentProject() {
+        return currentProject;
+    }
 }
