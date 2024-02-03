@@ -1,11 +1,16 @@
 package settings.appmodel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class AppModel {
     private List<Project> projects;
     private Project currentProject;
+
+    public AppModel() {
+        projects = new ArrayList<Project>();
+    }
 
     public List<Project> getProjects() {
         return projects;
@@ -20,7 +25,14 @@ public class AppModel {
     }
 
     public void setCurrentProject(Project p) {
-        Optional<Project> project = projects.stream().findFirst().filter(p::equals);
-        project.ifPresent(prj -> currentProject = prj);
+        for (Project project: projects) {
+            if(project.equals(p)) {
+                currentProject = p;
+            }
+        }
+    }
+
+    public Project getCurrentProject() {
+        return currentProject;
     }
 }
