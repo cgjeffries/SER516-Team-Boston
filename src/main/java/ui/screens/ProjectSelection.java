@@ -21,16 +21,14 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import settings.Settings;
 import taiga.api.ProjectAPI;
 import taiga.model.query.project.Project;
-import ui.util.DefaultLogoResolver;
-import ui.util.ScreenManager;
+import taiga.util.TaigaUtil;
 import ui.components.Icon;
 import ui.components.Screen;
+import ui.util.DefaultLogoResolver;
+import ui.util.ScreenManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class ProjectSelection extends Screen<VBox> {
 
@@ -105,25 +103,6 @@ public class ProjectSelection extends Screen<VBox> {
         project_list.setItems(projects);
     }
 
-    private String extractSlug(String value) {
-        if (value == null) {
-            return null;
-        }
-        Pattern urlPattern =
-                Pattern.compile("https://tree\\.taiga\\.io/project/(?<slug>\\w+-[\\w-]+)");
-        Matcher urlMatcher = urlPattern.matcher(value);
-
-        Pattern slugPattern = Pattern.compile("(?<slug>\\w+-[\\w-]+)");
-        Matcher slugMatcher = slugPattern.matcher(value);
-
-        if (urlMatcher.find()) {
-            return urlMatcher.group("slug");
-        } else if (slugMatcher.find()) {
-            return slugMatcher.group("slug");
-        }
-        return null;
-    }
-
     private void addProject(Project project) {
         Platform.runLater(() -> projects.add(project));
     }
@@ -138,7 +117,7 @@ public class ProjectSelection extends Screen<VBox> {
         project_search_btn.setDisable(true);
         project_search_bar.pseudoClassStateChanged(Styles.STATE_DANGER, false);
         String value = project_search_bar_value.getValue();
-        String slug = extractSlug(value);
+        String slug = TaigaUtil.extractSlug(value);
         if (slug == null) {
             project_search_bar.setEditable(true);
             project_search_btn.setDisable(false);

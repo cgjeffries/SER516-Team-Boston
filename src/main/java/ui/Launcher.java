@@ -23,7 +23,7 @@ public class Launcher extends Application {
     public void start(Stage stage) {
         Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
         ScreenManager screenManager = new ScreenManager();
-        screenManager.addStartScreen(new MetricSelection(screenManager, "metric_selection"));
+        screenManager.initialize(new MetricSelection(screenManager, "metric_selection"));
         screenManager.addScreen(new ProjectSelection(screenManager, "project_selection"));
         stage.setTitle("SER516 Team Boston");
         stage.setScene(screenManager.getScene());
