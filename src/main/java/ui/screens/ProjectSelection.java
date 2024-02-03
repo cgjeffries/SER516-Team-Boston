@@ -1,21 +1,23 @@
 package ui.screens;
 
 import atlantafx.base.controls.CustomTextField;
+import atlantafx.base.controls.Tile;
 import atlantafx.base.theme.Styles;
+import atlantafx.base.theme.Tweaks;
 import atlantafx.base.util.Animations;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.boxicons.BoxiconsRegular;
+import org.kordamp.ikonli.javafx.FontIcon;
 import settings.Settings;
 import taiga.api.ProjectAPI;
 import taiga.model.query.project.Project;
@@ -28,6 +30,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class ProjectSelection extends Screen<VBox> {
 
@@ -49,6 +52,8 @@ public class ProjectSelection extends Screen<VBox> {
 
     private final ProgressIndicator progress;
 
+    private final ObservableList<Project> projects;
+
     /**
      * Create a screen instance
      *
@@ -59,6 +64,19 @@ public class ProjectSelection extends Screen<VBox> {
         super(screenManager, name);
         project_search_bar_value = new SimpleStringProperty();
         progress = new ProgressIndicator(-1d);
+        projects = FXCollections.observableArrayList(Settings.get().getAppModel().getProjects());
+        projects.addListener((ListChangeListener<Project>) change -> {
+            if (!change.next()) {
+                return;
+            }
+            if (change.wasAdded()) {
+                Project p = change.getAddedSubList().get(0);
+                Settings.get().getAppModel().addProject(p);
+            } else if (change.wasRemoved()) {
+                Project p = change.getRemoved().get(0);
+                Settings.get().getAppModel().removeProject(p);
+            }
+        });
     }
 
     @Override
@@ -71,33 +89,20 @@ public class ProjectSelection extends Screen<VBox> {
         return this;
     }
 
-    private void updateProjectList() {
-        Platform.runLater(() -> project_list.setItems(FXCollections.observableArrayList(Settings.get().getAppModel().getProjects())));
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         project_search_bar.setLeft(new Icon(BoxiconsRegular.SEARCH, 16));
         project_search_btn.setGraphic(new Icon(BoxiconsRegular.SEARCH, 16));
         project_search_btn.getStyleClass().add(Styles.ACCENT);
-        project_back_btn.setText("Back");
-        project_back_btn.setGraphic(new Icon(BoxiconsRegular.ARROW_BACK, 16));
+        project_back_btn.setGraphic(new Icon(BoxiconsRegular.ARROW_BACK, 24));
+        project_back_btn.getStyleClass().add(Styles.FLAT);
         progress.setMaxSize(16, 16);
         progress.setVisible(false);
         project_search_bar.setRight(progress);
         project_search_bar.textProperty().bindBidirectional(project_search_bar_value);
-        updateProjectList();
-        project_list.setCellFactory(projectListView -> new ListCell<>() {
-            @Override
-            protected void updateItem(Project project, boolean empty) {
-                super.updateItem(project, empty);
-                if (empty) {
-                    return;
-                }
-                setGraphic(new ImageView(DefaultLogoResolver.getProjectLogoImage(project, 32, 32)));
-                setText(project.getName());
-            }
-        });
+        project_list.setCellFactory(c -> new ProjectCell(this));
+        project_list.getStyleClass().add(Tweaks.EDGE_TO_EDGE);
+        project_list.setItems(projects);
     }
 
     private String extractSlug(String value) {
@@ -117,6 +122,14 @@ public class ProjectSelection extends Screen<VBox> {
             return slugMatcher.group("slug");
         }
         return null;
+    }
+
+    private void addProject(Project project) {
+        Platform.runLater(() -> projects.add(project));
+    }
+
+    private void removeProject(Project project) {
+        Platform.runLater(() -> projects.remove(project));
     }
 
     @FXML
@@ -139,8 +152,7 @@ public class ProjectSelection extends Screen<VBox> {
             project_search_btn.setDisable(false);
             progress.setVisible(false);
             if (result.getStatus() == 200) {
-                Settings.get().getAppModel().addProject(result.getContent());
-                updateProjectList();
+                addProject(result.getContent());
             }
         });
     }
@@ -148,5 +160,44 @@ public class ProjectSelection extends Screen<VBox> {
     @FXML
     public void goBack(ActionEvent ae) {
         screenManager.switchScreen("metric_selection");
+    }
+
+    private static class ProjectCell extends ListCell<Project> {
+        private final ProjectSelection projectSelection;
+
+        public ProjectCell(ProjectSelection projectSelection) {
+            this.projectSelection = projectSelection;
+        }
+
+        private MenuItem deleteButton(Project p) {
+            MenuItem delete = new MenuItem("Delete");
+            delete.setGraphic(new FontIcon(BoxiconsRegular.TRASH));
+            delete.getStyleClass().add(Styles.DANGER);
+            delete.setOnAction(e -> projectSelection.removeProject(p));
+            return delete;
+        }
+
+        @Override
+        protected void updateItem(Project project, boolean empty) {
+            super.updateItem(project, empty);
+            if (empty || project == null) {
+                setGraphic(null);
+                return;
+            }
+            Tile root = new Tile();
+            MenuButton menu = new MenuButton();
+            menu.setGraphic(new FontIcon(BoxiconsRegular.DOTS_VERTICAL_ROUNDED));
+            menu.getItems().setAll(deleteButton(project));
+            menu.getStyleClass().addAll(Tweaks.NO_ARROW, Styles.BUTTON_OUTLINED);
+            root.setGraphic(new ImageView(DefaultLogoResolver.getProjectLogoImage(project, 40, 40)));
+            root.setTitle(project.getName());
+            root.setDescription(project.getDescription());
+            root.setAction(menu);
+            root.setActionHandler(() -> {
+                // TODO: transition to next screen
+                System.out.println(project.getName());
+            });
+            setGraphic(root);
+        }
     }
 }
