@@ -50,4 +50,8 @@ public class AppModel {
                 .findFirst()
                 .ifPresent(spr -> currentSprint = spr);
     }
+
+    public Sprint getCurrentSprint() {
+        return currentSprint;
+    }
 }
