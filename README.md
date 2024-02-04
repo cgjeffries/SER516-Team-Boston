@@ -2,7 +2,7 @@
 
 ## Taiga API Integration
 
-This project integrates with the Taiga API, facilitating scrum management and metric calculations. It features both a command-line interface (CLI) for direct API interactions and a graphical user interface (GUI) for an enhanced user experience.
+This project integrates with the Taiga API, facilitating scrum management and metric calculations. It features a GUI application to display Taiga information and scrum management. 
 
 
 ## Setting up the application
