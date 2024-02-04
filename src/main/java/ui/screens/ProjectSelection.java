@@ -37,8 +37,6 @@ public class ProjectSelection extends Screen<VBox> {
     @FXML
     private CustomTextField project_search_bar;
 
-    private final StringProperty project_search_bar_value;
-
     @FXML
     private Button project_search_btn;
 
@@ -60,7 +58,6 @@ public class ProjectSelection extends Screen<VBox> {
      */
     public ProjectSelection(ScreenManager screenManager, String name) {
         super(screenManager, name);
-        project_search_bar_value = new SimpleStringProperty();
         progress = new ProgressIndicator(-1d);
         projects = FXCollections.observableArrayList(Settings.get().getAppModel().getProjects());
         projects.addListener((ListChangeListener<Project>) change -> {
@@ -97,7 +94,6 @@ public class ProjectSelection extends Screen<VBox> {
         progress.setMaxSize(16, 16);
         progress.setVisible(false);
         project_search_bar.setRight(progress);
-        project_search_bar.textProperty().bindBidirectional(project_search_bar_value);
         project_list.setCellFactory(c -> new ProjectCell(this));
         project_list.getStyleClass().add(Tweaks.EDGE_TO_EDGE);
         project_list.setItems(projects);
@@ -116,7 +112,7 @@ public class ProjectSelection extends Screen<VBox> {
         project_search_bar.setEditable(false);
         project_search_btn.setDisable(true);
         project_search_bar.pseudoClassStateChanged(Styles.STATE_DANGER, false);
-        String value = project_search_bar_value.getValue();
+        String value = project_search_bar.getText();
         String slug = TaigaUtil.extractSlug(value);
         if (slug == null) {
             project_search_bar.setEditable(true);
@@ -132,6 +128,7 @@ public class ProjectSelection extends Screen<VBox> {
             progress.setVisible(false);
             if (result.getStatus() == 200) {
                 addProject(result.getContent());
+                project_search_bar.clear();
             }
         });
     }
@@ -163,6 +160,7 @@ public class ProjectSelection extends Screen<VBox> {
                 setGraphic(null);
                 return;
             }
+            setStyle(getStyle() + "-fx-padding: 0px;");
             Tile root = new Tile();
             MenuButton menu = new MenuButton();
             menu.setGraphic(new FontIcon(BoxiconsRegular.DOTS_VERTICAL_ROUNDED));
