@@ -1,24 +1,49 @@
 package settings.appmodel;
 
+import com.google.gson.annotations.Expose;
+import taiga.model.query.project.Project;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import taiga.model.query.sprint.Project;
 import taiga.model.query.sprint.Sprint;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class AppModel {
-    private List<Project> projects = new ArrayList<>();
-    private List<Sprint> sprints = new ArrayList<>();
+    @Expose
+    private List<Project> projects;
+
+    @Expose
+    private List<Sprint> sprints;
 
     private Project currentProject;
     private Sprint currentSprint;
 
     public List<Project> getProjects() {
+        if (projects == null) {
+            projects = new ArrayList<>();
+        }
         return projects;
     }
 
     public void addProject(Project p) {
-        projects.add(p);
+        addProject(p, false);
+    }
+
+    /**
+     * Add a project to the app model
+     *
+     * @param project the project to add
+     * @param force   Whether to force adding this project, which will remove the old instance
+     */
+    public void addProject(Project project, boolean force) {
+        if (force) {
+            projects.remove(project);
+        } else if (projects.contains(project)) {
+            return;
+        }
+        projects.add(project);
     }
 
     public void removeProject(Project p) {
@@ -53,5 +78,9 @@ public class AppModel {
 
     public Sprint getCurrentSprint() {
         return currentSprint;
+    }
+
+    public Project getCurrentProject() {
+        return currentProject;
     }
 }
