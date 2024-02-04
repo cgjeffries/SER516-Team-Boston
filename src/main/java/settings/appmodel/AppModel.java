@@ -1,26 +1,53 @@
 package settings.appmodel;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
+import taiga.model.query.sprint.Project;
+import taiga.model.query.sprint.Sprint;
 
 public class AppModel {
-    private List<Project> projects;
+    private List<Project> projects = new ArrayList<>();
+    private List<Sprint> sprints = new ArrayList<>();
+
     private Project currentProject;
+    private Sprint currentSprint;
 
     public List<Project> getProjects() {
         return projects;
     }
 
     public void addProject(Project p) {
-        this.projects.add(p);
+        projects.add(p);
     }
 
     public void removeProject(Project p) {
-        this.projects.remove(p);
+        projects.remove(p);
     }
 
     public void setCurrentProject(Project p) {
-        Optional<Project> project = projects.stream().findFirst().filter(p::equals);
-        project.ifPresent(prj -> currentProject = prj);
+        projects.stream()
+                .filter(prj -> prj.equals(p))
+                .findFirst()
+                .ifPresent(prj -> currentProject = prj);
+    }
+
+    public List<Sprint> getSprints() {
+        return sprints;
+    }
+
+    public void addSprint(Sprint s) {
+        sprints.add(s);
+    }
+
+    public void removeSprint(Sprint s) {
+        sprints.remove(s);
+    }
+
+    public void setCurrentSprint(Sprint s) {
+        sprints.stream()
+                .filter(spr -> spr.equals(s))
+                .findFirst()
+                .ifPresent(spr -> currentSprint = spr);
     }
 }
