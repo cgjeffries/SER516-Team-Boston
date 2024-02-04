@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class Sprint {
 
@@ -197,5 +198,19 @@ public class Sprint {
 
     public void setUserStories(List<UserStory> userStories) {
         this.userStories = userStories;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Sprint sprint = (Sprint) o;
+        return Objects.equals(slug, sprint.slug) &&
+                Objects.equals(id, sprint.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(slug, id);
     }
 }
