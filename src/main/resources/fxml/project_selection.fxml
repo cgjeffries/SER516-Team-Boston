@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" spacing="10.0" type="VBox" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" spacing="10.0" type="VBox" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
    </padding>
@@ -17,13 +17,18 @@
       <HBox prefWidth="200.0" spacing="10.0" VBox.vgrow="NEVER">
          <children>
             <Button fx:id="project_back_btn" mnemonicParsing="false" onAction="#goBack" />
-            <Label text="Select Project">
+            <Label fx:id="metric_label" text="[Metric Label]">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
             </Label>
          </children>
       </HBox>
+      <Label text="Select Project">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
       <HBox spacing="10.0">
          <children>
             <CustomTextField fx:id="project_search_bar" onAction="#handleSearch" promptText="Enter Project URL..." HBox.hgrow="ALWAYS" />

@@ -19,6 +19,7 @@ public class AppModel {
 
     private Project currentProject;
     private Sprint currentSprint;
+    private String selectedMetric;
 
     public List<Project> getProjects() {
         if (projects == null) {
@@ -82,5 +83,13 @@ public class AppModel {
 
     public Project getCurrentProject() {
         return currentProject;
+    }
+
+    public void setSelectedMetric(String metric) {
+        selectedMetric = metric;
+    }
+
+    public String getSelectedMetric() {
+        return selectedMetric;
     }
 }

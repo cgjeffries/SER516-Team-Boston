@@ -46,6 +46,9 @@ public class ProjectSelection extends Screen<VBox> {
     @FXML
     private ListView<Project> project_list;
 
+    @FXML
+    private Label metric_label;
+
     private final ProgressIndicator progress;
 
     private final ObservableList<Project> projects;
@@ -86,6 +89,7 @@ public class ProjectSelection extends Screen<VBox> {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        metric_label.setText(Settings.get().getAppModel().getSelectedMetric());
         project_search_bar.setLeft(new Icon(BoxiconsRegular.SEARCH, 16));
         project_search_btn.setGraphic(new Icon(BoxiconsRegular.SEARCH, 16));
         project_search_btn.getStyleClass().add(Styles.ACCENT);
