@@ -2,21 +2,20 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import org.controlsfx.control.SearchableComboBox?>
 
-
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" spacing="10.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" spacing="10.0" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox fillHeight="false" prefWidth="200.0" spacing="10.0" VBox.vgrow="NEVER">
          <children>
-            <Button mnemonicParsing="false" />
-            <Label text="[Metric Name]">
+            <Button fx:id="back_btn" mnemonicParsing="false" />
+            <Label fx:id="metric_name" text="[Metric Name]">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
@@ -28,12 +27,12 @@
             <ImageView fx:id="project_logo" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" />
             <VBox prefWidth="100.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label text="[Project Title]">
+                  <Label fx:id="project_title" text="[Project Title]">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <Label text="[Project Description]" />
+                  <Label fx:id="project_description" text="[Project Description]" />
                </children>
             </VBox>
          </children>
@@ -42,15 +41,15 @@
          <children>
             <VBox prefWidth="100.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label text="[Sprint Name]">
+                  <Label fx:id="sprint_name" text="[Sprint Name]">
                      <font>
-                        <Font size="18.0" />
+                        <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
-                  <Label text="[Sprint Dates]" />
+                  <Label fx:id="sprint_dates" text="[Sprint Dates]" />
                </children>
             </VBox>
-            <SearchableComboBox />
+            <ComboBox fx:id="sprint_combobox" prefWidth="150.0" />
          </children>
       </HBox>
       <Separator prefWidth="200.0" />

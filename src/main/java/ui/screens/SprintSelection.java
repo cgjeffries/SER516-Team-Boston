@@ -1,6 +1,7 @@
 package ui.screens;
 
 import javafx.scene.layout.VBox;
+import settings.Settings;
 import ui.components.Screen;
 import ui.util.ScreenManager;
 
@@ -32,6 +33,7 @@ public class SprintSelection extends Screen<VBox> {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        System.out.println(Settings.get().getAppModel().getCurrentProject().getName());
 
     }
 }

@@ -141,6 +141,10 @@ public class ProjectSelection extends Screen<VBox> {
     public void goBack(ActionEvent ae) {
         screenManager.switchScreen("metric_selection");
     }
+    
+    public void gotoSprintSelection() {
+        screenManager.switchScreen(("sprint_selection"));
+    }
 
     private static class ProjectCell extends ListCell<Project> {
         private final ProjectSelection projectSelection;
@@ -176,6 +180,8 @@ public class ProjectSelection extends Screen<VBox> {
             root.setAction(menu);
             root.setActionHandler(() -> {
                 // TODO: transition to next screen
+                Settings.get().getAppModel().setCurrentProject(project);
+                projectSelection.gotoSprintSelection();
                 System.out.println(project.getName());
             });
             setGraphic(root);
