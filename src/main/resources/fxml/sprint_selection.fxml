@@ -10,51 +10,51 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" spacing="10.0" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <HBox fillHeight="false" prefWidth="200.0" spacing="10.0" VBox.vgrow="NEVER">
-         <children>
-            <Button fx:id="back_btn" mnemonicParsing="false" />
-            <Label fx:id="metric_name" text="[Metric Name]">
-               <font>
-                  <Font name="System Bold" size="24.0" />
-               </font>
-            </Label>
-         </children>
-      </HBox>
-      <HBox prefWidth="200.0" spacing="10.0">
-         <children>
-            <ImageView fx:id="project_logo" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" />
-            <VBox prefWidth="100.0" HBox.hgrow="ALWAYS">
-               <children>
-                  <Label fx:id="project_title" text="[Project Title]">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="project_description" text="[Project Description]" />
-               </children>
-            </VBox>
-         </children>
-      </HBox>
-      <HBox prefWidth="200.0">
-         <children>
-            <VBox prefWidth="100.0" HBox.hgrow="ALWAYS">
-               <children>
-                  <Label fx:id="sprint_name" text="[Sprint Name]">
-                     <font>
-                        <Font name="System Bold" size="18.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="sprint_dates" text="[Sprint Dates]" />
-               </children>
-            </VBox>
-            <ComboBox fx:id="sprint_combobox" prefWidth="150.0" />
-         </children>
-      </HBox>
-      <Separator prefWidth="200.0" />
-   </children>
-   <padding>
-      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-   </padding>
-</VBox>
+<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" spacing="10.0" type="VBox" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <HBox fillHeight="false" prefWidth="200.0" spacing="10.0" VBox.vgrow="NEVER">
+            <children>
+                <Button fx:id="back_btn" mnemonicParsing="false" />
+                <Label fx:id="metric_name" text="[Metric Name]">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                </Label>
+            </children>
+        </HBox>
+        <HBox prefWidth="200.0" spacing="10.0">
+            <children>
+                <ImageView fx:id="project_logo" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" />
+                <VBox prefWidth="100.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label fx:id="project_title" text="[Project Title]">
+                            <font>
+                                <Font size="18.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="project_description" text="[Project Description]" />
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
+        <HBox>
+            <children>
+                <VBox prefWidth="100.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label fx:id="sprint_name" text="[Sprint Name]">
+                            <font>
+                                <Font name="System Bold" size="18.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="sprint_dates" text="[Sprint Dates]" />
+                    </children>
+                </VBox>
+                <ComboBox fx:id="sprint_combobox" prefWidth="150.0" />
+            </children>
+        </HBox>
+        <Separator />
+    </children>
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+</fx:root>
