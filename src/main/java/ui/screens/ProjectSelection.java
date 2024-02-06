@@ -89,11 +89,11 @@ public class ProjectSelection extends Screen<VBox> {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        metric_label.setText(Settings.get().getAppModel().getSelectedMetric());
+        metric_label.textProperty().bind(Settings.get().getAppModel().getSelectedMetric());
         project_search_bar.setLeft(new Icon(BoxiconsRegular.SEARCH, 16));
         project_search_btn.setGraphic(new Icon(BoxiconsRegular.SEARCH, 16));
         project_search_btn.getStyleClass().add(Styles.ACCENT);
-        project_back_btn.setGraphic(new Icon(BoxiconsRegular.ARROW_BACK, 24));
+        project_back_btn.setGraphic(new Icon(BoxiconsRegular.ARROW_BACK));
         project_back_btn.getStyleClass().add(Styles.FLAT);
         progress.setMaxSize(16, 16);
         progress.setVisible(false);
@@ -132,7 +132,7 @@ public class ProjectSelection extends Screen<VBox> {
             progress.setVisible(false);
             if (result.getStatus() == 200) {
                 addProject(result.getContent());
-                project_search_bar.clear();
+                Platform.runLater(() -> project_search_bar.clear());
             }
         });
     }

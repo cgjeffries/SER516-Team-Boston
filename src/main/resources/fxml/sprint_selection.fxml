@@ -14,7 +14,7 @@
     <children>
         <HBox fillHeight="false" prefWidth="200.0" spacing="10.0" VBox.vgrow="NEVER">
             <children>
-                <Button fx:id="back_btn" mnemonicParsing="false" />
+                <Button fx:id="back_btn" mnemonicParsing="false" onAction="#goBack" />
                 <Label fx:id="metric_name" text="[Metric Name]">
                     <font>
                         <Font name="System Bold" size="24.0" />
@@ -29,7 +29,7 @@
                     <children>
                         <Label fx:id="project_title" text="[Project Title]">
                             <font>
-                                <Font size="18.0" />
+                                <Font name="System Bold" size="18.0" />
                             </font>
                         </Label>
                         <Label fx:id="project_description" text="[Project Description]" />

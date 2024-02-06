@@ -1,12 +1,16 @@
 package settings.appmodel;
 
 import com.google.gson.annotations.Expose;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import taiga.model.query.project.Project;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import taiga.model.query.sprint.Sprint;
+
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -17,9 +21,14 @@ public class AppModel {
     @Expose
     private List<Sprint> sprints;
 
-    private Project currentProject;
+    private final SimpleObjectProperty<Project> currentProject;
     private Sprint currentSprint;
-    private String selectedMetric;
+    private final StringProperty selectedMetric;
+
+    public AppModel() {
+        this.selectedMetric = new SimpleStringProperty();
+        this.currentProject = new SimpleObjectProperty<>();
+    }
 
     public List<Project> getProjects() {
         if (projects == null) {
@@ -55,7 +64,7 @@ public class AppModel {
         projects.stream()
                 .filter(prj -> prj.equals(p))
                 .findFirst()
-                .ifPresent(prj -> currentProject = prj);
+                .ifPresent(prj -> currentProject.set(prj));
     }
 
     public List<Sprint> getSprints() {
@@ -81,15 +90,15 @@ public class AppModel {
         return currentSprint;
     }
 
-    public Project getCurrentProject() {
+    public SimpleObjectProperty<Project> getCurrentProject() {
         return currentProject;
     }
 
     public void setSelectedMetric(String metric) {
-        selectedMetric = metric;
+        selectedMetric.set(metric);
     }
 
-    public String getSelectedMetric() {
+    public StringProperty getSelectedMetric() {
         return selectedMetric;
     }
 }
