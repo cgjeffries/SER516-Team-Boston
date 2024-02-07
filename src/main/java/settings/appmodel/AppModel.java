@@ -68,6 +68,9 @@ public class AppModel {
     }
 
     public List<Sprint> getSprints() {
+        if (sprints == null) {
+            sprints = new ArrayList<>();
+        }
         return sprints;
     }
 
