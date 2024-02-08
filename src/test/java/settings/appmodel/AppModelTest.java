@@ -50,6 +50,6 @@ public class AppModelTest {
         appModel.addProject(p2);
         appModel.addProject(p3);
         appModel.setCurrentProject(p2);
-        assertEquals(p2, appModel.getCurrentProject());
+        assertEquals(p2, appModel.getCurrentProject().get());
     }
 }

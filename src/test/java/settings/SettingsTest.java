@@ -14,6 +14,7 @@ import org.mockito.Mockito;
 
 import settings.appmodel.AppModel;
 import taiga.model.query.project.Project;
+import taiga.model.query.sprint.Sprint;
 
 public class SettingsTest {
 
@@ -24,6 +25,11 @@ public class SettingsTest {
     private Project p1;
     private Project p2;
     private Project p3;
+
+    private Sprint s1;
+    private Sprint s2;
+
+    
     @BeforeEach
     public void setUp() {
         System.setProperty("user.home", System.getProperty("user.dir"));
@@ -41,6 +47,14 @@ public class SettingsTest {
         p3 = new Project();
         p3.setSlug("project-three");
         p3.setId(3);
+        //Sprint Section for new appending
+        appModel.getSprints();
+        s1 = new Sprint();
+        s1.setSlug("sprint-1");
+        s1.setId(1);
+        s2 = new Sprint();
+        s2.setSlug("sprint-2");
+        s2.setId(2);
     }
 
     @AfterEach
@@ -55,6 +69,11 @@ public class SettingsTest {
         appModel.addProject(p1);
         appModel.addProject(p2);
         appModel.setCurrentProject(p3);
+        //Apending for Sprint testing
+        appModel.addSprint(s1);
+        appModel.addSprint(s2);
+        appModel.setCurrentSprint(s2);
+
         settings.appModel = appModel;
 
         settings.save();
