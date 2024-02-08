@@ -70,13 +70,6 @@ public abstract class APIWrapperBase {
      * <p>Returns a {@link CompletableFuture} holding the {@link APIResponse} response object.
      *
      * <p>Example usage:
-     *Send an asynchronous GET request with the specified query to the configured API endpoint.
-     * Unlike the synchronous version of this method, this method will handle converting the raw
-     * response to an {@link APIResponse} of the given type.
-     *
-     * <p>Returns a {@link CompletableFuture} holding the {@link APIResponse} response object.
-     *
-     * <p>Example usage:
      *
      * <pre>
      *     queryAsync("?project=12345", Membership[].class).thenAccept(response -> {
@@ -102,7 +95,7 @@ public abstract class APIWrapperBase {
      */
     protected <T> CompletableFuture<APIResponse<T>> queryAsync(
             String query, Class<T> responseType) {
-        return queryAsync(query, responseType, true);
+        return queryAsync(query, responseType, true, false);
     }
 
     /**
@@ -127,14 +120,14 @@ public abstract class APIWrapperBase {
      * @return future with result object.
      */
     protected <T> CompletableFuture<APIResponse<T>> queryAsync(
-            String query, Class<T> responseType, boolean retry) {
+            String query, Class<T> responseType, boolean retry, boolean enable_pagination) {
         try {
             // Construct HTTP request
             HttpRequest.Builder request =
                     HttpRequest.newBuilder()
                             .uri(new URI(apiBaseURL + apiEndpoint + query))
-                            .header("Content-Type", "application/json");
-                            //.header("x-disable-pagination", "true"); //TODO: make this optional. It's super important for some calls (like user stories), but breaks some other calls (like GET /projects)
+                            .header("Content-Type", "application/json")
+                            .header("x-disable-pagination", enable_pagination ? "false" : "true");
 
             // Add token to header if we have one
             if (getAuthToken() != null) {
@@ -207,7 +200,7 @@ public abstract class APIWrapperBase {
                                             // have a valid set of tokens
                                             CompletableFuture<APIResponse<T>>
                                                     completableFutureQuery =
-                                                            queryAsync(query, responseType, false);
+                                                            queryAsync(query, responseType, false, enable_pagination);
 
                                             // change the api response to the value of the retry
                                             completableFutureQuery.thenAccept(apiResponse::set);
