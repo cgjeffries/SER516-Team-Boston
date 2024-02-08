@@ -70,13 +70,6 @@ public abstract class APIWrapperBase {
      * <p>Returns a {@link CompletableFuture} holding the {@link APIResponse} response object.
      *
      * <p>Example usage:
-     *Send an asynchronous GET request with the specified query to the configured API endpoint.
-     * Unlike the synchronous version of this method, this method will handle converting the raw
-     * response to an {@link APIResponse} of the given type.
-     *
-     * <p>Returns a {@link CompletableFuture} holding the {@link APIResponse} response object.
-     *
-     * <p>Example usage:
      *
      * <pre>
      *     queryAsync("?project=12345", Membership[].class).thenAccept(response -> {
@@ -87,22 +80,11 @@ public abstract class APIWrapperBase {
      *
      * @param query query string to be appended to the base API endpoint configured.
      * @param responseType class of expected response object.
-     * @param <T> type of expecte
-     * <pre>
-     *     queryAsync("?project=12345", Membership[].class).thenAccept(response -> {
-     *         System.out.println(response.getStatus());
-     *         System.out.println(response.getContent()[0].getFullName());
-     *     });
-     * </pre>
-     *
-     * @param query query string to be appended to the base API endpoint configured.
-     * @param responseType class of expected response object.
-     * @param <T> type of expected response object.
      * @return future with result object.
      */
     protected <T> CompletableFuture<APIResponse<T>> queryAsync(
             String query, Class<T> responseType) {
-        return queryAsync(query, responseType, true);
+        return queryAsync(query, responseType, true, false);
     }
 
     /**
@@ -123,18 +105,22 @@ public abstract class APIWrapperBase {
      *
      * @param query query string to be appended to the base API endpoint configured.
      * @param responseType class of expected response object.
+     * @param retry whether to try to refresh the auth token and try again if the first
+     *              request try fails
+     * @param enable_pagination whether to enable pagination or not. This should be false in most
+     *                          scenarios.
      * @param <T> type of expected response object.
      * @return future with result object.
      */
     protected <T> CompletableFuture<APIResponse<T>> queryAsync(
-            String query, Class<T> responseType, boolean retry) {
+            String query, Class<T> responseType, boolean retry, boolean enable_pagination) {
         try {
             // Construct HTTP request
             HttpRequest.Builder request =
                     HttpRequest.newBuilder()
                             .uri(new URI(apiBaseURL + apiEndpoint + query))
-                            .header("Content-Type", "application/json");
-                            //.header("x-disable-pagination", "true"); //TODO: make this optional. It's super important for some calls (like user stories), but breaks some other calls (like GET /projects)
+                            .header("Content-Type", "application/json")
+                            .header("x-disable-pagination", enable_pagination ? "false" : "true");
 
             // Add token to header if we have one
             if (getAuthToken() != null) {
@@ -207,7 +193,7 @@ public abstract class APIWrapperBase {
                                             // have a valid set of tokens
                                             CompletableFuture<APIResponse<T>>
                                                     completableFutureQuery =
-                                                            queryAsync(query, responseType, false);
+                                                            queryAsync(query, responseType, false, enable_pagination);
 
                                             // change the api response to the value of the retry
                                             completableFutureQuery.thenAccept(apiResponse::set);
@@ -244,6 +230,7 @@ public abstract class APIWrapperBase {
      * </pre>
      *
      * @param path query string to be appended to the base API endpoint configured.
+     * @param body Object containing the data that will be sent as a JSON body
      * @param responseType class of expected response object.
      * @param <T> type of expected response object.
      * @return future with result object.
@@ -270,7 +257,9 @@ public abstract class APIWrapperBase {
      * </pre>
      *
      * @param path query string to be appended to the base API endpoint configured.
+     * @param body Object containing the data that will be sent as a JSON body
      * @param responseType class of expected response object.
+     * @param useAuth whether to use our auth tokens when submitting the request
      * @param <T> type of expected response object.
      * @return future with result object.
      */

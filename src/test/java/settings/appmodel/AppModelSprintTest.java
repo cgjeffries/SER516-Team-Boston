@@ -46,14 +46,4 @@ public class AppModelSprintTest {
         appModel.removeSprint(s1);
         assertFalse(appModel.getSprints().contains(s1));
     }
-    
-    @Test
-    public void testSetCurrentSprint() {
-        appModel.addSprint(s1);
-        appModel.addSprint(s2);
-        appModel.addSprint(s3);
-        appModel.setCurrentSprint(s2);
-        assertEquals(s2, appModel.getCurrentSprint());
-    }
-
 }

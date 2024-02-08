@@ -2,9 +2,14 @@ package taiga.model.query.project;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import taiga.api.SprintAPI;
+import taiga.model.query.sprint.Sprint;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 public class Project {
 
@@ -239,6 +244,19 @@ public class Project {
     @SerializedName("videoconferences_extra_data")
     @Expose
     private Object videoconferencesExtraData; // TODO: figure out what type this is supposed to be
+
+    @SerializedName("sprints")
+    @Expose
+    private List<Sprint> sprints;
+
+    public CompletableFuture<Void> loadSprints() {
+        return new SprintAPI().listSprints(getId(), result -> {
+            if (result.getStatus() != 200) {
+                return;
+            }
+            sprints = Arrays.asList(result.getContent());
+        });
+    }
 
     public List<String> getAnonPermissions() {
         return anonPermissions;
@@ -702,6 +720,14 @@ public class Project {
 
     public void setVideoconferencesExtraData(Object videoconferencesExtraData) {
         this.videoconferencesExtraData = videoconferencesExtraData;
+    }
+
+    public List<Sprint> getSprints() {
+        return sprints;
+    }
+
+    public void setSprints(List<Sprint> sprints) {
+        this.sprints = sprints;
     }
 
     @Override

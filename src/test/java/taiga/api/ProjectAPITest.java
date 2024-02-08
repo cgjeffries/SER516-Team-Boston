@@ -22,7 +22,7 @@ class ProjectAPITest {
         APIResponse<ProjectListEntry[]> mockApiResponse = new APIResponse<>(200, new ProjectListEntry[]{});
 
         // Use Mockito to set up the behavior of the queryAsync method in the APIWrapperBase mock
-        Mockito.when(apiWrapperMock.queryAsync(Mockito.anyString(), Mockito.eq(ProjectListEntry[].class)))
+        Mockito.when(apiWrapperMock.queryAsync(Mockito.anyString(), Mockito.eq(ProjectListEntry[].class), Mockito.eq(true), Mockito.eq(true)))
                 .thenReturn(CompletableFuture.completedFuture(mockApiResponse));
 
         // Use a CompletableFuture to wait for the asynchronous method to complete
