@@ -11,9 +11,6 @@ import java.util.List;
 
 import taiga.model.query.sprint.Sprint;
 
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 public class AppModel {
     @Expose
     private List<Project> projects;
@@ -22,7 +19,6 @@ public class AppModel {
     private List<Sprint> sprints;
 
     private final SimpleObjectProperty<Project> currentProject;
-    private Sprint currentSprint;
     private final StringProperty selectedMetric;
 
     public AppModel() {
@@ -82,16 +78,6 @@ public class AppModel {
         sprints.remove(s);
     }
 
-    public void setCurrentSprint(Sprint s) {
-        sprints.stream()
-                .filter(spr -> spr.equals(s))
-                .findFirst()
-                .ifPresent(spr -> currentSprint = spr);
-    }
-
-    public Sprint getCurrentSprint() {
-        return currentSprint;
-    }
 
     public SimpleObjectProperty<Project> getCurrentProject() {
         return currentProject;

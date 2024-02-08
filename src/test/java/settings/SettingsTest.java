@@ -72,7 +72,6 @@ public class SettingsTest {
         //Apending for Sprint testing
         appModel.addSprint(s1);
         appModel.addSprint(s2);
-        appModel.setCurrentSprint(s2);
 
         settings.appModel = appModel;
 

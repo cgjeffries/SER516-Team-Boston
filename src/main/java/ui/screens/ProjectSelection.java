@@ -20,7 +20,9 @@ import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 import org.kordamp.ikonli.javafx.FontIcon;
 import settings.Settings;
 import taiga.api.ProjectAPI;
+import taiga.api.SprintAPI;
 import taiga.model.query.project.Project;
+import taiga.model.query.sprint.Sprint;
 import taiga.util.TaigaUtil;
 import ui.components.Icon;
 import ui.components.Screen;
@@ -28,6 +30,7 @@ import ui.util.DefaultLogoResolver;
 import ui.util.ScreenManager;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class ProjectSelection extends Screen<VBox> {
@@ -126,14 +129,24 @@ public class ProjectSelection extends Screen<VBox> {
             return;
         }
         progress.setVisible(true);
+        this.getRoot().setDisable(true);
         new ProjectAPI().getProject(slug, result -> {
-            project_search_bar.setEditable(true);
-            project_search_btn.setDisable(false);
-            progress.setVisible(false);
-            if (result.getStatus() == 200) {
-                addProject(result.getContent());
-                Platform.runLater(() -> project_search_bar.clear());
+            if (result.getStatus() != 200) {
+                project_search_bar.setEditable(true);
+                project_search_btn.setDisable(false);
+                progress.setVisible(false);
+                this.getRoot().setDisable(false);
+                return;
             }
+            Project project = result.getContent();
+            project.loadSprints().thenAccept(x -> {
+                project_search_bar.setEditable(true);
+                project_search_btn.setDisable(false);
+                progress.setVisible(false);
+                this.getRoot().setDisable(false);
+                addProject(project);
+                Platform.runLater(() -> project_search_bar.clear());
+            });
         });
     }
 
@@ -141,7 +154,7 @@ public class ProjectSelection extends Screen<VBox> {
     public void goBack(ActionEvent ae) {
         screenManager.switchScreen("metric_selection");
     }
-    
+
     public void gotoSprintSelection() {
         screenManager.switchScreen(("sprint_selection"));
     }
