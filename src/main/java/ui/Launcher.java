@@ -6,6 +6,7 @@ import javafx.stage.Stage;
 import settings.Settings;
 import ui.screens.MetricSelection;
 import ui.screens.ProjectSelection;
+import ui.screens.SprintSelection;
 import ui.util.ScreenManager;
 
 public class Launcher extends Application {
@@ -25,6 +26,7 @@ public class Launcher extends Application {
         ScreenManager screenManager = new ScreenManager();
         screenManager.initialize(new MetricSelection(screenManager, "metric_selection"));
         screenManager.addScreen(new ProjectSelection(screenManager, "project_selection"));
+        screenManager.addScreen(new SprintSelection(screenManager, "sprint_selection"));
         stage.setTitle("SER516 Team Boston");
         stage.setScene(screenManager.getScene());
         stage.show();

@@ -18,7 +18,7 @@ public class ProjectAPI extends APIWrapperBase {
      * @return void future which can be joined to wait for call to complete.
      */
     public CompletableFuture<Void> listProjects(Consumer<APIResponse<ProjectListEntry[]>> callback) {
-        return queryAsync("", ProjectListEntry[].class).thenAccept(callback);
+        return queryAsync("", ProjectListEntry[].class, true, true).thenAccept(callback);
     }
 
     /**
