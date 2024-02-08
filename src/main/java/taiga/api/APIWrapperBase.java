@@ -80,17 +80,6 @@ public abstract class APIWrapperBase {
      *
      * @param query query string to be appended to the base API endpoint configured.
      * @param responseType class of expected response object.
-     * @param <T> type of expecte
-     * <pre>
-     *     queryAsync("?project=12345", Membership[].class).thenAccept(response -> {
-     *         System.out.println(response.getStatus());
-     *         System.out.println(response.getContent()[0].getFullName());
-     *     });
-     * </pre>
-     *
-     * @param query query string to be appended to the base API endpoint configured.
-     * @param responseType class of expected response object.
-     * @param <T> type of expected response object.
      * @return future with result object.
      */
     protected <T> CompletableFuture<APIResponse<T>> queryAsync(
