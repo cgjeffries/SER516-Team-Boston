@@ -116,6 +116,10 @@ public abstract class APIWrapperBase {
      *
      * @param query query string to be appended to the base API endpoint configured.
      * @param responseType class of expected response object.
+     * @param retry whether to try to refresh the auth token and try again if the first
+     *              request try fails
+     * @param enable_pagination whether to enable pagination or not. This should be false in most
+     *                          scenarios.
      * @param <T> type of expected response object.
      * @return future with result object.
      */
@@ -237,6 +241,7 @@ public abstract class APIWrapperBase {
      * </pre>
      *
      * @param path query string to be appended to the base API endpoint configured.
+     * @param body Object containing the data that will be sent as a JSON body
      * @param responseType class of expected response object.
      * @param <T> type of expected response object.
      * @return future with result object.
@@ -263,7 +268,9 @@ public abstract class APIWrapperBase {
      * </pre>
      *
      * @param path query string to be appended to the base API endpoint configured.
+     * @param body Object containing the data that will be sent as a JSON body
      * @param responseType class of expected response object.
+     * @param useAuth whether to use our auth tokens when submitting the request
      * @param <T> type of expected response object.
      * @return future with result object.
      */
