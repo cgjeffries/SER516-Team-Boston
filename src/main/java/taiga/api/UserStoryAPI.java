@@ -72,4 +72,26 @@ public class UserStoryAPI extends APIWrapperBase {
                         UserStoryDetail.class)
                 .thenAccept(callback);
     }
+
+    /**
+     * Gets the total story points for the user story with the given ID asynchronously.
+     *
+     * @param userStoryId user story id
+     * @param callback Consumer function to execute upon receiving query result.
+     * @return void future which can be joined to wait for call to complete.
+     */
+    public CompletableFuture<Void> getUserStoryPoints(
+        int userStoryId, Consumer<APIResponse<Double>> callback) {
+    return queryAsync("/" + userStoryId, UserStoryDetail.class)
+            .thenAccept(response -> {
+                if (response.getStatus() == 200) {
+                    UserStoryDetail userStoryDetail = response.getContent();
+                    double totalStoryPoints = userStoryDetail.getTotalPoints();
+                    callback.accept(new APIResponse<>(response.getStatus(), totalStoryPoints));
+                } else {
+                    callback.accept(new APIResponse<>(response.getStatus(), null));
+                }
+            });
+    }
 }
+
