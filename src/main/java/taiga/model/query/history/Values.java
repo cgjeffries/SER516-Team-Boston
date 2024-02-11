@@ -16,7 +16,7 @@ public class Values {
     private HashMap<String, String> status;
     @SerializedName("roles")
     @Expose
-    private Roles roles;
+    private HashMap<String, String> roles;
     @SerializedName("points")
     @Expose
     private HashMap<String, String> points;
@@ -40,11 +40,11 @@ public class Values {
         this.status = status;
     }
 
-    public Roles getRoles() {
+    public HashMap<String, String> getRoles() {
         return roles;
     }
 
-    public void setRoles(Roles roles) {
+    public void setRoles(HashMap<String, String> roles) {
         this.roles = roles;
     }
 
