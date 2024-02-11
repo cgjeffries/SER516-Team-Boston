@@ -1,5 +1,6 @@
 package taiga.util;
 
+import taiga.api.UserStoryAPI;
 import taiga.model.query.sprint.Sprint;
 
 public class BurnDownUtil {
@@ -7,6 +8,7 @@ public class BurnDownUtil {
     private Sprint sprint;
     private double storyPointTotal;
     private double businessValueTotal;
+    private UserStoryAPI api;
 
     public BurnDownUtil() {
         storyPointTotal = 0;
@@ -17,11 +19,16 @@ public class BurnDownUtil {
         sprint = theSprint;
         storyPointTotal = sprint.getTotalPoints();
         businessValueTotal = calculateBusinessValue();
+        this.api = new UserStoryAPI();
     }
 
     private double calculateBusinessValue() {
         // TODO Auto-generated method stub, needs to be done
         throw new UnsupportedOperationException("Unimplemented method 'calculateBusinessValue'");
+    }
+
+    private void calculateUserStoryBurndown() {
+
     }
 
     public Sprint getSprint() {
@@ -47,6 +54,6 @@ public class BurnDownUtil {
     public void setBusinessValueTotal(double businessValueTotal) {
         this.businessValueTotal = businessValueTotal;
     }
-    
+
 
 }
