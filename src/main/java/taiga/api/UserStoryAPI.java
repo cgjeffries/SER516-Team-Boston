@@ -3,6 +3,7 @@ package taiga.api;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import taiga.model.query.sprint.UserStoryDetail;
+import taiga.model.query.userstories.UserStory;
 
 public class UserStoryAPI extends APIWrapperBase {
     public UserStoryAPI() {
@@ -74,24 +75,28 @@ public class UserStoryAPI extends APIWrapperBase {
     }
 
     /**
-     * Gets the total story points for the user story with the given ID asynchronously.
+     * Retrieves the total points for a specific user story asynchronously.
      *
-     * @param userStoryId user story id
-     * @param callback Consumer function to execute upon receiving query result.
-     * @return void future which can be joined to wait for call to complete.
+     * @param userStoryId The ID of the user story.
+     * @param callback Consumer function to execute upon receiving the query result.
+     * @return A CompletableFuture containing the total points for the user story.
      */
-    public CompletableFuture<Void> getUserStoryPoints(
-        int userStoryId, Consumer<APIResponse<Double>> callback) {
-    return queryAsync("/" + userStoryId, UserStoryDetail.class)
-            .thenAccept(response -> {
-                if (response.getStatus() == 200) {
-                    UserStoryDetail userStoryDetail = response.getContent();
-                    double totalStoryPoints = userStoryDetail.getTotalPoints();
-                    callback.accept(new APIResponse<>(response.getStatus(), totalStoryPoints));
-                } else {
-                    callback.accept(new APIResponse<>(response.getStatus(), null));
-                }
-            });
+    public CompletableFuture<Double> getUserStoryTotalPoints(
+            int userStoryId, Consumer<APIResponse<UserStory>> callback) {
+        return queryAsync("/" + userStoryId, UserStory.class)
+                .thenApply(response -> {
+                    if (response.getStatus() == 200) {
+                        UserStory userStory = response.getContent();
+                        return userStory != null ? userStory.getTotalPoints() : 0.0;
+                    } else {
+                        return 0.0;
+                    }
+                })
+                .whenComplete((result, error) -> {
+                    if (error != null) {
+                        error.printStackTrace();
+                    }
+                });
     }
 }
 
