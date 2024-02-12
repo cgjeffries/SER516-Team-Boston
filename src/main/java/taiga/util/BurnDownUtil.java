@@ -28,7 +28,12 @@ public class BurnDownUtil {
     }
 
     private double calculateBusinessValue() {
-        return 0;//Will be done shortly
+        UserStoryUtils userStoryUtils = new UserStoryUtils();
+        double tempTotal = 0;
+        for(UserStoryDetail story : userStories) {
+            tempTotal += userStoryUtils.extractBusinessValue(story);
+        }
+        return tempTotal;
     }
 
     public void instantiateUserStoryDetailList() {
