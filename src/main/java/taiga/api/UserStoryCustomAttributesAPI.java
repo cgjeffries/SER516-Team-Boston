@@ -18,7 +18,7 @@ public class UserStoryCustomAttributesAPI extends APIWrapperBase{
      */
     public CompletableFuture<Void> getUserStoryCustomAttributeList(
         Consumer<APIResponse<UserStoryCustomAttribute[]>> callback) {
-            return queryAsync(getAuthToken(), UserStoryCustomAttribute[].class).thenAccept(callback);
+            return queryAsync("", UserStoryCustomAttribute[].class).thenAccept(callback);
         }
         
 }
