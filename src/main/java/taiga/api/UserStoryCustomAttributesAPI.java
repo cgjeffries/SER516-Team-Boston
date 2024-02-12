@@ -3,7 +3,7 @@ package taiga.api;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-import taiga.model.query.sprint.UserStoryDetail;
+import taiga.model.query.customattributes.UserStoryCustomAttribute;
 
 public class UserStoryCustomAttributesAPI extends APIWrapperBase{
 
@@ -16,9 +16,9 @@ public class UserStoryCustomAttributesAPI extends APIWrapperBase{
      *
      * @return A CompletableFuture containing the list of user stories
      */
-    public CompletableFuture<> getUserStoryCustomAttributeList(
-        Consumer<APIResponse<UserStoryDetail>> callback) {
-            return queryAsync(getAuthToken(), null).thenAccept(callback);
+    public CompletableFuture<Void> getUserStoryCustomAttributeList(
+        Consumer<APIResponse<UserStoryCustomAttribute[]>> callback) {
+            return queryAsync("", UserStoryCustomAttribute[].class).thenAccept(callback);
         }
         
 }
