@@ -68,7 +68,7 @@ public class UserStoryDetail {
 
     @SerializedName("finish_date")
     @Expose
-    private Object finishDate;
+    private Date finishDate;
 
     @SerializedName("generated_from_issue")
     @Expose
@@ -330,11 +330,11 @@ public class UserStoryDetail {
         this.externalReference = externalReference;
     }
 
-    public Object getFinishDate() {
+    public Date getFinishDate() {
         return finishDate;
     }
 
-    public void setFinishDate(Object finishDate) {
+    public void setFinishDate(Date finishDate) {
         this.finishDate = finishDate;
     }
 

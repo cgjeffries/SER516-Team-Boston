@@ -15,6 +15,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
+import static taiga.util.UserStoryUtils.extractBusinessValue;
+
 public class BurnDownUtil {
 
     private Sprint sprint;
@@ -44,7 +46,7 @@ public class BurnDownUtil {
         UserStoryUtils userStoryUtils = new UserStoryUtils();
         double tempTotal = 0;
         for(UserStoryDetail story : userStories) {
-            tempTotal += userStoryUtils.extractBusinessValue(story);
+            tempTotal += extractBusinessValue(story);
         }
         return tempTotal;
     }
@@ -137,6 +139,43 @@ public class BurnDownUtil {
         }
 
         entries.forEach(System.out::println);
+    }
+
+    // TODO: adapt to use BurnDownEntry
+    class BvBurndownEntry {
+        BvBurndownEntry(LocalDate date, Double value){
+            this.date = date;
+            this.value = value;
+        }
+        LocalDate date;
+        Double value;
+    }
+
+    private List<BvBurndownEntry> calculateBvBurndown() {
+        List<UserStoryDetail> userStories = null; //TODO: actually get the list of user stories
+
+        LocalDate sprintStartLocalDate = DateUtil.toLocal(this.sprint.getEstimatedStart());
+
+        LocalDate sprintEndLocalDate =  DateUtil.toLocal(this.sprint.getEstimatedFinish());
+
+        List<LocalDate> sprintDates = sprintStartLocalDate.datesUntil(sprintEndLocalDate).toList();
+
+        List<BvBurndownEntry> burndown = new ArrayList<>();
+
+        for(int i = 0; i < sprintDates.size(); i++){
+            Double value = this.businessValueTotal;
+            if(i != 0){
+                value = burndown.get(i-1).value;
+            }
+            for(UserStoryDetail userStoryDetail : userStories){
+                if(DateUtil.toLocal(userStoryDetail.getFinishDate()).equals(sprintDates.get(i))){
+                    value = value - extractBusinessValue(userStoryDetail);
+                }
+            }
+            burndown.add(new BvBurndownEntry(sprintDates.get(i), value));
+        }
+
+        return burndown;
     }
 
 
