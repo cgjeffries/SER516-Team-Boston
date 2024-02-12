@@ -46,7 +46,7 @@ public class BurnDownUtil {
         this.sprintStatsAPI = new SprintStatsAPI();
         this.histories = new HashMap<>();
         storyPointTotal = this.sprint.getTotalPoints();
-        businessValueTotal = calculateBusinessValue();
+//        businessValueTotal = calculateBusinessValue();
         populateAllUserStoryHistories();
     }
 
@@ -67,6 +67,9 @@ public class BurnDownUtil {
 
     private History findDoneHistoryEntry(int id) {
         List<History> entries = histories.get(id);
+        if (entries == null) {
+            return null;
+        }
         Optional<History> doneEntry = entries
                 .stream()
                 .filter(e -> {
@@ -147,9 +150,10 @@ public class BurnDownUtil {
         }
 
         entries.forEach(System.out::println);
+        System.out.println();
     }
 
-    private List<BurnDownEntry> calculateBvBurndown() {
+    public List<BurnDownEntry> calculateBvBurndown() {
 
         AtomicReference<List<UserStoryDetail>> userStories = new AtomicReference<>();
 
@@ -179,7 +183,7 @@ public class BurnDownUtil {
                 value = burndown.get(i-1).getCurrent();
             }
             for(UserStoryDetail userStoryDetail : userStories.get()){
-                if(DateUtil.toLocal(userStoryDetail.getFinishDate()).equals(sprintDates.get(i))){
+                if(userStoryDetail.getFinishDate() != null && DateUtil.toLocal(userStoryDetail.getFinishDate()).equals(sprintDates.get(i))){
                     value = value - extractBusinessValue(userStoryDetail);
                 }
             }
@@ -189,7 +193,7 @@ public class BurnDownUtil {
         return burndown;
     }
 
-    private List<BurnDownEntry> getTaigaBurndown(){
+    public List<BurnDownEntry> getTaigaBurndown(){
         AtomicReference<List<Days>> days = new AtomicReference<>();
 
         CompletableFuture<Void> future = this.sprintStatsAPI.getSprintStats(this.sprint.getId(), result -> {
@@ -202,8 +206,10 @@ public class BurnDownUtil {
 
         //TODO: convert this to a map thing because that's fancier and nicer
         for(Days day : days.get()){
-            burndown.add(new BurnDownEntry(day.getOptimalPoints(), day.getOpenPoints(), day.getDay()));
+            burndown.add(new BurnDownEntry(Math.max(0, day.getOptimalPoints()), day.getOpenPoints(), day.getDay()));
         }
+
+        burndown.forEach(System.out::println);
         return burndown;
     }
 

@@ -29,12 +29,12 @@ public class UserStoryUtils {
                     } catch (NumberFormatException e) {
                         // If parsing fails, log the error or handle it as needed
                         System.err.println("Error parsing BV value from tag: " + e.getMessage());
-                        return null;
+                        return 0;
                     }
                 }
             }
         }
         // Return null if the "BV" tag is not found or tags are null
-        return null;
+        return 0;
     }
 }
