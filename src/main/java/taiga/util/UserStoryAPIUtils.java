@@ -1,9 +1,10 @@
-package taiga.model.query.sprint;
+package taiga.util;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 import java.util.List;
+import taiga.model.query.sprint.UserStoryDetail;
 
 /**
  * Utility class for User Stories current functionality: extract BV, .
