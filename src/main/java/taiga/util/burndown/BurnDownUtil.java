@@ -1,5 +1,6 @@
 package taiga.util.burndown;
 
+import java.util.concurrent.atomic.AtomicReference;
 import taiga.api.HistoryAPI;
 import taiga.api.UserStoryAPI;
 import taiga.model.query.history.History;
@@ -152,7 +153,21 @@ public class BurnDownUtil {
     }
 
     private List<BurnDownEntry> calculateBvBurndown() {
-        List<UserStoryDetail> userStories = null; //TODO: actually get the list of user stories
+
+        AtomicReference<List<UserStoryDetail>> userStories = new AtomicReference<>();
+
+        CompletableFuture<Void> future = this.userStoryAPI.listMilestoneUserStories(this.sprint.getId(), result -> {
+            userStories.set(List.of(result.getContent()));
+        });
+
+        future.join(); //wait for the request to complete
+
+        List<BurnDownEntry> burndown = new ArrayList<>();
+
+        if(userStories.get() == null){
+            System.out.println("No User Stories!!!");
+            return burndown;
+        }
 
         LocalDate sprintStartLocalDate = DateUtil.toLocal(this.sprint.getEstimatedStart());
 
@@ -160,19 +175,18 @@ public class BurnDownUtil {
 
         List<LocalDate> sprintDates = sprintStartLocalDate.datesUntil(sprintEndLocalDate).toList();
 
-        List<BurnDownEntry> burndown = new ArrayList<>();
 
         for(int i = 0; i < sprintDates.size(); i++){
             Double value = this.businessValueTotal;
             if(i != 0){
                 value = burndown.get(i-1).getCurrent();
             }
-            for(UserStoryDetail userStoryDetail : userStories){
+            for(UserStoryDetail userStoryDetail : userStories.get()){
                 if(DateUtil.toLocal(userStoryDetail.getFinishDate()).equals(sprintDates.get(i))){
                     value = value - extractBusinessValue(userStoryDetail);
                 }
             }
-            //burndown.add(new BurnDownEntry(sprintDates.get(i), value)); //TODO: fix this to work with BurnDownEntry
+            burndown.add(new BurnDownEntry(this.businessValueTotal - ((this.businessValueTotal/sprintDates.size()) * i), value, DateUtil.toDate(sprintDates.get(i))));
         }
 
         return burndown;
