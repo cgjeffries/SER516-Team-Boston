@@ -16,7 +16,7 @@ public class SprintStatsAPI extends APIWrapperBase {
      * @param callback Consumer function to execute upon receiving query result.
      * @return void future which can be joined to wait for call to complete.
      */
-    public CompletableFuture<Void> listMilestoneStats(
+    public CompletableFuture<Void> getSprintStats(
             int sprintId, Consumer<APIResponse<SprintStats>> callback) {
         return queryAsync("/" + sprintId + "/stats", SprintStats.class).thenAccept(callback);
     }
