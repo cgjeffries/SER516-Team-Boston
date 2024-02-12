@@ -4,6 +4,8 @@ package taiga.model.query.history;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
 public class History {
 
     @SerializedName("id")
@@ -14,7 +16,7 @@ public class History {
     private User user;
     @SerializedName("created_at")
     @Expose
-    private String createdAt;
+    private Date createdAt;
     @SerializedName("type")
     @Expose
     private Integer type;
@@ -71,11 +73,11 @@ public class History {
         this.user = user;
     }
 
-    public String getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 

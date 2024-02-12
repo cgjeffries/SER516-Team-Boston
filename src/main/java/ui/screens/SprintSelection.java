@@ -14,6 +14,7 @@ import settings.Settings;
 import taiga.api.SprintAPI;
 import taiga.model.query.project.Project;
 import taiga.model.query.sprint.Sprint;
+import taiga.util.burndown.BurnDownUtil;
 import ui.components.Icon;
 import ui.components.Screen;
 import ui.util.DefaultLogoResolver;
@@ -88,6 +89,7 @@ public class SprintSelection extends Screen<VBox> {
             if (sprint == null) {
                 return "";
             }
+            new BurnDownUtil(sprint).calculateUserStoryBurndown();
             SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yyyy");
             String start = format.format(sprint.getEstimatedStart());
             String end = format.format(sprint.getEstimatedFinish());
