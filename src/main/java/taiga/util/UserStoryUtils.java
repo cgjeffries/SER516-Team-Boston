@@ -1,15 +1,12 @@
 package taiga.util;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import java.util.Date;
 import java.util.List;
 import taiga.model.query.sprint.UserStoryDetail;
 
 /**
  * Utility class for User Stories current functionality: extract BV, .
  */
-public class UserStoryAPIUtils {
+public class UserStoryUtils {
 
     /**
      * Extracts the business value (BV) from the user story tags.
