@@ -1,10 +1,13 @@
 package taiga.util.burndown;
 
 import taiga.api.HistoryAPI;
+import taiga.api.UserStoryAPI;
 import taiga.model.query.history.History;
 import taiga.model.query.history.ValuesDiff;
 import taiga.model.query.sprint.Sprint;
 import taiga.model.query.sprint.UserStory;
+import taiga.model.query.sprint.UserStoryDetail;
+import taiga.util.UserStoryUtils;
 import ui.util.DateUtil;
 
 import java.time.LocalDate;
@@ -18,7 +21,9 @@ public class BurnDownUtil {
     private double storyPointTotal;
     private double businessValueTotal;
     private HistoryAPI historyAPI;
+    private UserStoryAPI userStoryAPI;
     private HashMap<Integer, List<History>> histories;
+    private UserStoryDetail[] userStories;
 
     public BurnDownUtil() {
         storyPointTotal = 0;
@@ -27,15 +32,27 @@ public class BurnDownUtil {
 
     public BurnDownUtil(Sprint sprint) {
         this.sprint = sprint;
-        storyPointTotal = this.sprint.getTotalPoints();
         this.historyAPI = new HistoryAPI();
+        this.userStoryAPI = new UserStoryAPI();
         this.histories = new HashMap<>();
+        storyPointTotal = this.sprint.getTotalPoints();
+        businessValueTotal = calculateBusinessValue();
         populateAllUserStoryHistories();
     }
 
     private double calculateBusinessValue() {
-        // TODO Auto-generated method stub, needs to be done
-        throw new UnsupportedOperationException("Unimplemented method 'calculateBusinessValue'");
+        UserStoryUtils userStoryUtils = new UserStoryUtils();
+        double tempTotal = 0;
+        for(UserStoryDetail story : userStories) {
+            tempTotal += userStoryUtils.extractBusinessValue(story);
+        }
+        return tempTotal;
+    }
+
+    public void instantiateUserStoryDetailList() {
+        userStoryAPI.listMilestoneUserStories(sprint.getId(), result -> {
+            userStories = result.getContent();
+        });
     }
 
     private History findDoneHistoryEntry(int id) {
