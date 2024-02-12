@@ -1,7 +1,10 @@
 package taiga.util;
 
+
 import taiga.api.UserStoryAPI;
 import taiga.model.query.sprint.Sprint;
+import taiga.model.query.sprint.UserStory;
+import taiga.model.query.sprint.UserStoryDetail;
 
 public class BurnDownUtil {
 
@@ -9,6 +12,8 @@ public class BurnDownUtil {
     private double storyPointTotal;
     private double businessValueTotal;
     private UserStoryAPI api;
+    private UserStoryDetail[] userStories;
+
 
     public BurnDownUtil() {
         storyPointTotal = 0;
@@ -23,8 +28,13 @@ public class BurnDownUtil {
     }
 
     private double calculateBusinessValue() {
-        // TODO Auto-generated method stub, needs to be done
-        throw new UnsupportedOperationException("Unimplemented method 'calculateBusinessValue'");
+        return 0;//Will be done shortly
+    }
+
+    public void instantiateUserStoryDetailList() {
+        api.listMilestoneUserStories(sprint.getId(), result -> {
+            userStories = result.getContent();
+        });
     }
 
     private void calculateUserStoryBurndown() {
