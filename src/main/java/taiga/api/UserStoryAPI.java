@@ -2,6 +2,9 @@ package taiga.api;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
+
+import taiga.model.query.customattributes.UserStoryCustomAttribute;
+import taiga.model.query.customattributes.UserStoryCustomAttributesValues;
 import taiga.model.query.sprint.UserStoryDetail;
 import taiga.model.query.userstories.UserStory;
 
@@ -98,5 +101,17 @@ public class UserStoryAPI extends APIWrapperBase {
                     }
                 });
     }
+
+     /**
+     * Retrieves the list of custom attributes of a user story
+     *
+     * @param attributeID The ID of the user story attribute
+     * @param callback Consumer function to execute upon receiving the query result.
+     * @return A CompletableFuture containing the list of user stories
+     */
+    public CompletableFuture<Void> getUserStoryCustomAttributeValues(
+        int attributeID, Consumer<APIResponse<UserStoryCustomAttributesValues>> callback) {
+            return queryAsync("/custom-attributes-values/" + attributeID, UserStoryCustomAttributesValues.class).thenAccept(callback);
+        }
 }
 
