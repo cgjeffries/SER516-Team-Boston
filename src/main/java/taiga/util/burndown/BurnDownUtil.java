@@ -2,12 +2,16 @@ package taiga.util.burndown;
 
 import java.util.concurrent.atomic.AtomicReference;
 import taiga.api.HistoryAPI;
+import taiga.api.SprintStatsAPI;
 import taiga.api.UserStoryAPI;
 import taiga.model.query.history.History;
 import taiga.model.query.history.ValuesDiff;
+import taiga.model.query.sprint.Days;
 import taiga.model.query.sprint.Sprint;
+import taiga.model.query.sprint.SprintStats;
 import taiga.model.query.sprint.UserStory;
 import taiga.model.query.sprint.UserStoryDetail;
+import taiga.model.query.sprinthistory.Day;
 import taiga.util.UserStoryUtils;
 import ui.util.DateUtil;
 
@@ -25,6 +29,8 @@ public class BurnDownUtil {
     private double businessValueTotal;
     private HistoryAPI historyAPI;
     private UserStoryAPI userStoryAPI;
+
+    private SprintStatsAPI sprintStatsAPI;
     private HashMap<Integer, List<History>> histories;
     private UserStoryDetail[] userStories;
 
@@ -37,6 +43,7 @@ public class BurnDownUtil {
         this.sprint = sprint;
         this.historyAPI = new HistoryAPI();
         this.userStoryAPI = new UserStoryAPI();
+        this.sprintStatsAPI = new SprintStatsAPI();
         this.histories = new HashMap<>();
         storyPointTotal = this.sprint.getTotalPoints();
         businessValueTotal = calculateBusinessValue();
@@ -142,16 +149,6 @@ public class BurnDownUtil {
         entries.forEach(System.out::println);
     }
 
-    // TODO: adapt to use BurnDownEntry
-    class BvBurndownEntry {
-        BvBurndownEntry(LocalDate date, Double value){
-            this.date = date;
-            this.value = value;
-        }
-        LocalDate date;
-        Double value;
-    }
-
     private List<BurnDownEntry> calculateBvBurndown() {
 
         AtomicReference<List<UserStoryDetail>> userStories = new AtomicReference<>();
@@ -189,6 +186,24 @@ public class BurnDownUtil {
             burndown.add(new BurnDownEntry(this.businessValueTotal - ((this.businessValueTotal/sprintDates.size()) * i), value, DateUtil.toDate(sprintDates.get(i))));
         }
 
+        return burndown;
+    }
+
+    private List<BurnDownEntry> getTaigaBurndown(){
+        AtomicReference<List<Days>> days = new AtomicReference<>();
+
+        CompletableFuture<Void> future = this.sprintStatsAPI.getSprintStats(this.sprint.getId(), result -> {
+            days.set(List.of(result.getContent().getDays()));
+        });
+
+        future.join(); //wait for the request to complete
+
+        List<BurnDownEntry> burndown = new ArrayList<>();
+
+        //TODO: convert this to a map thing because that's fancier and nicer
+        for(Days day : days.get()){
+            burndown.add(new BurnDownEntry(day.getOptimalPoints(), day.getOpenPoints(), day.getDay()));
+        }
         return burndown;
     }
 
