@@ -17,6 +17,8 @@ public class Tasks {
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
     public static List<JsonNode> getClosedTasks(int projectId, String authToken, String TAIGA_API_ENDPOINT) {
+
+        // API to get list of all tasks in a project.
         String endpoint = TAIGA_API_ENDPOINT + "/tasks?project=" + projectId;
 
         HttpGet request = new HttpGet(endpoint);
@@ -74,6 +76,8 @@ public class Tasks {
 
         for (JsonNode task : tasks) {
             int taskId = task.get("id").asInt();
+
+            // API to get history of task
             String taskHistoryUrl = TAIGA_API_ENDPOINT + "/history/task/" + taskId;
 
             try {

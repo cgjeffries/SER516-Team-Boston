@@ -28,6 +28,11 @@ public class Project {
     }
 
     public static int getProjectId(String authToken,String TAIGA_API_ENDPOINT) {
+
+        // Prompting user to enter project slug name. A slug name is nothing but an identifier for a project.
+        // Open any Taiga project and check the url of your browser. Slug name is the value after " /project/SLUG_NAME "
+        // Example https://tree.taiga.io/project/SLUG_NAME/us/1?no-milestone=1
+
         String projectSlug = promptUser("Enter the Taiga project slug: ");
         String endpoint = TAIGA_API_ENDPOINT + "/projects/by_slug?slug=" + projectSlug;
 
