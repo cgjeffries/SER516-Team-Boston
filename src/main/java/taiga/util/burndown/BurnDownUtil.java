@@ -151,7 +151,7 @@ public class BurnDownUtil {
         Double value;
     }
 
-    private List<BvBurndownEntry> calculateBvBurndown() {
+    private List<BurnDownEntry> calculateBvBurndown() {
         List<UserStoryDetail> userStories = null; //TODO: actually get the list of user stories
 
         LocalDate sprintStartLocalDate = DateUtil.toLocal(this.sprint.getEstimatedStart());
@@ -160,19 +160,19 @@ public class BurnDownUtil {
 
         List<LocalDate> sprintDates = sprintStartLocalDate.datesUntil(sprintEndLocalDate).toList();
 
-        List<BvBurndownEntry> burndown = new ArrayList<>();
+        List<BurnDownEntry> burndown = new ArrayList<>();
 
         for(int i = 0; i < sprintDates.size(); i++){
             Double value = this.businessValueTotal;
             if(i != 0){
-                value = burndown.get(i-1).value;
+                value = burndown.get(i-1).getCurrent();
             }
             for(UserStoryDetail userStoryDetail : userStories){
                 if(DateUtil.toLocal(userStoryDetail.getFinishDate()).equals(sprintDates.get(i))){
                     value = value - extractBusinessValue(userStoryDetail);
                 }
             }
-            burndown.add(new BvBurndownEntry(sprintDates.get(i), value));
+            //burndown.add(new BurnDownEntry(sprintDates.get(i), value)); //TODO: fix this to work with BurnDownEntry
         }
 
         return burndown;
