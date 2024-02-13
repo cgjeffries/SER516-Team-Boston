@@ -1,28 +1,27 @@
 package taiga.util.burndown;
 
-import java.util.concurrent.atomic.AtomicReference;
 import taiga.api.HistoryAPI;
-import taiga.api.SprintAPI;
 import taiga.api.SprintStatsAPI;
 import taiga.api.UserStoryAPI;
 import taiga.model.query.history.History;
 import taiga.model.query.history.ValuesDiff;
 import taiga.model.query.sprint.Days;
 import taiga.model.query.sprint.Sprint;
-import taiga.model.query.sprint.SprintStats;
 import taiga.model.query.sprint.UserStory;
 import taiga.model.query.sprint.UserStoryDetail;
-import taiga.model.query.sprinthistory.Day;
 import taiga.util.UserStoryUtils;
 import ui.util.DateUtil;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-//import static taiga.util.UserStoryUtils.extractBusinessValue;
 
 public class BurnDownUtil {
 
@@ -36,11 +35,6 @@ public class BurnDownUtil {
     private HashMap<Integer, Double> businessValues;
 
     private UserStoryUtils userStoryUtils;
-
-    public BurnDownUtil() {
-        storyPointTotal = 0;
-        businessValueTotal = 0;
-    }
 
     public BurnDownUtil(Sprint sprint) {
         this.sprint = sprint;

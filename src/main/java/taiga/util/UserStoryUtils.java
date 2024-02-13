@@ -1,13 +1,12 @@
 package taiga.util;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 import taiga.api.UserStoryCustomAttributesAPI;
 import taiga.api.UserStoryCustomAttributesValuesAPI;
 import taiga.model.query.customattributes.UserStoryCustomAttribute;
 import taiga.model.query.customattributes.UserStoryCustomAttributesValues;
-import taiga.model.query.sprint.UserStoryDetail;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Utility class for User Stories current functionality: extract BV, .
