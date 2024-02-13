@@ -31,6 +31,7 @@ public class BurnDownUtil {
     private UserStoryAPI userStoryAPI;
     private SprintStatsAPI sprintStatsAPI;
     private HashMap<Integer, List<History>> histories;
+    private HashMap<Integer, Double> businessValues;
 
     private UserStoryUtils userStoryUtils;
 
@@ -55,7 +56,9 @@ public class BurnDownUtil {
     private double calculateTotalBusinessValue() {
         double tempTotal = 0;
         for(UserStory story : this.sprint.getUserStories()) {
-            tempTotal += userStoryUtils.getBusinessValueForUserStory(story.getId());
+            Double bv = userStoryUtils.getBusinessValueForUserStory(story.getId());
+            businessValues.put(story.getId(), bv);
+            tempTotal += bv;
         }
         return tempTotal;
     }
@@ -179,7 +182,7 @@ public class BurnDownUtil {
             }
             for(UserStoryDetail userStoryDetail : userStories.get()){
                 if(userStoryDetail.getFinishDate() != null && DateUtil.toLocal(userStoryDetail.getFinishDate()).equals(sprintDates.get(i))){
-                    value = value - userStoryUtils.getBusinessValueForUserStory(userStoryDetail.getId());
+                    value = value - businessValues.get(userStoryDetail.getId());
                 }
             }
             burndown.add(new BurnDownEntry(this.businessValueTotal - ((this.businessValueTotal/sprintDates.size()) * (i + 1)), value, DateUtil.toDate(sprintDates.get(i))));
