@@ -14,11 +14,11 @@ public class UserStoryCustomAttributesAPI extends APIWrapperBase{
     /**
      * Retrieves the list of custom attributes of a user story
      *
-     * @return A CompletableFuture containing the list of user stories
+     * @return void future which can be joined to wait for call to complete.
      */
-    public CompletableFuture<Void> getUserStoryCustomAttributeList(
+    public CompletableFuture<Void> getUserStoryCustomAttributeList(int project,
         Consumer<APIResponse<UserStoryCustomAttribute[]>> callback) {
-            return queryAsync("", UserStoryCustomAttribute[].class).thenAccept(callback);
+            return queryAsync("?project=" + project, UserStoryCustomAttribute[].class).thenAccept(callback);
         }
         
 }

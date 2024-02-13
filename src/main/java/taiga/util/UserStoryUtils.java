@@ -1,6 +1,11 @@
 package taiga.util;
 
+import java.util.ArrayList;
 import java.util.List;
+import taiga.api.UserStoryCustomAttributesAPI;
+import taiga.api.UserStoryCustomAttributesValuesAPI;
+import taiga.model.query.customattributes.UserStoryCustomAttribute;
+import taiga.model.query.customattributes.UserStoryCustomAttributesValues;
 import taiga.model.query.sprint.UserStoryDetail;
 
 /**
@@ -8,33 +13,49 @@ import taiga.model.query.sprint.UserStoryDetail;
  */
 public class UserStoryUtils {
 
-    /**
-     * Extracts the business value (BV) from the user story tags.
-     * Each tag is expected to be a list of strings, where the first element is the tag name,
-     * and the second element (if present) is its value. This method specifically looks for a tag
-     * named "BV" and attempts to parse its associated value as an integer.
-     * 
-     * @param userStoryDetail The user story detail object containing tags.
-     * @return The business value as an Integer if the "BV" tag is found and its value is a valid integer,
-     *         or null otherwise.
-     */
-    public static Integer extractBusinessValue(UserStoryDetail userStoryDetail) {
-        if (userStoryDetail.getTags() != null) {
-            for (List<String> tag : userStoryDetail.getTags()) {
-                // Check if the tag name is "BV" and it has an associated value
-                if (!tag.isEmpty() && "BV".equals(tag.get(0)) && tag.size() > 1) {
-                    try {
-                        // Attempt to parse the associated value as an integer
-                        return Integer.parseInt(tag.get(1));
-                    } catch (NumberFormatException e) {
-                        // If parsing fails, log the error or handle it as needed
-                        System.err.println("Error parsing BV value from tag: " + e.getMessage());
-                        return 0;
-                    }
-                }
+    private UserStoryCustomAttributesAPI userStoryCustomAttributesAPI;
+    private UserStoryCustomAttributesValuesAPI userStoryCustomAttributesValuesAPI;
+
+    private List<UserStoryCustomAttribute> userStoryCustomAttributes;
+    private UserStoryCustomAttribute businessValueAttribute;
+
+    private int projectId;
+
+    public UserStoryUtils(int projectId){
+        this.userStoryCustomAttributesAPI = new UserStoryCustomAttributesAPI();
+        this.userStoryCustomAttributesValuesAPI = new UserStoryCustomAttributesValuesAPI();
+        this.projectId = projectId;
+        init();
+    }
+
+    private void init(){
+        userStoryCustomAttributesAPI.getUserStoryCustomAttributeList(this.projectId, results ->{
+            userStoryCustomAttributes = List.of(results.getContent());
+        }).join();
+
+        for(UserStoryCustomAttribute attribute : userStoryCustomAttributes){
+            if(attribute.getDescription().equals("Business Value")){
+                this.businessValueAttribute = attribute;
+                break;
             }
         }
-        // Return null if the "BV" tag is not found or tags are null
-        return 0;
+
+        if(this.businessValueAttribute == null){
+            System.out.println(("Project doesn't have a business value custom attribute that matches the pattern!"));
+        }
     }
+
+    public Double getBusinessValueForUserStory(int userStoryId){
+        UserStoryCustomAttributesValues values;
+        userStoryCustomAttributesValuesAPI.getUserStoryCustomAttributeValue(userStoryId, result -> {
+
+        }).join();
+
+        return 0.0;
+    }
+
+    public static void main(String[] args){
+        UserStoryUtils bar = new UserStoryUtils(1527011);
+    }
+
 }

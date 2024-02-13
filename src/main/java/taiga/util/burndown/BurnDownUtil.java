@@ -20,7 +20,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-import static taiga.util.UserStoryUtils.extractBusinessValue;
+//import static taiga.util.UserStoryUtils.extractBusinessValue;
 
 public class BurnDownUtil {
 
@@ -29,7 +29,6 @@ public class BurnDownUtil {
     private double businessValueTotal;
     private HistoryAPI historyAPI;
     private UserStoryAPI userStoryAPI;
-
     private SprintStatsAPI sprintStatsAPI;
     private HashMap<Integer, List<History>> histories;
     private UserStoryDetail[] userStories;
@@ -51,10 +50,10 @@ public class BurnDownUtil {
     }
 
     private double calculateBusinessValue() {
-        UserStoryUtils userStoryUtils = new UserStoryUtils();
+        UserStoryUtils userStoryUtils = new UserStoryUtils(1); //TODO:fix
         double tempTotal = 0;
         for(UserStoryDetail story : userStories) {
-            tempTotal += extractBusinessValue(story);
+            //tempTotal += extractBusinessValue(story);
         }
         return tempTotal;
     }
@@ -184,7 +183,7 @@ public class BurnDownUtil {
             }
             for(UserStoryDetail userStoryDetail : userStories.get()){
                 if(userStoryDetail.getFinishDate() != null && DateUtil.toLocal(userStoryDetail.getFinishDate()).equals(sprintDates.get(i))){
-                    value = value - extractBusinessValue(userStoryDetail);
+                    //value = value - extractBusinessValue(userStoryDetail);
                 }
             }
             burndown.add(new BurnDownEntry(this.businessValueTotal - ((this.businessValueTotal/sprintDates.size()) * i), value, DateUtil.toDate(sprintDates.get(i))));
