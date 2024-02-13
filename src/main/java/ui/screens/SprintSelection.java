@@ -1,28 +1,32 @@
 package ui.screens;
 
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ResourceBundle;
+
+import org.kordamp.ikonli.boxicons.BoxiconsRegular;
+
 import atlantafx.base.theme.Styles;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
-import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 import settings.Settings;
-import taiga.api.SprintAPI;
 import taiga.model.query.project.Project;
 import taiga.model.query.sprint.Sprint;
-import taiga.util.burndown.BurnDownUtil;
+import ui.components.Burndown;
 import ui.components.Icon;
 import ui.components.Screen;
 import ui.util.DefaultLogoResolver;
 import ui.util.ScreenManager;
-
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ResourceBundle;
 
 public class SprintSelection extends Screen<VBox> {
     private static final VBox root = new VBox();
@@ -51,6 +55,8 @@ public class SprintSelection extends Screen<VBox> {
     @FXML
     private ComboBox<Sprint> sprint_combobox;
 
+    private Burndown burndown;
+
     /**
      * Create a screen instance
      *
@@ -73,6 +79,8 @@ public class SprintSelection extends Screen<VBox> {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        this.burndown = new Burndown();
+
         metric_name.textProperty().bind(Settings.get().getAppModel().getSelectedMetric());
 
         SimpleObjectProperty<Project> currentProject = Settings.get().getAppModel().getCurrentProject();
@@ -89,7 +97,7 @@ public class SprintSelection extends Screen<VBox> {
             if (sprint == null) {
                 return "";
             }
-            new BurnDownUtil(sprint);
+            this.burndown.switchSprint(sprint);
             SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yyyy");
             String start = format.format(sprint.getEstimatedStart());
             String end = format.format(sprint.getEstimatedFinish());
@@ -101,6 +109,8 @@ public class SprintSelection extends Screen<VBox> {
         sprint_combobox.setCellFactory(cellFactory);
         back_btn.setGraphic(new Icon(BoxiconsRegular.ARROW_BACK));
         back_btn.getStyleClass().add(Styles.FLAT);
+
+        root.getChildren().add(this.burndown);
     }
 
     @FXML

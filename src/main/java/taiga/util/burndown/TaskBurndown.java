@@ -29,7 +29,9 @@ public class TaskBurndown implements BurndownCalculator {
 
         days.get().forEach(d -> burndown.add(new BurnDownEntry(Math.max(0, d.getOptimalPoints()), d.getOpenPoints(), d.getDay())));
 
+        System.out.println("Task Burndown");
         burndown.forEach(System.out::println);
+        System.out.println();
         return burndown;
     }
 }

@@ -106,6 +106,7 @@ public class UserStoryBurndown implements BurndownCalculator{
             idealRemaining = Math.max(0, idealRemaining - idealPerDay);
         }
 
+        System.out.println("US Burndown");
         entries.forEach(System.out::println);
         System.out.println();
 
