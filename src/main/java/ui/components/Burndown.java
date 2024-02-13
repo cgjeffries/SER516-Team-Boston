@@ -4,6 +4,7 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import taiga.model.query.sprint.Sprint;
 import taiga.util.burndown.BurnDownUtil;
@@ -36,6 +37,7 @@ public class Burndown extends VBox {
 
         LineChart<String, Number> chart = new LineChart<>(date, value);
         chart.getData().addAll(this.taskSeries, this.userStorySeries, this.bvSeries);
+        chart.setAnimated(false);
         getChildren().add(chart);
     }
 
