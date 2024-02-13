@@ -202,10 +202,7 @@ public class BurnDownUtil {
 
         List<BurnDownEntry> burndown = new ArrayList<>();
 
-        //TODO: convert this to a map thing because that's fancier and nicer
-        for(Days day : days.get()){
-            burndown.add(new BurnDownEntry(Math.max(0, day.getOptimalPoints()), day.getOpenPoints(), day.getDay()));
-        }
+        days.get().forEach(d -> burndown.add(new BurnDownEntry(Math.max(0, d.getOptimalPoints()), d.getOpenPoints(), d.getDay())));
 
         burndown.forEach(System.out::println);
         return burndown;
