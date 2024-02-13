@@ -35,6 +35,12 @@ public class UserStoryUtils {
         throw new RuntimeException("Project doesn't have a business value custom attribute that matches the pattern!");
     }
 
+    /**
+     * Gets the business value (in the form of a custom attribute) of a user story
+     *
+     * @param story The user story to extract business value from
+     * @return The business value of the user story
+     */
     public static Double getBusinessValueForUserStory(UserStory story) {
         if (!userStoryCustomAttributes.containsKey(story.getProject())) {
             try {
