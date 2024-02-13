@@ -119,8 +119,11 @@ public abstract class APIWrapperBase {
             HttpRequest.Builder request =
                     HttpRequest.newBuilder()
                             .uri(new URI(apiBaseURL + apiEndpoint + query))
-                            .header("Content-Type", "application/json")
-                            .header("x-disable-pagination", enable_pagination ? "false" : "true");
+                            .header("Content-Type", "application/json");
+
+            if(!enable_pagination){
+                request.header("x-disable-pagination", "true");
+            }
 
             // Add token to header if we have one
             if (getAuthToken() != null) {
