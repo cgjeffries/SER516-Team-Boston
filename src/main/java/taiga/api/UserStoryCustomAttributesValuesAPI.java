@@ -7,7 +7,7 @@ import taiga.model.query.customattributes.UserStoryCustomAttributesValues;
 public class UserStoryCustomAttributesValuesAPI extends APIWrapperBase{
 
     public UserStoryCustomAttributesValuesAPI() {
-        super("userstories/custom-attributes-values");
+        super("userstories/custom-attributes-values/");
     }
 
     /**
