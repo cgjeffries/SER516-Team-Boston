@@ -2,6 +2,7 @@ package taiga.util.burndown;
 
 import taiga.api.UserStoryAPI;
 import taiga.model.query.sprint.Sprint;
+import taiga.model.query.sprint.UserStory;
 import taiga.model.query.sprint.UserStoryDetail;
 import taiga.util.UserStoryUtils;
 import ui.util.DateUtil;
@@ -25,15 +26,16 @@ public class BusinessValueBurndown implements BurndownCalculator {
     }
     private double calculateTotalBusinessValue(Sprint sprint) {
         double tempTotal = 0;
-        sprint.getUserStories()
+        List<UserStory> userStories = sprint.getUserStories();
+        userStories
                 .parallelStream()
                 .forEach(story -> {
                             Double bv = UserStoryUtils.getBusinessValueForUserStory(story);
                             businessValues.put(story.getId(), bv);
                         }
                 );
-        for(Double bv : businessValues.values()) {
-            tempTotal += bv;
+        for(UserStory userStory : userStories) {
+            tempTotal += businessValues.get(userStory.getId());
         }
         return tempTotal;
     }
