@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 //import static taiga.util.UserStoryUtils.extractBusinessValue;
 
@@ -47,6 +48,7 @@ public class BurnDownUtil {
         this.sprintStatsAPI = new SprintStatsAPI();
         this.histories = new HashMap<>();
         this.userStoryUtils = new UserStoryUtils(sprint.getProject());
+        businessValues = new HashMap<>();
 
         storyPointTotal = this.sprint.getTotalPoints();
         businessValueTotal = calculateTotalBusinessValue();
@@ -163,20 +165,17 @@ public class BurnDownUtil {
 
         List<BurnDownEntry> burndown = new ArrayList<>();
 
+        LocalDate start = DateUtil.toLocal(this.sprint.getEstimatedStart());
+        LocalDate end =  DateUtil.toLocal(this.sprint.getEstimatedFinish());
+
         if(userStories.get() == null){
-            System.out.println("No User Stories!!!");
-            return burndown;
+            return start.datesUntil(end.plusDays(1)).map(d -> new BurnDownEntry(0, 0, DateUtil.toDate(d))).collect(Collectors.toList());
         }
 
-        LocalDate sprintStartLocalDate = DateUtil.toLocal(this.sprint.getEstimatedStart());
-
-        LocalDate sprintEndLocalDate =  DateUtil.toLocal(this.sprint.getEstimatedFinish());
-
-        List<LocalDate> sprintDates = sprintStartLocalDate.datesUntil(sprintEndLocalDate.plusDays(1)).toList();
-
+        List<LocalDate> sprintDates = start.datesUntil(end.plusDays(1)).toList();
 
         for(int i = 0; i < sprintDates.size(); i++){
-            Double value = this.businessValueTotal;
+            double value = this.businessValueTotal;
             if(i != 0){
                 value = burndown.get(i-1).getCurrent();
             }
