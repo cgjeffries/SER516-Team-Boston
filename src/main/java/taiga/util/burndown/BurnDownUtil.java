@@ -2,6 +2,7 @@ package taiga.util.burndown;
 
 import java.util.concurrent.atomic.AtomicReference;
 import taiga.api.HistoryAPI;
+import taiga.api.SprintAPI;
 import taiga.api.SprintStatsAPI;
 import taiga.api.UserStoryAPI;
 import taiga.model.query.history.History;
@@ -48,7 +49,7 @@ public class BurnDownUtil {
         this.sprintStatsAPI = new SprintStatsAPI();
         this.histories = new HashMap<>();
         this.userStoryUtils = new UserStoryUtils(sprint.getProject());
-        businessValues = new HashMap<>();
+        this.businessValues = new HashMap<>();
 
         storyPointTotal = this.sprint.getTotalPoints();
         businessValueTotal = calculateTotalBusinessValue();
@@ -57,9 +58,14 @@ public class BurnDownUtil {
 
     private double calculateTotalBusinessValue() {
         double tempTotal = 0;
-        for(UserStory story : this.sprint.getUserStories()) {
-            Double bv = userStoryUtils.getBusinessValueForUserStory(story.getId());
-            businessValues.put(story.getId(), bv);
+        this.sprint.getUserStories()
+            .parallelStream()
+            .forEach(story -> {
+                    Double bv = userStoryUtils.getBusinessValueForUserStory(story.getId());
+                    businessValues.put(story.getId(), bv);
+                }
+            );
+        for(Double bv : businessValues.values()) {
             tempTotal += bv;
         }
         return tempTotal;
@@ -232,6 +238,4 @@ public class BurnDownUtil {
     public void setBusinessValueTotal(double businessValueTotal) {
         this.businessValueTotal = businessValueTotal;
     }
-
-
 }
