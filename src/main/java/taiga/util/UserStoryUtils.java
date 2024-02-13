@@ -4,7 +4,10 @@ import taiga.api.UserStoryCustomAttributesAPI;
 import taiga.api.UserStoryCustomAttributesValuesAPI;
 import taiga.model.query.customattributes.UserStoryCustomAttribute;
 import taiga.model.query.customattributes.UserStoryCustomAttributesValues;
+import taiga.model.query.sprint.UserStory;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -13,65 +16,53 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class UserStoryUtils {
 
-    private UserStoryCustomAttributesAPI userStoryCustomAttributesAPI;
-    private UserStoryCustomAttributesValuesAPI userStoryCustomAttributesValuesAPI;
+    private static final UserStoryCustomAttributesAPI userStoryCustomAttributesAPI = new UserStoryCustomAttributesAPI();
+    private static final UserStoryCustomAttributesValuesAPI userStoryCustomAttributesValuesAPI = new UserStoryCustomAttributesValuesAPI();
+    private static final HashMap<Integer, UserStoryCustomAttribute> userStoryCustomAttributes = new HashMap<>();
 
-    private List<UserStoryCustomAttribute> userStoryCustomAttributes;
-    private UserStoryCustomAttribute businessValueAttribute;
-
-    private int projectId;
-
-    public UserStoryUtils(int projectId){
-        this.userStoryCustomAttributesAPI = new UserStoryCustomAttributesAPI();
-        this.userStoryCustomAttributesValuesAPI = new UserStoryCustomAttributesValuesAPI();
-        this.projectId = projectId;
-        init();
-    }
-
-    private void init(){
-        userStoryCustomAttributesAPI.getUserStoryCustomAttributeList(this.projectId, results ->{
-            userStoryCustomAttributes = List.of(results.getContent());
+    private static UserStoryCustomAttribute loadBvAttribute(int projectId) {
+        AtomicReference<List<UserStoryCustomAttribute>> attributes = new AtomicReference<>();
+        userStoryCustomAttributesAPI.getUserStoryCustomAttributeList(projectId, results -> {
+            attributes.set(Arrays.asList(results.getContent()));
         }).join();
 
-        for(UserStoryCustomAttribute attribute : userStoryCustomAttributes){
-            if(attribute.getName().equals("BV")){
-                this.businessValueAttribute = attribute;
-                break;
+        for (UserStoryCustomAttribute attribute : attributes.get()) {
+            if (attribute.getName().equals("BV")) {
+                return attribute;
             }
         }
 
-        if(this.businessValueAttribute == null){
-            System.out.println(("Project doesn't have a business value custom attribute that matches the pattern!"));
-        }
+        throw new RuntimeException("Project doesn't have a business value custom attribute that matches the pattern!");
     }
 
-    public Double getBusinessValueForUserStory(int userStoryId){
+    public static Double getBusinessValueForUserStory(UserStory story) {
+        if (!userStoryCustomAttributes.containsKey(story.getProject())) {
+            try {
+                userStoryCustomAttributes.put(story.getProject(), loadBvAttribute(story.getProject()));
+            } catch (RuntimeException e) {
+                return 0d;
+            }
+        }
+
+        UserStoryCustomAttribute bvAttribute = userStoryCustomAttributes.get(story.getProject());
+
         AtomicReference<UserStoryCustomAttributesValues> values = new AtomicReference<>();
-        userStoryCustomAttributesValuesAPI.getUserStoryCustomAttributeValue(userStoryId, result -> {
+        userStoryCustomAttributesValuesAPI.getUserStoryCustomAttributeValue(story.getId(), result -> {
             values.set(result.getContent());
         }).join();
 
-        String bvString = values.get().getAttributesValues().get(String.valueOf(businessValueAttribute.getId()));
+        String bvString = values.get().getAttributesValues().get(String.valueOf(bvAttribute.getId()));
 
-        Double bv = 0.0;
+        double bv = 0.0;
 
-        try{
-            bv = Double.valueOf(bvString);
-        }
-        catch (NumberFormatException e){
-            System.out.println("Business value attribute had non-number value " + bvString + " on User Story " + userStoryId + "!");
-        }
-        catch (Exception e){
-            System.out.println("Exception during parsing BV attribute in US " + userStoryId);
+        try {
+            bv = Double.parseDouble(bvString);
+        } catch (NumberFormatException e) {
+            System.out.println("Business value attribute had non-number value " + bvString + " on User Story " + story.getId() + "!");
+        } catch (Exception e) {
+            System.out.println("Exception during parsing BV attribute in US " + story.getId());
         }
 
         return bv;
     }
-
-    public static void main(String[] args){
-        UserStoryUtils bar = new UserStoryUtils(1521722);
-        Double value = bar.getBusinessValueForUserStory(5468121);
-        int i = 4;
-    }
-
 }

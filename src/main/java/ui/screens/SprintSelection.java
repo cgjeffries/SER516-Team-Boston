@@ -89,7 +89,7 @@ public class SprintSelection extends Screen<VBox> {
             if (sprint == null) {
                 return "";
             }
-            new BurnDownUtil(sprint).calculateBvBurndown();
+            new BurnDownUtil(sprint);
             SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yyyy");
             String start = format.format(sprint.getEstimatedStart());
             String end = format.format(sprint.getEstimatedFinish());
