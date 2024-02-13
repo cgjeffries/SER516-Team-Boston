@@ -2,10 +2,12 @@ package taiga.model.query.taskhistory;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Comparator;
 import java.util.Date;
+import org.jetbrains.annotations.NotNull;
 
 // https://docs.taiga.io/api.html#history-get
-public class TaskHistory {
+public class TaskHistory implements Comparable<TaskHistory> {
     private String id;
 
     private TaskHistoryUser user;
@@ -48,5 +50,10 @@ public class TaskHistory {
 
     public TaskHistoryValuesDiff getValuesDiff() {
         return valuesDiff;
+    }
+
+    @Override
+    public int compareTo(TaskHistory history){
+        return this.createdAt.compareTo(history.getCreatedAt());
     }
 }
