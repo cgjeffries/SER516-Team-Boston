@@ -33,6 +33,8 @@ public class BurnDownUtil {
     private HashMap<Integer, List<History>> histories;
     private UserStoryDetail[] userStories;
 
+    private UserStoryUtils userStoryUtils;
+
     public BurnDownUtil() {
         storyPointTotal = 0;
         businessValueTotal = 0;
@@ -44,16 +46,17 @@ public class BurnDownUtil {
         this.userStoryAPI = new UserStoryAPI();
         this.sprintStatsAPI = new SprintStatsAPI();
         this.histories = new HashMap<>();
+        this.userStoryUtils = new UserStoryUtils(sprint.getProject());
+
         storyPointTotal = this.sprint.getTotalPoints();
-//        businessValueTotal = calculateBusinessValue();
+        businessValueTotal = calculateTotalBusinessValue();
         populateAllUserStoryHistories();
     }
 
-    private double calculateBusinessValue() {
-        UserStoryUtils userStoryUtils = new UserStoryUtils(1); //TODO:fix
+    private double calculateTotalBusinessValue() {
         double tempTotal = 0;
         for(UserStoryDetail story : userStories) {
-            //tempTotal += extractBusinessValue(story);
+            tempTotal += userStoryUtils.getBusinessValueForUserStory(story.getId());
         }
         return tempTotal;
     }
@@ -183,7 +186,7 @@ public class BurnDownUtil {
             }
             for(UserStoryDetail userStoryDetail : userStories.get()){
                 if(userStoryDetail.getFinishDate() != null && DateUtil.toLocal(userStoryDetail.getFinishDate()).equals(sprintDates.get(i))){
-                    //value = value - extractBusinessValue(userStoryDetail);
+                    value = value - userStoryUtils.getBusinessValueForUserStory(userStoryDetail.getId());
                 }
             }
             burndown.add(new BurnDownEntry(this.businessValueTotal - ((this.businessValueTotal/sprintDates.size()) * i), value, DateUtil.toDate(sprintDates.get(i))));
