@@ -2,7 +2,7 @@ package taiga.model.query.taskhistory;
 
 import java.util.Map;
 
-public class TaskHistoryValues {
+public class ItemHistoryValues {
     private Map<String, String> status;
 
     private Map<String, String> users;
