@@ -22,9 +22,9 @@ import javafx.util.Callback;
 import settings.Settings;
 import taiga.model.query.project.Project;
 import taiga.model.query.sprint.Sprint;
-import ui.components.Burndown;
 import ui.components.Icon;
 import ui.components.Screen;
+import ui.components.burndown.Burndown;
 import ui.util.DefaultLogoResolver;
 import ui.util.ScreenManager;
 
@@ -97,13 +97,16 @@ public class SprintSelection extends Screen<VBox> {
             if (sprint == null) {
                 return "";
             }
-            this.burndown.switchSprint(sprint);
             SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yyyy");
             String start = format.format(sprint.getEstimatedStart());
             String end = format.format(sprint.getEstimatedFinish());
             return start + " to " + end;
         }, sprint_combobox.valueProperty()));
 
+        sprint_combobox.setOnAction((e) -> {
+            this.burndown.switchSprint(sprint_combobox.getValue());
+        });
+        // sprint_combobox.addEventHandler(null, null);
         SprintComboboxCellFactory cellFactory = new SprintComboboxCellFactory();
         sprint_combobox.setButtonCell(cellFactory.call(null));
         sprint_combobox.setCellFactory(cellFactory);

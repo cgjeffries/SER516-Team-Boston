@@ -1,4 +1,4 @@
-package taiga.util.burndown;
+package ui.components.burndown;
 
 import java.util.Date;
 

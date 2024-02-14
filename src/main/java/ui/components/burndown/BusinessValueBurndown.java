@@ -1,4 +1,4 @@
-package taiga.util.burndown;
+package ui.components.burndown;
 
 import taiga.api.UserStoryAPI;
 import taiga.model.query.sprint.Sprint;
@@ -24,21 +24,22 @@ public class BusinessValueBurndown implements BurndownCalculator {
         this.businessValues = new HashMap<>();
 
     }
+
     private double calculateTotalBusinessValue(Sprint sprint) {
         double tempTotal = 0;
         List<UserStory> userStories = sprint.getUserStories();
         userStories
                 .parallelStream()
                 .forEach(story -> {
-                            Double bv = UserStoryUtils.getBusinessValueForUserStory(story);
-                            businessValues.put(story.getId(), bv);
-                        }
-                );
-        for(UserStory userStory : userStories) {
+                    Double bv = UserStoryUtils.getBusinessValueForUserStory(story);
+                    businessValues.put(story.getId(), bv);
+                });
+        for (UserStory userStory : userStories) {
             tempTotal += businessValues.get(userStory.getId());
         }
         return tempTotal;
     }
+
     @Override
     public List<BurnDownEntry> calculate(Sprint sprint) {
         double businessValueTotal = calculateTotalBusinessValue(sprint);
@@ -49,34 +50,35 @@ public class BusinessValueBurndown implements BurndownCalculator {
             userStories.set(List.of(result.getContent()));
         });
 
-        future.join(); //wait for the request to complete
+        future.join(); // wait for the request to complete
 
         List<BurnDownEntry> burndown = new ArrayList<>();
 
         LocalDate start = DateUtil.toLocal(sprint.getEstimatedStart());
-        LocalDate end =  DateUtil.toLocal(sprint.getEstimatedFinish());
+        LocalDate end = DateUtil.toLocal(sprint.getEstimatedFinish());
 
-        if(userStories.get() == null){
-            return start.datesUntil(end.plusDays(1)).map(d -> new BurnDownEntry(0, 0, DateUtil.toDate(d))).collect(Collectors.toList());
+        if (userStories.get() == null) {
+            return start.datesUntil(end.plusDays(1)).map(d -> new BurnDownEntry(0, 0, DateUtil.toDate(d)))
+                    .collect(Collectors.toList());
         }
 
         List<LocalDate> sprintDates = start.datesUntil(end.plusDays(1)).toList();
 
-        for(int i = 0; i < sprintDates.size(); i++){
+        for (int i = 0; i < sprintDates.size(); i++) {
             double value = businessValueTotal;
-            if(i != 0){
-                value = burndown.get(i-1).getCurrent();
+            if (i != 0) {
+                value = burndown.get(i - 1).getCurrent();
             }
-            for(UserStoryDetail userStoryDetail : userStories.get()){
-                if(userStoryDetail.getFinishDate() != null && DateUtil.toLocal(userStoryDetail.getFinishDate()).equals(sprintDates.get(i))){
+            for (UserStoryDetail userStoryDetail : userStories.get()) {
+                if (userStoryDetail.getFinishDate() != null
+                        && DateUtil.toLocal(userStoryDetail.getFinishDate()).equals(sprintDates.get(i))) {
                     value = value - businessValues.get(userStoryDetail.getId());
                 }
             }
-            double ideal = businessValueTotal - ((businessValueTotal/sprintDates.size()) * (i + 1));
+            double ideal = businessValueTotal - ((businessValueTotal / sprintDates.size()) * (i + 1));
             burndown.add(new BurnDownEntry(Math.max(0, ideal), value, DateUtil.toDate(sprintDates.get(i))));
         }
 
-        burndown.forEach(System.out::println);
         return burndown;
     }
 }

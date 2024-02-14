@@ -1,14 +1,18 @@
-package taiga.util.burndown;
+package ui.components.burndown;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.scene.chart.XYChart;
 import taiga.model.query.sprint.Sprint;
 
-public class BurnDownUtil {
+public class BurndownService extends Service<Object> {
+    private Sprint sprint;
 
     private final TaskBurndown taskBurndown;
     private final UserStoryBurndown userStoryBurndown;
@@ -18,7 +22,7 @@ public class BurnDownUtil {
     private ObservableList<XYChart.Data<String, Number>> userStoryBurndownData;
     private ObservableList<XYChart.Data<String, Number>> businessValueBurndownData;
 
-    public BurnDownUtil() {
+    public BurndownService() {
         this.taskBurndown = new TaskBurndown();
         this.userStoryBurndown = new UserStoryBurndown();
         this.businessValueBurndown = new BusinessValueBurndown();
@@ -28,17 +32,9 @@ public class BurnDownUtil {
         this.businessValueBurndownData = FXCollections.observableArrayList();
     }
 
-    private void clear() {
-        this.taskBurndownData.clear();
-        this.userStoryBurndownData.clear();
-        this.businessValueBurndownData.clear();
-    }
-
     public void recalculate(Sprint sprint) {
-        this.clear();
-        this.taskBurndownData.addAll(asXYData(this.taskBurndown.calculate(sprint)));
-        this.userStoryBurndownData.addAll(asXYData(this.userStoryBurndown.calculate(sprint)));
-        this.businessValueBurndownData.addAll(asXYData(this.businessValueBurndown.calculate(sprint)));
+        this.sprint = sprint;
+        this.restart();
     }
 
     private static List<XYChart.Data<String, Number>> asXYData(List<BurnDownEntry> data) {
@@ -58,5 +54,30 @@ public class BurnDownUtil {
 
     public ObservableList<XYChart.Data<String, Number>> getBusinessValueData() {
         return this.businessValueBurndownData;
+    }
+
+    @Override
+    protected Task<Object> createTask() {
+        return new Task<Object>() {
+            @Override
+            protected Object call() throws Exception {
+                if (sprint == null) {
+                    return null;
+                }
+
+                List<XYChart.Data<String, Number>> taskXYData = asXYData(taskBurndown.calculate(sprint));
+                List<XYChart.Data<String, Number>> userStoryXYData = asXYData(userStoryBurndown.calculate(sprint));
+                List<XYChart.Data<String, Number>> businessValueXYData = asXYData(
+                        businessValueBurndown.calculate(sprint));
+
+                Platform.runLater(() -> {
+                    taskBurndownData.setAll(taskXYData);
+                    userStoryBurndownData.setAll(userStoryXYData);
+                    businessValueBurndownData.setAll(businessValueXYData);
+                });
+
+                return null;
+            }
+        };
     }
 }

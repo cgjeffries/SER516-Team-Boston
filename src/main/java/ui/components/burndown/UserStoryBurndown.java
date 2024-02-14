@@ -1,4 +1,4 @@
-package taiga.util.burndown;
+package ui.components.burndown;
 
 import taiga.api.HistoryAPI;
 import taiga.model.query.history.History;
@@ -105,10 +105,6 @@ public class UserStoryBurndown implements BurndownCalculator{
             entries.add(new BurnDownEntry(idealRemaining, current, DateUtil.toDate(date)));
             idealRemaining = Math.max(0, idealRemaining - idealPerDay);
         }
-
-        System.out.println("US Burndown");
-        entries.forEach(System.out::println);
-        System.out.println();
 
         return entries;
     }

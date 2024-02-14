@@ -192,10 +192,8 @@ public class ProjectSelection extends Screen<VBox> {
             root.setDescription(project.getDescription());
             root.setAction(menu);
             root.setActionHandler(() -> {
-                // TODO: transition to next screen
                 Settings.get().getAppModel().setCurrentProject(project);
                 projectSelection.gotoSprintSelection();
-                System.out.println(project.getName());
             });
             setGraphic(root);
         }
