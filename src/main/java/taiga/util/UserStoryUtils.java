@@ -1,5 +1,6 @@
 package taiga.util;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -16,6 +17,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import taiga.model.query.sprint.UserStoryDetail;
 import taiga.model.query.taskhistory.TaskHistory;
 import taiga.model.query.taskhistory.TaskHistoryValuesDiff;
 import taiga.util.timeAnalysis.TimeEntry;
@@ -82,22 +84,32 @@ public class UserStoryUtils {
         return bv;
     }
 
-    public static TimeEntry getCycleTimeForUserStory(UserStory story){ //TODO: return time of some form, not a double
-        AtomicReference<List<TaskHistory>> historyList = new AtomicReference<>();
-        userStoryHistoryAPI.getUserStoryHistory(story.getId(), result ->{
-            historyList.set(List.of(result.getContent()));
+    public static TimeEntry getCycleTimeForUserStory(UserStory story){
+        return getCycleTimeForUserStory(story.getId());
+    }
+
+    public static TimeEntry getCycleTimeForUserStory(UserStoryDetail storyDetail){
+        return getCycleTimeForUserStory(storyDetail.getId());
+    }
+
+    public static TimeEntry getCycleTimeForUserStory(int storyId){
+        AtomicReference<List<TaskHistory>> historyListReference = new AtomicReference<>();
+        userStoryHistoryAPI.getUserStoryHistory(storyId, result ->{
+            historyListReference.set(new ArrayList<>(List.of(result.getContent())));
         }).join();
-        Collections.sort(historyList.get());
+
+        List<TaskHistory> historyList = historyListReference.get();
+        Collections.sort(historyList);
 
         //get first time moved to "In Progress"
         Date startDate = null;
-        for(TaskHistory history : historyList.get()){
+        for(TaskHistory history : historyList){
             TaskHistoryValuesDiff valuesDiff = history.getValuesDiff();
             if(valuesDiff.getStatus() == null){
                 continue;
             }
 
-            if(valuesDiff.getStatus()[1].equals("In Progress")){
+            if(valuesDiff.getStatus()[1].equals("In progress")){
                 startDate = history.getCreatedAt();
                 break;
             }
@@ -108,8 +120,9 @@ public class UserStoryUtils {
         }
 
         //get last time moved to "Done"
+        Collections.reverse(historyList);
         Date endDate = null;
-        for(TaskHistory history : historyList.get().reversed()){
+        for(TaskHistory history : historyList){
             TaskHistoryValuesDiff valuesDiff = history.getValuesDiff();
             if(valuesDiff.getStatus() == null){
                 continue;
@@ -126,5 +139,15 @@ public class UserStoryUtils {
         }
 
         return new TimeEntry(startDate, endDate);
+    }
+
+    //TODO: remove test code
+    public static void main(String[] args){
+        AtomicReference<UserStoryDetail> userStoryDetail = new AtomicReference<>();
+        (new UserStoryAPI()).getUserStory(5468121, result ->{
+            userStoryDetail.set(result.getContent());
+        }).join();
+
+        TimeEntry time = getCycleTimeForUserStory(userStoryDetail.get());
     }
 }
