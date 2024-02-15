@@ -2,7 +2,7 @@
 
 ## Taiga API Integration
 
-This project is a Java application for interacting with the Taiga API to perform various task and calculating metrics.
+This project integrates with the Taiga API, facilitating scrum management and metric calculations. It features a GUI application to display Taiga information and scrum management. 
 
 
 ## Setting up the application
@@ -23,11 +23,35 @@ Go to the project root and compile the Maven project
    mvn compile
    ```
 
-Now, run the project using following command
+Now, run the GUI application using following command
+
+```bash
+   mvn compile exec:java -Dexec.mainClass=ui.Main
+   ```
+
+You may also run the application using javafx
+
+```bash
+   mvn javafx:run
+   ```
+
+
+To run the original starter CLI Taiga API app use the following command
 
 ```bash
    mvn compile exec:java -Dexec.mainClass=Main
    ```
+
+
+### Testing the application
+
+Run application tests with the following command
+
+```bash
+   mvn test
+   ```
+
+
 
 ### NOTE
 
