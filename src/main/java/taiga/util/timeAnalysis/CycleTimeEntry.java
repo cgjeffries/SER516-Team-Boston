@@ -2,11 +2,11 @@ package taiga.util.timeAnalysis;
 
 import java.util.Date;
 
-public class TimeEntry {
+public class CycleTimeEntry {
     private final Date startDate;
     private final Date endDate;
 
-    public TimeEntry(Date start, Date end){
+    public CycleTimeEntry(Date start, Date end){
         this.startDate = start;
         this.endDate = end;
     }
@@ -24,5 +24,13 @@ public class TimeEntry {
             return 0L;
         }
         return endDate.getTime() - startDate.getTime();
+    }
+
+    @Override
+    public String toString() {
+        return "CycleTimeEntry{" +
+                "startDate=" + startDate +
+                ", endDate=" + endDate +
+                '}';
     }
 }
