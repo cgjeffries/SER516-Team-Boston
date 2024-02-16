@@ -75,7 +75,11 @@ public class BusinessValueBurndown implements BurndownCalculator {
                     value = value - businessValues.get(userStoryDetail.getId());
                 }
             }
-            double ideal = businessValueTotal - ((businessValueTotal / sprintDates.size()) * (i + 1));
+
+            double ideal = 0.0;
+            if(sprintDates.size()-1 > 0){
+                ideal = businessValueTotal - ((businessValueTotal / (sprintDates.size()-1)) * (i));
+            }
             burndown.add(new BurnDownEntry(Math.max(0, ideal), value, DateUtil.toDate(sprintDates.get(i))));
         }
 
