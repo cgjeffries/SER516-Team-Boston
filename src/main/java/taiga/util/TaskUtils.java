@@ -8,11 +8,11 @@ import java.util.concurrent.atomic.AtomicReference;
 import taiga.api.TaskHistoryAPI;
 import taiga.model.query.taskhistory.ItemHistory;
 import taiga.model.query.taskhistory.ItemHistoryValuesDiff;
-import taiga.util.timeAnalysis.TimeEntry;
+import taiga.util.timeAnalysis.CycleTimeEntry;
 
 public class TaskUtils {
     private static final TaskHistoryAPI taskHistoryAPI = new TaskHistoryAPI();
-    public static TimeEntry getCycleTimeForTask(int taskId){
+    public static CycleTimeEntry getCycleTimeForTask(int taskId){
         AtomicReference<List<ItemHistory>> historyListReference = new AtomicReference<>();
         taskHistoryAPI.getTaskHistory(taskId, result ->{
             historyListReference.set(new ArrayList<>(List.of(result.getContent())));
@@ -36,7 +36,7 @@ public class TaskUtils {
         }
 
         if(startDate == null){
-            return new TimeEntry(null, null);
+            return new CycleTimeEntry(null, null);
         }
 
         //get last time moved to "Done"
@@ -48,16 +48,16 @@ public class TaskUtils {
                 continue;
             }
 
-            if(valuesDiff.getStatus()[1].equals("Done")){
+            if(valuesDiff.getStatus()[1].equals("done")){
                 endDate = history.getCreatedAt();
                 break;
             }
         }
 
         if(endDate == null){
-            return new TimeEntry(startDate, null);
+            return new CycleTimeEntry(startDate, null);
         }
 
-        return new TimeEntry(startDate, endDate);
+        return new CycleTimeEntry(startDate, endDate);
     }
 }

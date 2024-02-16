@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import taiga.model.query.sprint.UserStoryDetail;
 import taiga.model.query.taskhistory.ItemHistory;
 import taiga.model.query.taskhistory.ItemHistoryValuesDiff;
-import taiga.util.timeAnalysis.TimeEntry;
+import taiga.util.timeAnalysis.CycleTimeEntry;
 
 /**
  * Utility class for User Stories current functionality: extract BV, .
@@ -82,15 +82,15 @@ public class UserStoryUtils {
         return bv;
     }
 
-    public static TimeEntry getCycleTimeForUserStory(UserStory story){
+    public static CycleTimeEntry getCycleTimeForUserStory(UserStory story){
         return getCycleTimeForUserStory(story.getId());
     }
 
-    public static TimeEntry getCycleTimeForUserStory(UserStoryDetail storyDetail){
+    public static CycleTimeEntry getCycleTimeForUserStory(UserStoryDetail storyDetail){
         return getCycleTimeForUserStory(storyDetail.getId());
     }
 
-    public static TimeEntry getCycleTimeForUserStory(int storyId){
+    public static CycleTimeEntry getCycleTimeForUserStory(int storyId){
         AtomicReference<List<ItemHistory>> historyListReference = new AtomicReference<>();
         userStoryHistoryAPI.getUserStoryHistory(storyId, result ->{
             historyListReference.set(new ArrayList<>(List.of(result.getContent())));
@@ -114,7 +114,7 @@ public class UserStoryUtils {
         }
 
         if(startDate == null){
-            return new TimeEntry(null, null);
+            return new CycleTimeEntry(null, null);
         }
 
         //get last time moved to "Done"
@@ -133,10 +133,10 @@ public class UserStoryUtils {
         }
 
         if(endDate == null){
-            return new TimeEntry(startDate, null);
+            return new CycleTimeEntry(startDate, null);
         }
 
-        return new TimeEntry(startDate, endDate);
+        return new CycleTimeEntry(startDate, endDate);
     }
 
     //TODO: remove test code
@@ -146,6 +146,6 @@ public class UserStoryUtils {
             userStoryDetail.set(result.getContent());
         }).join();
 
-        TimeEntry time = getCycleTimeForUserStory(userStoryDetail.get());
+        CycleTimeEntry time = getCycleTimeForUserStory(userStoryDetail.get());
     }
 }
