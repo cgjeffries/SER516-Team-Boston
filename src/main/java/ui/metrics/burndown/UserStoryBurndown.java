@@ -1,4 +1,4 @@
-package taiga.util.burndown;
+package ui.metrics.burndown;
 
 import taiga.api.HistoryAPI;
 import taiga.model.query.history.History;
@@ -79,7 +79,12 @@ public class UserStoryBurndown implements BurndownCalculator{
         double total = sprint
                 .getUserStories()
                 .stream()
-                .map(UserStory::getTotalPoints)
+                .map(u -> {
+                    if (u.getTotalPoints() != null) {
+                        return u.getTotalPoints();
+                    }
+                    return 0d;
+                })
                 .reduce(0d, Double::sum);
 
         LocalDate start = DateUtil.toLocal(sprint.getEstimatedStart());
@@ -105,9 +110,6 @@ public class UserStoryBurndown implements BurndownCalculator{
             entries.add(new BurnDownEntry(idealRemaining, current, DateUtil.toDate(date)));
             idealRemaining = Math.max(0, idealRemaining - idealPerDay);
         }
-
-        entries.forEach(System.out::println);
-        System.out.println();
 
         return entries;
     }

@@ -1,4 +1,4 @@
-package taiga.util.burndown;
+package ui.metrics.burndown;
 
 import taiga.model.query.sprint.Sprint;
 
