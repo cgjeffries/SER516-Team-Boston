@@ -1,8 +1,7 @@
-package ui.util;
+package ui.components.screens;
 
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import ui.components.Screen;
 
 import java.util.HashMap;
 
@@ -82,5 +81,6 @@ public class ScreenManager {
         }
         targetScreen.load();
         scene.setRoot(targetScreen.getRoot());
+        targetScreen.onFocused();
     }
 }

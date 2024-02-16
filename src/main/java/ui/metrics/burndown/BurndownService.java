@@ -1,4 +1,4 @@
-package ui.components.burndown;
+package ui.metrics.burndown;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -64,6 +64,7 @@ public class BurndownService extends Service<Object> {
                 if (sprint == null) {
                     return null;
                 }
+                System.out.println("Calculating burndown data");
 
                 List<XYChart.Data<String, Number>> taskXYData = asXYData(taskBurndown.calculate(sprint));
                 List<XYChart.Data<String, Number>> userStoryXYData = asXYData(userStoryBurndown.calculate(sprint));

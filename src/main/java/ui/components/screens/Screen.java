@@ -1,9 +1,8 @@
-package ui.components;
+package ui.components.screens;
 
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import ui.util.FXMLManager;
-import ui.util.ScreenManager;
 
 /**
  * A screen is a managed container for UI content. To facilitate transitions between screens, see {@link ScreenManager ScreenManager}
@@ -57,5 +56,7 @@ public abstract class Screen<T extends Parent> implements Initializable {
     public String getName() {
         return this.name;
     }
+
+    protected abstract void onFocused();
 }
 
