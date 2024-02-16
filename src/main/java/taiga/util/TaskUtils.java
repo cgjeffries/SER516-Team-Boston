@@ -8,10 +8,15 @@ import java.util.concurrent.atomic.AtomicReference;
 import taiga.api.TaskHistoryAPI;
 import taiga.model.query.taskhistory.ItemHistory;
 import taiga.model.query.taskhistory.ItemHistoryValuesDiff;
+import taiga.model.query.tasks.Task;
 import taiga.util.timeAnalysis.TimeEntry;
 
 public class TaskUtils {
     private static final TaskHistoryAPI taskHistoryAPI = new TaskHistoryAPI();
+
+    public static TimeEntry getCycleTimeForTask(Task task){
+        return getCycleTimeForTask(task.getId());
+    }
     public static TimeEntry getCycleTimeForTask(int taskId){
         AtomicReference<List<ItemHistory>> historyListReference = new AtomicReference<>();
         taskHistoryAPI.getTaskHistory(taskId, result ->{
