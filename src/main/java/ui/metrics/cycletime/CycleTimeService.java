@@ -51,7 +51,7 @@ public class CycleTimeService extends Service<Object> {
             }
             tasks.addAll(List.of(result.getContent()));
         }).join();
-        return tasks.parallelStream().map(t -> TaskUtils.getCycleTimeForTask(t.getId())).toList();
+        return tasks.parallelStream().map(TaskUtils::getCycleTimeForTask).toList();
     }
 
     private List<CycleTimeEntry> getAllUserStoryCycleTime() {

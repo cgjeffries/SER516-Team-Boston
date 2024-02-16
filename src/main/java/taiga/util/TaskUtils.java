@@ -9,9 +9,15 @@ import taiga.api.TaskHistoryAPI;
 import taiga.model.query.taskhistory.ItemHistory;
 import taiga.model.query.taskhistory.ItemHistoryValuesDiff;
 import taiga.util.timeAnalysis.CycleTimeEntry;
+import taiga.model.query.tasks.Task;
 
 public class TaskUtils {
     private static final TaskHistoryAPI taskHistoryAPI = new TaskHistoryAPI();
+
+    public static CycleTimeEntry getCycleTimeForTask(Task task){
+        return getCycleTimeForTask(task.getId());
+    }
+
     public static CycleTimeEntry getCycleTimeForTask(int taskId){
         AtomicReference<List<ItemHistory>> historyListReference = new AtomicReference<>();
         taskHistoryAPI.getTaskHistory(taskId, result ->{
