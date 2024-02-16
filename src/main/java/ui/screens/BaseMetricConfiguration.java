@@ -34,8 +34,6 @@ public abstract class BaseMetricConfiguration extends Screen<VBox> {
     @FXML
     private Label metric_name;
 
-    // @FXML
-    // private ImageView project_logo;
 
     @FXML
     private Label project_name;
@@ -45,14 +43,6 @@ public abstract class BaseMetricConfiguration extends Screen<VBox> {
 
     @FXML
     private VBox parameters_root;
-    // @FXML
-    // private Label project_description;
-
-    // @FXML
-    // private Label sprint_name;
-
-    // @FXML
-    // private Label sprint_dates;
 
     @FXML
     protected ComboBox<Sprint> sprint_combobox;
@@ -129,30 +119,49 @@ public abstract class BaseMetricConfiguration extends Screen<VBox> {
         }
     }
 
+    /**
+     * Method for creating a visualization component. This is automatically added to the screen.
+     * @return The component to add to the screen
+     */
     protected abstract Pane visualization();
 
+    /**
+     * Method for adding additional parameters. This is automatically added to the screen.
+     * @return Component containing additional parameters
+     */
     protected abstract Pane parameters();
 
+    /**
+     * {@link ScreenManager} hook, occurs after the screen is set as the focused root
+     */
     protected void onFocused() {
 
     }
 
-    protected void onInitialize() {
-
-    }
-
+    /**
+     * Hook method that runs before the {@link BaseMetricConfiguration#parameters()} component is added
+     */
     protected void beforeParameterMount() {
 
     }
 
+    /**
+     * Hook method that runs after the {@link BaseMetricConfiguration#parameters()} component is added
+     */
     protected void afterParameterMount() {
 
     }
 
+    /**
+     * Hook method that runs before the {@link BaseMetricConfiguration#visualization()} component is added
+     */
     protected void afterVisualizationMount() {
 
     }
 
+    /**
+     * Hook method that runs after the {@link BaseMetricConfiguration#visualization()} component is added
+     */
     protected void beforeVisualizationMount() {
 
     }

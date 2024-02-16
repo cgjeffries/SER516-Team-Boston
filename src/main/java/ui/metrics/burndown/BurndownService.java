@@ -8,7 +8,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import javafx.scene.Parent;
 import javafx.scene.chart.XYChart;
 import taiga.model.query.sprint.Sprint;
 
@@ -19,18 +18,18 @@ public class BurndownService extends Service<Object> {
     private final UserStoryBurndown userStoryBurndown;
     private final BusinessValueBurndown businessValueBurndown;
 
-    private ObservableList<XYChart.Data<String, Number>> taskBurndownData;
-    private ObservableList<XYChart.Data<String, Number>> userStoryBurndownData;
-    private ObservableList<XYChart.Data<String, Number>> businessValueBurndownData;
+    private final BurndownService.Data taskBurndownData;
+    private final BurndownService.Data userStoryBurndownData;
+    private final BurndownService.Data businessValueBurndownData;
 
     public BurndownService() {
         this.taskBurndown = new TaskBurndown();
         this.userStoryBurndown = new UserStoryBurndown();
         this.businessValueBurndown = new BusinessValueBurndown();
 
-        this.taskBurndownData = FXCollections.observableArrayList();
-        this.userStoryBurndownData = FXCollections.observableArrayList();
-        this.businessValueBurndownData = FXCollections.observableArrayList();
+        this.taskBurndownData = new Data();
+        this.userStoryBurndownData = new Data();
+        this.businessValueBurndownData = new Data();
     }
 
     public void recalculate(Sprint sprint) {
@@ -38,22 +37,15 @@ public class BurndownService extends Service<Object> {
         this.restart();
     }
 
-    private static List<XYChart.Data<String, Number>> asXYData(List<BurnDownEntry> data) {
-        SimpleDateFormat format = new SimpleDateFormat("MMM dd");
-        return data.stream()
-                .map(d -> new XYChart.Data<>(format.format(d.getDate()), (Number) d.getCurrent()))
-                .toList();
-    }
-
-    public ObservableList<XYChart.Data<String, Number>> getTaskData() {
+    protected Data getTaskData() {
         return this.taskBurndownData;
     }
 
-    public ObservableList<XYChart.Data<String, Number>> getUserStoryData() {
+    protected Data getUserStoryData() {
         return this.userStoryBurndownData;
     }
 
-    public ObservableList<XYChart.Data<String, Number>> getBusinessValueData() {
+    protected Data getBusinessValueData() {
         return this.businessValueBurndownData;
     }
 
@@ -75,19 +67,50 @@ public class BurndownService extends Service<Object> {
                     return null;
                 }
 
-                List<XYChart.Data<String, Number>> taskXYData = asXYData(taskBurndown.calculate(sprint));
-                List<XYChart.Data<String, Number>> userStoryXYData = asXYData(userStoryBurndown.calculate(sprint));
-                List<XYChart.Data<String, Number>> businessValueXYData = asXYData(
-                        businessValueBurndown.calculate(sprint));
+                List<BurnDownEntry> taskXYData = taskBurndown.calculate(sprint);
+                List<BurnDownEntry> userStoryXYData = userStoryBurndown.calculate(sprint);
+                List<BurnDownEntry> businessValueXYData = businessValueBurndown.calculate(sprint);
 
                 Platform.runLater(() -> {
-                    taskBurndownData.setAll(taskXYData);
-                    userStoryBurndownData.setAll(userStoryXYData);
-                    businessValueBurndownData.setAll(businessValueXYData);
+                    updateBurndownData(taskBurndownData, taskXYData);
+                    updateBurndownData(userStoryBurndownData, userStoryXYData);
+                    updateBurndownData(businessValueBurndownData, businessValueXYData);
                 });
 
                 return null;
             }
         };
+    }
+
+    private void updateBurndownData(Data burndownData, List<BurnDownEntry> entries) {
+        SimpleDateFormat format = new SimpleDateFormat("MMM dd");
+        burndownData.setIdeal(entries.stream().map(d -> new XYChart.Data<>(format.format(d.getDate()), (Number) d.getIdeal())).toList());
+        burndownData.setCalculated(entries.stream().map(d -> new XYChart.Data<>(format.format(d.getDate()), (Number) d.getCurrent())).toList());
+    }
+
+    protected static class Data {
+        private final ObservableList<XYChart.Data<String, Number>> calculated;
+        private final ObservableList<XYChart.Data<String, Number>> ideal;
+
+        protected Data() {
+            this.calculated = FXCollections.observableArrayList();
+            this.ideal = FXCollections.observableArrayList();
+        }
+
+        protected void setCalculated(List<XYChart.Data<String, Number>> calculated) {
+            this.calculated.setAll(calculated);
+        }
+
+        protected void setIdeal(List<XYChart.Data<String, Number>> ideal) {
+            this.ideal.setAll(ideal);
+        }
+
+        protected ObservableList<XYChart.Data<String, Number>> getCalculated() {
+            return calculated;
+        }
+
+        protected ObservableList<XYChart.Data<String, Number>> getIdeal() {
+            return ideal;
+        }
     }
 }

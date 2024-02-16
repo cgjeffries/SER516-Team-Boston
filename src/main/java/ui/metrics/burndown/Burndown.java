@@ -1,62 +1,76 @@
 package ui.metrics.burndown;
 
-import javafx.geometry.Pos;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
+import javafx.scene.chart.*;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.StackPane;
+import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 import taiga.model.query.sprint.Sprint;
+import ui.components.Icon;
 
 public class Burndown extends StackPane {
-    private BurndownService service;
-
-    private final XYChart.Series<String, Number> taskSeries;
-    private final XYChart.Series<String, Number> userStorySeries;
-    private final XYChart.Series<String, Number> bvSeries;
-    private final LineChart<String, Number> chart;
+    private final BurndownService service;
+    private final TabPane tabPane;
 
     public Burndown() {
         this.service = new BurndownService();
-        this.taskSeries = new XYChart.Series<>(this.service.getTaskData());
-        this.userStorySeries = new XYChart.Series<>(this.service.getUserStoryData());
-        this.bvSeries = new XYChart.Series<>(this.service.getBusinessValueData());
+        this.tabPane = new TabPane();
+        this.init();
+    }
+
+    private void init() {
+        Tab taskBurndownTab = createBurndownTab("Task", new Icon(BoxiconsRegular.CLIPBOARD), this.service.getTaskData());
+        Tab usBurndownTab = createBurndownTab("User Story", new Icon(BoxiconsRegular.USER), this.service.getUserStoryData());
+        Tab bvBurndownTab = createBurndownTab("Business Value", new Icon(BoxiconsRegular.BRIEFCASE), this.service.getBusinessValueData());
+
+        tabPane.getTabs().setAll(taskBurndownTab, usBurndownTab, bvBurndownTab);
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+
+        getChildren().add(tabPane);
+        this.service.start();
+    }
+
+    private Tab createBurndownTab(String name, Icon icon, BurndownService.Data data) {
+        StackPane root = new StackPane();
+
+        Tab tab = new Tab(name);
+        tab.setGraphic(icon);
+
+        ProgressIndicator progress = new ProgressIndicator(-1d);
+        progress.visibleProperty().bind(this.service.runningProperty());
 
         CategoryAxis date = new CategoryAxis();
         date.setLabel("Date");
         NumberAxis value = new NumberAxis();
         value.setLabel("Value");
-        this.chart = new LineChart<>(date, value);
 
-        this.init();
-    }
+        XYChart.Series<String, Number> ideal = new XYChart.Series<>(data.getIdeal());
+        ideal.setName("Ideal");
+        XYChart.Series<String, Number> current = new XYChart.Series<>(data.getCalculated());
+        current.setName("Current");
 
-    private void init() {
-        this.taskSeries.setName("Task Burndown");
-        this.userStorySeries.setName("User Story Burndown");
-        this.bvSeries.setName("Business Value Burndown");
+        AreaChart<String, Number> chart = new AreaChart<>(date, value);
 
-        setAlignment(Pos.CENTER);
+        chart.getData().addAll(ideal, current);
 
-        ProgressIndicator progress = new ProgressIndicator(-1d);
-        progress.visibleProperty().bind(this.service.runningProperty());
-
-        chart.getData().addAll(this.taskSeries, this.userStorySeries, this.bvSeries);
-        chart.setAnimated(false); 
+        chart.setAnimated(false);
         chart.visibleProperty().bind(this.service.runningProperty().not());
 
-        getChildren().add(chart);
-        getChildren().add(progress);
-        this.service.start();
+        root.getChildren().add(chart);
+        root.getChildren().add(progress);
+
+        tab.setContent(root);
+
+        return tab;
     }
 
     public void switchSprint(Sprint sprint) {
         this.service.recalculate(sprint);
     }
 
-    public void clear() {
-        chart.getData().removeAll();
+    public void focusFirstTab() {
+        tabPane.getSelectionModel().selectFirst();
     }
 
     public void cancel() {
