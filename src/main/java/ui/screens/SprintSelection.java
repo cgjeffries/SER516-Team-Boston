@@ -11,7 +11,6 @@ import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 import settings.Settings;
-import taiga.api.SprintAPI;
 import taiga.model.query.project.Project;
 import taiga.model.query.sprint.Sprint;
 import taiga.util.burndown.BurnDownUtil;

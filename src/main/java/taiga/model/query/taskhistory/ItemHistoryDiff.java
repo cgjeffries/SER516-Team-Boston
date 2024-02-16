@@ -2,7 +2,7 @@ package taiga.model.query.taskhistory;
 
 import com.google.gson.annotations.SerializedName;
 
-public class TaskHistoryDiff {
+public class ItemHistoryDiff {
     private Integer[] status;
 
     @SerializedName("assigned_to")
