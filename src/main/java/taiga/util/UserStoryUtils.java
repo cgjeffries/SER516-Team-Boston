@@ -1,7 +1,12 @@
 package taiga.util;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import taiga.api.UserStoryAPI;
 import taiga.api.UserStoryCustomAttributesAPI;
 import taiga.api.UserStoryCustomAttributesValuesAPI;
+import taiga.api.UserStoryHistoryAPI;
 import taiga.model.query.customattributes.UserStoryCustomAttribute;
 import taiga.model.query.customattributes.UserStoryCustomAttributesValues;
 import taiga.model.query.sprint.UserStory;
@@ -10,6 +15,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import taiga.model.query.sprint.UserStoryDetail;
+import taiga.model.query.taskhistory.ItemHistory;
+import taiga.model.query.taskhistory.ItemHistoryValuesDiff;
+import taiga.util.timeAnalysis.TimeEntry;
 
 /**
  * Utility class for User Stories current functionality: extract BV, .
@@ -18,6 +27,7 @@ public class UserStoryUtils {
 
     private static final UserStoryCustomAttributesAPI userStoryCustomAttributesAPI = new UserStoryCustomAttributesAPI();
     private static final UserStoryCustomAttributesValuesAPI userStoryCustomAttributesValuesAPI = new UserStoryCustomAttributesValuesAPI();
+    private static final UserStoryHistoryAPI userStoryHistoryAPI = new UserStoryHistoryAPI();
     private static final HashMap<Integer, UserStoryCustomAttribute> userStoryCustomAttributes = new HashMap<>();
 
     private static UserStoryCustomAttribute loadBvAttribute(int projectId) {
@@ -70,5 +80,72 @@ public class UserStoryUtils {
         }
 
         return bv;
+    }
+
+    public static TimeEntry getCycleTimeForUserStory(UserStory story){
+        return getCycleTimeForUserStory(story.getId());
+    }
+
+    public static TimeEntry getCycleTimeForUserStory(UserStoryDetail storyDetail){
+        return getCycleTimeForUserStory(storyDetail.getId());
+    }
+
+    public static TimeEntry getCycleTimeForUserStory(int storyId){
+        AtomicReference<List<ItemHistory>> historyListReference = new AtomicReference<>();
+        userStoryHistoryAPI.getUserStoryHistory(storyId, result ->{
+            historyListReference.set(new ArrayList<>(List.of(result.getContent())));
+        }).join();
+
+        List<ItemHistory> historyList = historyListReference.get();
+        Collections.sort(historyList);
+
+        //get first time moved to "In Progress"
+        Date startDate = null;
+        for(ItemHistory history : historyList){
+            ItemHistoryValuesDiff valuesDiff = history.getValuesDiff();
+            if(valuesDiff.getStatus() == null){
+                continue;
+            }
+
+            if(valuesDiff.getStatus()[1].equals("In progress")){
+                startDate = history.getCreatedAt();
+                break;
+            }
+        }
+
+        if(startDate == null){
+            return new TimeEntry(null, null);
+        }
+
+        //get last time moved to "Done"
+        Collections.reverse(historyList);
+        Date endDate = null;
+        for(ItemHistory history : historyList){
+            ItemHistoryValuesDiff valuesDiff = history.getValuesDiff();
+            if(valuesDiff.getStatus() == null){
+                continue;
+            }
+
+            if(valuesDiff.getStatus()[1].equals("Done")){
+                endDate = history.getCreatedAt();
+                break;
+            }
+        }
+
+        if(endDate == null){
+            return new TimeEntry(startDate, null);
+        }
+
+        return new TimeEntry(startDate, endDate);
+    }
+
+    //TODO: remove test code
+    public static void main(String[] args){
+        AtomicReference<UserStoryDetail> userStoryDetail = new AtomicReference<>();
+        (new UserStoryAPI()).getUserStory(5468121, result ->{
+            userStoryDetail.set(result.getContent());
+        }).join();
+
+        TimeEntry time = getCycleTimeForUserStory(userStoryDetail.get());
     }
 }

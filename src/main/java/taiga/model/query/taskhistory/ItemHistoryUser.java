@@ -2,7 +2,7 @@ package taiga.model.query.taskhistory;
 
 import com.google.gson.annotations.SerializedName;
 
-public class TaskHistoryUser {
+public class ItemHistoryUser {
     private Integer pk;
     private String username;
     private String name;
