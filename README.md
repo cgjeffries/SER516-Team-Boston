@@ -35,14 +35,6 @@ You may also run the application using javafx
    mvn javafx:run
    ```
 
-
-To run the original starter CLI Taiga API app use the following command
-
-```bash
-   mvn compile exec:java -Dexec.mainClass=Main
-   ```
-
-
 ### Testing the application
 
 Run application tests with the following command
