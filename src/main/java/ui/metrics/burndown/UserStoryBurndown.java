@@ -74,17 +74,19 @@ public class UserStoryBurndown implements BurndownCalculator{
 
     @Override
     public List<BurnDownEntry> calculate(Sprint sprint) {
-        System.out.println("calculating user story burndown");
         populateAllUserStoryHistories(sprint);
 
         double total = sprint
                 .getUserStories()
                 .stream()
-                .map(UserStory::getTotalPoints)
+                .map(u -> {
+                    if (u.getTotalPoints() != null) {
+                        return u.getTotalPoints();
+                    }
+                    return 0d;
+                })
                 .reduce(0d, Double::sum);
 
-        System.out.println(sprint.getEstimatedStart());
-        System.out.println(sprint.getEstimatedFinish());
         LocalDate start = DateUtil.toLocal(sprint.getEstimatedStart());
         LocalDate end = DateUtil.toLocal(sprint.getEstimatedFinish());
 
@@ -105,12 +107,10 @@ public class UserStoryBurndown implements BurndownCalculator{
                 double totalPointsDone = doneStories.stream().map(s -> s.getUserStory().getTotalPoints()).reduce(0d, Double::sum);
                 current -= totalPointsDone;
             }
-            System.out.println(current);
             entries.add(new BurnDownEntry(idealRemaining, current, DateUtil.toDate(date)));
             idealRemaining = Math.max(0, idealRemaining - idealPerDay);
         }
 
-        System.out.println("us done");
         return entries;
     }
 

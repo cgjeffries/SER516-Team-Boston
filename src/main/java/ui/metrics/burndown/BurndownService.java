@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.scene.Parent;
 import javafx.scene.chart.XYChart;
 import taiga.model.query.sprint.Sprint;
 
@@ -57,14 +58,22 @@ public class BurndownService extends Service<Object> {
     }
 
     @Override
+    protected void failed() {
+        super.failed();
+        Throwable exception = getException();
+        if (exception != null) {
+            exception.printStackTrace();
+        }
+    }
+
+    @Override
     protected Task<Object> createTask() {
-        return new Task<Object>() {
+        return new Task<>() {
             @Override
             protected Object call() throws Exception {
                 if (sprint == null) {
                     return null;
                 }
-                System.out.println("Calculating burndown data");
 
                 List<XYChart.Data<String, Number>> taskXYData = asXYData(taskBurndown.calculate(sprint));
                 List<XYChart.Data<String, Number>> userStoryXYData = asXYData(userStoryBurndown.calculate(sprint));

@@ -42,14 +42,11 @@ public class BusinessValueBurndown implements BurndownCalculator {
 
     @Override
     public List<BurnDownEntry> calculate(Sprint sprint) {
-        System.out.println("bv burndown");
-
         double businessValueTotal = calculateTotalBusinessValue(sprint);
 
         AtomicReference<List<UserStoryDetail>> userStories = new AtomicReference<>();
 
         CompletableFuture<Void> future = this.userStoryAPI.listMilestoneUserStories(sprint.getId(), result -> {
-            System.out.println(result.getStatus());
             userStories.set(List.of(result.getContent()));
         });
 
@@ -61,7 +58,6 @@ public class BusinessValueBurndown implements BurndownCalculator {
         LocalDate end = DateUtil.toLocal(sprint.getEstimatedFinish());
 
         if (userStories.get() == null) {
-            System.out.println("bv done");
             return start.datesUntil(end.plusDays(1)).map(d -> new BurnDownEntry(0, 0, DateUtil.toDate(d)))
                     .collect(Collectors.toList());
         }
@@ -83,9 +79,6 @@ public class BusinessValueBurndown implements BurndownCalculator {
             burndown.add(new BurnDownEntry(Math.max(0, ideal), value, DateUtil.toDate(sprintDates.get(i))));
         }
 
-        burndown.forEach(System.out::println);
-
-        System.out.println("bv done");
         return burndown;
     }
 }

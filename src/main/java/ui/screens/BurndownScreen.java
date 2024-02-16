@@ -32,8 +32,6 @@ public class BurndownScreen extends BaseMetricConfiguration {
             if (sprint == null) {
                 return;
             }
-            System.out.println(sprint_combobox.getValue().getProjectExtraInfo().getName());
-            System.out.println(sprint_combobox.getValue().getName());
             this.burndown.switchSprint(sprint_combobox.getValue());
         });
     }
