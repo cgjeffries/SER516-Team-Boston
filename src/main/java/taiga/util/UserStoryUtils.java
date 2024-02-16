@@ -107,7 +107,7 @@ public class UserStoryUtils {
                 continue;
             }
 
-            if(valuesDiff.getStatus()[1].equals("In progress")){
+            if(valuesDiff.getStatus()[1].equalsIgnoreCase("In progress")){
                 startDate = history.getCreatedAt();
                 break;
             }
@@ -126,7 +126,7 @@ public class UserStoryUtils {
                 continue;
             }
 
-            if(valuesDiff.getStatus()[1].equals("Done")){
+            if(valuesDiff.getStatus()[1].equalsIgnoreCase("Done")){
                 endDate = history.getCreatedAt();
                 break;
             }

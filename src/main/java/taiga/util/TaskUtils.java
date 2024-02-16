@@ -35,7 +35,7 @@ public class TaskUtils {
                 continue;
             }
 
-            if(valuesDiff.getStatus()[1].equals("In progress")){
+            if(valuesDiff.getStatus()[1].equalsIgnoreCase("In progress")){
                 startDate = history.getCreatedAt();
                 break;
             }
@@ -54,7 +54,7 @@ public class TaskUtils {
                 continue;
             }
 
-            if(valuesDiff.getStatus()[1].equals("done")){
+            if(valuesDiff.getStatus()[1].equalsIgnoreCase("done")){
                 endDate = history.getCreatedAt();
                 break;
             }
