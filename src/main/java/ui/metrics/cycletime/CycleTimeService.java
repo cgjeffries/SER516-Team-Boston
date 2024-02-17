@@ -11,8 +11,10 @@ import taiga.model.query.sprint.Sprint;
 import taiga.util.TaskUtils;
 import taiga.util.UserStoryUtils;
 import taiga.util.timeAnalysis.CycleTimeEntry;
+import ui.util.DateUtil;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -51,22 +53,53 @@ public class CycleTimeService extends Service<Object> {
             }
             tasks.addAll(List.of(result.getContent()));
         }).join();
-        return tasks.parallelStream().map(TaskUtils::getCycleTimeForTask).toList();
+
+        List<CycleTimeEntry> cycleTimes = tasks.parallelStream().map(TaskUtils::getCycleTimeForTask).toList();
+        LocalDate start = DateUtil.toLocal(sprint.getEstimatedStart());
+        LocalDate end = DateUtil.toLocal(sprint.getEstimatedFinish());
+        List<LocalDate> dates = start.datesUntil(end.plusDays(1)).toList();
+        List<CycleTimeEntry> finalCycleTimes = new ArrayList<>(cycleTimes);
+
+        for (LocalDate date : dates) {
+            finalCycleTimes.add(new CycleTimeEntry(DateUtil.toDate(date), null, false));
+        }
+
+        return finalCycleTimes;
     }
 
     private List<CycleTimeEntry> getAllUserStoryCycleTime() {
-        return sprint.getUserStories().parallelStream().map(UserStoryUtils::getCycleTimeForUserStory).toList();
+        List<CycleTimeEntry> cycleTimes = sprint.getUserStories().parallelStream().map(UserStoryUtils::getCycleTimeForUserStory).toList();
+        LocalDate start = DateUtil.toLocal(sprint.getEstimatedStart());
+        LocalDate end = DateUtil.toLocal(sprint.getEstimatedFinish());
+        List<LocalDate> dates = start.datesUntil(end.plusDays(1)).toList();
+        List<CycleTimeEntry> finalCycleTimes = new ArrayList<>(cycleTimes);
+
+        for (LocalDate date : dates) {
+            finalCycleTimes.add(new CycleTimeEntry(DateUtil.toDate(date), null, false));
+        }
+
+        return finalCycleTimes;
     }
 
     private void updateCycleTimes(ObservableList<XYChart.Data<String, Number>> data, List<CycleTimeEntry> entries) {
         SimpleDateFormat format = new SimpleDateFormat("MMM dd");
         data.setAll(
                 entries.stream()
-                        .filter(t -> t.getStartDate() != null && t.getEndDate() != null)
+                        .filter(t -> t.getStartDate() != null)
                         .sorted(Comparator.comparing(CycleTimeEntry::getStartDate))
-                        .map(t -> new XYChart.Data<>(format.format(t.getStartDate()), (Number) TimeUnit.MILLISECONDS.toDays(t.getTimeTaken())))
+                        .map(t -> {
+                            if (t.isValid()) {
+                                return new XYChart.Data<>(format.format(t.getStartDate()), (Number) TimeUnit.MILLISECONDS.toDays(t.getTimeTaken()));
+                            }
+                            return new XYChart.Data<>(format.format(t.getStartDate()), (Number) 0);
+                        })
                         .toList()
         );
+        data.forEach(d -> {
+            if (d.getYValue().equals(0)) {
+                d.getNode().setVisible(false);
+            }
+        });
     }
 
     @Override

@@ -42,7 +42,7 @@ public class TaskUtils {
         }
 
         if(startDate == null){
-            return new CycleTimeEntry(null, null);
+            return new CycleTimeEntry(null, null, false);
         }
 
         //get last time moved to "Done"
@@ -61,7 +61,7 @@ public class TaskUtils {
         }
 
         if(endDate == null || !isClosed){
-            return new CycleTimeEntry(startDate, null);
+            return new CycleTimeEntry(startDate, null, false);
         }
 
         return new CycleTimeEntry(startDate, endDate);

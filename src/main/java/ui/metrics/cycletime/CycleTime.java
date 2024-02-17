@@ -1,5 +1,6 @@
 package ui.metrics.cycletime;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.*;
 import javafx.scene.control.ProgressIndicator;
