@@ -4,10 +4,10 @@ import atlantafx.base.theme.PrimerLight;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import settings.Settings;
+import ui.components.screens.ScreenManager;
 import ui.screens.MetricSelection;
 import ui.screens.ProjectSelection;
-import ui.screens.SprintSelection;
-import ui.util.ScreenManager;
+import ui.screens.BurndownScreen;
 
 public class Launcher extends Application {
 
@@ -26,7 +26,7 @@ public class Launcher extends Application {
         ScreenManager screenManager = new ScreenManager();
         screenManager.initialize(new MetricSelection(screenManager, "metric_selection"));
         screenManager.addScreen(new ProjectSelection(screenManager, "project_selection"));
-        screenManager.addScreen(new SprintSelection(screenManager, "sprint_selection"));
+        screenManager.addScreen(new BurndownScreen(screenManager, "metric_configuration"));
         stage.setTitle("SER516 Team Boston");
         stage.setScene(screenManager.getScene());
         stage.show();

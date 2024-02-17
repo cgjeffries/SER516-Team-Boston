@@ -1,23 +1,22 @@
 package taiga.api;
 
-import taiga.model.query.taskhistory.ItemHistory;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
+import taiga.model.query.taskhistory.ItemHistory;
 
-public class TaskHistoryAPI extends APIWrapperBase {
-    public TaskHistoryAPI() {
-        super("history/task");
+public class UserStoryHistoryAPI extends APIWrapperBase {
+    public UserStoryHistoryAPI() {
+        super("history/userstory");
     }
 
     /**
-     * Get the history for the task with the given ID asynchronously.
+     * Get the history for the User story with the given ID asynchronously.
      *
      * @param id ID of the task.
      * @param callback Consumer function to execute upon receiving query result.
      * @return void future which can be joined to wait for call to complete.
      */
-    public CompletableFuture<Void> getTaskHistory(
+    public CompletableFuture<Void> getUserStoryHistory(
             int id, Consumer<APIResponse<ItemHistory[]>> callback) {
         return queryAsync("/" + id, ItemHistory[].class).thenAccept(callback);
     }

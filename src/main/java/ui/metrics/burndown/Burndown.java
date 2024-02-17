@@ -1,0 +1,79 @@
+package ui.metrics.burndown;
+
+import javafx.scene.chart.*;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.StackPane;
+import org.kordamp.ikonli.boxicons.BoxiconsRegular;
+import taiga.model.query.sprint.Sprint;
+import ui.components.Icon;
+
+public class Burndown extends StackPane {
+    private final BurndownService service;
+    private final TabPane tabPane;
+
+    public Burndown() {
+        this.service = new BurndownService();
+        this.tabPane = new TabPane();
+        this.init();
+    }
+
+    private void init() {
+        Tab taskBurndownTab = createBurndownTab("Task", new Icon(BoxiconsRegular.CLIPBOARD), this.service.getTaskData());
+        Tab usBurndownTab = createBurndownTab("User Story", new Icon(BoxiconsRegular.USER), this.service.getUserStoryData());
+        Tab bvBurndownTab = createBurndownTab("Business Value", new Icon(BoxiconsRegular.BRIEFCASE), this.service.getBusinessValueData());
+
+        tabPane.getTabs().setAll(taskBurndownTab, usBurndownTab, bvBurndownTab);
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+
+        getChildren().add(tabPane);
+        this.service.start();
+    }
+
+    private Tab createBurndownTab(String name, Icon icon, BurndownService.Data data) {
+        StackPane root = new StackPane();
+
+        Tab tab = new Tab(name);
+        tab.setGraphic(icon);
+
+        ProgressIndicator progress = new ProgressIndicator(-1d);
+        progress.visibleProperty().bind(this.service.runningProperty());
+
+        CategoryAxis date = new CategoryAxis();
+        date.setLabel("Date");
+        NumberAxis value = new NumberAxis();
+        value.setLabel("Value");
+
+        XYChart.Series<String, Number> ideal = new XYChart.Series<>(data.getIdeal());
+        ideal.setName("Ideal");
+        XYChart.Series<String, Number> current = new XYChart.Series<>(data.getCalculated());
+        current.setName("Current");
+
+        AreaChart<String, Number> chart = new AreaChart<>(date, value);
+
+        chart.getData().addAll(ideal, current);
+
+        chart.setAnimated(false);
+        chart.visibleProperty().bind(this.service.runningProperty().not());
+
+        root.getChildren().add(chart);
+        root.getChildren().add(progress);
+
+        tab.setContent(root);
+
+        return tab;
+    }
+
+    public void switchSprint(Sprint sprint) {
+        this.service.recalculate(sprint);
+    }
+
+    public void focusFirstTab() {
+        tabPane.getSelectionModel().selectFirst();
+    }
+
+    public void cancel() {
+        this.service.cancel();
+    }
+}

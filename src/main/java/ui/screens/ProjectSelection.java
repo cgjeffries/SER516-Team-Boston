@@ -1,37 +1,39 @@
 package ui.screens;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import org.kordamp.ikonli.boxicons.BoxiconsRegular;
+import org.kordamp.ikonli.javafx.FontIcon;
+
 import atlantafx.base.controls.CustomTextField;
 import atlantafx.base.controls.Tile;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
 import atlantafx.base.util.Animations;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import org.kordamp.ikonli.boxicons.BoxiconsRegular;
-import org.kordamp.ikonli.javafx.FontIcon;
 import settings.Settings;
 import taiga.api.ProjectAPI;
-import taiga.api.SprintAPI;
 import taiga.model.query.project.Project;
-import taiga.model.query.sprint.Sprint;
 import taiga.util.TaigaUtil;
 import ui.components.Icon;
-import ui.components.Screen;
+import ui.components.screens.Screen;
+import ui.components.screens.ScreenManager;
 import ui.util.DefaultLogoResolver;
-import ui.util.ScreenManager;
-
-import java.net.URL;
-import java.util.Arrays;
-import java.util.ResourceBundle;
 
 public class ProjectSelection extends Screen<VBox> {
 
@@ -171,8 +173,8 @@ public class ProjectSelection extends Screen<VBox> {
         screenManager.switchScreen("metric_selection");
     }
 
-    public void gotoSprintSelection() {
-        screenManager.switchScreen(("sprint_selection"));
+    public void gotoMetricConfiguration() {
+        screenManager.switchScreen("metric_configuration");
     }
 
     private static class ProjectCell extends ListCell<Project> {
@@ -208,12 +210,15 @@ public class ProjectSelection extends Screen<VBox> {
             root.setDescription(project.getDescription());
             root.setAction(menu);
             root.setActionHandler(() -> {
-                // TODO: transition to next screen
                 Settings.get().getAppModel().setCurrentProject(project);
-                projectSelection.gotoSprintSelection();
-                System.out.println(project.getName());
+                projectSelection.gotoMetricConfiguration();
             });
             setGraphic(root);
         }
+    }
+
+    @Override
+    protected void onFocused() {
+
     }
 }

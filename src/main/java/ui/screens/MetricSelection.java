@@ -1,19 +1,19 @@
 package ui.screens;
 
-import atlantafx.base.controls.Tile;
-import javafx.fxml.FXML;
-import javafx.scene.layout.VBox;
-import org.kordamp.ikonli.boxicons.BoxiconsRegular;
-import settings.Settings;
-import ui.util.ScreenManager;
-import ui.components.Icon;
-import ui.components.Screen;
-
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.kordamp.ikonli.boxicons.BoxiconsRegular;
+
+import atlantafx.base.controls.Tile;
+import javafx.fxml.FXML;
+import javafx.scene.layout.VBox;
+import settings.Settings;
+import ui.components.Icon;
+import ui.components.screens.Screen;
+import ui.components.screens.ScreenManager;
+
 public class MetricSelection extends Screen<VBox> {
-    private enum Metrics {}
     private static final VBox root = new VBox();
     @FXML
     private Tile burndown_tile;
@@ -47,5 +47,10 @@ public class MetricSelection extends Screen<VBox> {
             Settings.get().getAppModel().setSelectedMetric("Cycle Time");
             screenManager.switchScreen("project_selection");
         });
+    }
+
+    @Override
+    protected void onFocused() {
+
     }
 }

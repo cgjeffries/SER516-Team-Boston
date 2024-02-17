@@ -1,4 +1,4 @@
-package taiga.util.burndown;
+package ui.metrics.burndown;
 
 import taiga.api.SprintStatsAPI;
 import taiga.model.query.sprint.Days;
@@ -15,6 +15,7 @@ public class TaskBurndown implements BurndownCalculator {
     public TaskBurndown() {
         this.sprintStatsAPI = new SprintStatsAPI();
     }
+
     @Override
     public List<BurnDownEntry> calculate(Sprint sprint) {
         AtomicReference<List<Days>> days = new AtomicReference<>();
@@ -23,13 +24,13 @@ public class TaskBurndown implements BurndownCalculator {
             days.set(List.of(result.getContent().getDays()));
         });
 
-        future.join(); //wait for the request to complete
+        future.join(); // wait for the request to complete
 
         List<BurnDownEntry> burndown = new ArrayList<>();
 
-        days.get().forEach(d -> burndown.add(new BurnDownEntry(Math.max(0, d.getOptimalPoints()), d.getOpenPoints(), d.getDay())));
+        days.get().forEach(
+                d -> burndown.add(new BurnDownEntry(Math.max(0, d.getOptimalPoints()), d.getOpenPoints(), d.getDay())));
 
-        burndown.forEach(System.out::println);
         return burndown;
     }
 }
