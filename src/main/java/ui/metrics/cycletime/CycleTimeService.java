@@ -14,6 +14,7 @@ import taiga.util.timeAnalysis.CycleTimeEntry;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -59,7 +60,13 @@ public class CycleTimeService extends Service<Object> {
 
     private void updateCycleTimes(ObservableList<XYChart.Data<String, Number>> data, List<CycleTimeEntry> entries) {
         SimpleDateFormat format = new SimpleDateFormat("MMM dd");
-        data.setAll(entries.stream().filter(t -> t.getStartDate() != null && t.getEndDate() != null).map(t -> new XYChart.Data<>(format.format(t.getStartDate()), (Number) TimeUnit.MILLISECONDS.toDays(t.getTimeTaken()))).toList());
+        data.setAll(
+                entries.stream()
+                        .filter(t -> t.getStartDate() != null && t.getEndDate() != null)
+                        .sorted(Comparator.comparing(CycleTimeEntry::getStartDate))
+                        .map(t -> new XYChart.Data<>(format.format(t.getStartDate()), (Number) TimeUnit.MILLISECONDS.toDays(t.getTimeTaken())))
+                        .toList()
+        );
     }
 
     @Override
