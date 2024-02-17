@@ -15,10 +15,10 @@ public class TaskUtils {
     private static final TaskHistoryAPI taskHistoryAPI = new TaskHistoryAPI();
 
     public static CycleTimeEntry getCycleTimeForTask(Task task){
-        return getCycleTimeForTask(task.getId());
+        return getCycleTimeForTask(task.getId(), task.getIsClosed());
     }
 
-    public static CycleTimeEntry getCycleTimeForTask(int taskId){
+    private static CycleTimeEntry getCycleTimeForTask(int taskId, boolean isClosed){
         AtomicReference<List<ItemHistory>> historyListReference = new AtomicReference<>();
         taskHistoryAPI.getTaskHistory(taskId, result ->{
             historyListReference.set(new ArrayList<>(List.of(result.getContent())));
@@ -60,7 +60,7 @@ public class TaskUtils {
             }
         }
 
-        if(endDate == null){
+        if(endDate == null || !isClosed){
             return new CycleTimeEntry(startDate, null);
         }
 
