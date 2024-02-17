@@ -29,18 +29,17 @@ public class CycleTimeService extends Service<Object> {
         this.stories = FXCollections.observableArrayList();
     }
 
+    public ObservableList<XYChart.Data<String, Number>> getTasks() {
+        return tasks;
+    }
+
+    public ObservableList<XYChart.Data<String, Number>> getStories() {
+        return stories;
+    }
+
     public void recalculate(Sprint sprint) {
         this.sprint = sprint;
         this.restart();
-    }
-
-    @Override
-    protected void failed() {
-        super.failed();
-        Throwable exception = getException();
-        if (exception != null) {
-            exception.printStackTrace();
-        }
     }
 
     private List<CycleTimeEntry> getAllTaskCycleTime() {
@@ -61,6 +60,15 @@ public class CycleTimeService extends Service<Object> {
     private void updateCycleTimes(ObservableList<XYChart.Data<String, Number>> data, List<CycleTimeEntry> entries) {
         SimpleDateFormat format = new SimpleDateFormat("MMM dd");
         data.setAll(entries.stream().filter(t -> t.getStartDate() != null && t.getEndDate() != null).map(t -> new XYChart.Data<>(format.format(t.getStartDate()), (Number) TimeUnit.MILLISECONDS.toDays(t.getTimeTaken()))).toList());
+    }
+
+    @Override
+    protected void failed() {
+        super.failed();
+        Throwable exception = getException();
+        if (exception != null) {
+            exception.printStackTrace();
+        }
     }
 
     @Override
