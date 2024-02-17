@@ -19,6 +19,7 @@ import taiga.model.query.sprint.UserStoryDetail;
 import taiga.model.query.taskhistory.ItemHistory;
 import taiga.model.query.taskhistory.ItemHistoryValuesDiff;
 import taiga.util.timeAnalysis.CycleTimeEntry;
+import taiga.util.timeAnalysis.LeadTimeEntry;
 
 /**
  * Utility class for User Stories current functionality: extract BV, .
@@ -137,6 +138,64 @@ public class UserStoryUtils {
         }
 
         return new CycleTimeEntry(startDate, endDate);
+    }
+
+    public static LeadTimeEntry getLeadTimeForUserStory(int storyId){
+        AtomicReference<List<ItemHistory>> historyListReference = new AtomicReference<>();
+        userStoryHistoryAPI.getUserStoryHistory(storyId, result ->{
+            historyListReference.set(new ArrayList<>(List.of(result.getContent())));
+        }).join();
+
+        List<ItemHistory> historyList = historyListReference.get();
+        Collections.sort(historyList);
+
+        if(historyList.isEmpty()){
+            return new LeadTimeEntry(null, null, null, null);
+        }
+
+        Date created = historyList.get(0).getCreatedAt();
+
+
+
+        //get first time moved to "In Progress"
+        Date inProgress = null;
+        for(ItemHistory history : historyList){
+            ItemHistoryValuesDiff valuesDiff = history.getValuesDiff();
+            if(valuesDiff.getStatus() == null){
+                continue;
+            }
+
+            if(valuesDiff.getStatus()[1].equalsIgnoreCase("In progress")){
+                inProgress = history.getCreatedAt();
+                break;
+            }
+        }
+
+        if(inProgress == null){
+            return new LeadTimeEntry(null, null, null, null);
+        }
+
+        //get last time moved to "Done"
+        Collections.reverse(historyList);
+        Date endDate = null;
+        for(ItemHistory history : historyList){
+            ItemHistoryValuesDiff valuesDiff = history.getValuesDiff();
+            if(valuesDiff.getStatus() == null){
+                continue;
+            }
+
+            if(valuesDiff.getStatus()[1].equalsIgnoreCase("Done")){
+                endDate = history.getCreatedAt();
+                break;
+            }
+        }
+
+        if(endDate == null){
+            return null; //TODO: ACTUALLY WRITE THIS!!!
+        }
+
+        //return new CycleTimeEntry(startDate, endDate);
+        return null; //TODO: ACTUALLY WRITE THIS!!!
     }
 
     //TODO: remove test code
