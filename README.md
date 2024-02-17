@@ -1,45 +1,49 @@
 # SER516-Team-Boston
+# Project Documentation and Readme
 
-## Taiga API Integration
+## Scrum Application with Taiga API Integration
 
-This project integrates with the Taiga API, facilitating scrum management and metric calculations. It features a GUI application to display Taiga information and scrum management. 
+This project integrates with the Taiga API, facilitating scrum management and metric calculations. It features a GUI (JavaFX) application to display Taiga information and scrum management with visualizations. 
 
+## Project Features
+
+### Burndown Chart
+
+The Burndown Chart feature generates visual representations of work versus time for a given sprint, utilizing Story Points or the custom attribute "Business Value" from Taiga. This presents the user with a visual "information radiator" for the progress of user stories and tasks against the total planned work for a sprint.
+
+### Cycle Time
+
+The Cycle Time feature analyzes the efficiency of the workflow process, measuring the time taken for Tasks or User Stories to move from being started ("in-progress") to completed ("done"). This metric is visualized through a Cycle Time scatterplot graph, offering an inverse perspective to task inertia and highlighting the speed of task completion.
+
+### Lead Time
+
+The Lead Time feature measures the duration from when a story or task is added to the product backlog until it is delivered in a sprint, visualized on a Cumulative Flow Diagram (CFD). This metric helps teams understand the overall timeline from idea inception to delivery and the efficiency of the development cycle.
 
 ## Setting up the application
 
-### 1) Clone the repository
+### Requirements and Setup
 
+- JDK17 or higher
+
+### Clone the repository
 
    ```bash
    git clone https://github.com/ser516asu/SER516-Team-Boston.git
    cd SER516-Team-Boston
    ```
 
-### 2) Compile and Run the application
+### Compile and Run the application
 
-Go to the project root and compile the Maven project
+To compile go to the project root and do:
 
 ```bash
    mvn compile
    ```
 
-Now, run the GUI application using following command
-
-```bash
-   mvn compile exec:java -Dexec.mainClass=ui.Main
-   ```
-
-You may also run the application using javafx
+To run go to the project root and do:
 
 ```bash
    mvn javafx:run
-   ```
-
-
-To run the original starter CLI Taiga API app use the following command
-
-```bash
-   mvn compile exec:java -Dexec.mainClass=Main
    ```
 
 
@@ -51,12 +55,27 @@ Run application tests with the following command
    mvn test
    ```
 
+### Implementation and Technical Description
 
+The project is structured to interact with the Taiga API, leveraging JavaFX for the GUI components, allowing users to interact with the application visually. The main technical aspects include:
+
+- API Integration: Utilizes custom API wrapper classes (UserStoryAPI, ProjectAPI, etc.) to communicate with Taiga's RESTful API, fetching and updating data asynchronously.
+- Model Representation: Defines comprehensive model classes (UserStoryDetail, Project, etc.) that mirror the JSON structures returned by the Taiga API, facilitating easy data manipulation and display.
+- UI Interaction: Employs JavaFX screens (MetricSelection, ProjectSelection, etc.) for navigating between different functionalities, such as selecting metrics, projects, and sprints.
+- Utility and Helper Classes: Incorporates utility classes (UserStoryUtils, TaigaUtil, etc.) that provide methods for calculating metrics and performing other helper functionalities.
+- Configuration and Settings Management: Manages application settings and configurations (Settings.java, AppModel.java), including saving and loading user preferences and project data.
 
 ### NOTE
 
-In case you don't have Maven installed, please refer to following tutorial
+In case you don't have Maven installed, please refer to following tutorial:
 
 https://phoenixnap.com/kb/install-maven-windows
 
 
+### Team
+
+Oluwamayowa Esan, 
+Charles Jeffries, 
+Michael Kangas,
+Soohwan Kim,
+James Thayer
