@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 import java.util.List;
+import taiga.model.query.userstories.StatusExtraInfo;
 
 public class UserStoryDetail {
     @SerializedName("assigned_to")
@@ -160,7 +161,7 @@ public class UserStoryDetail {
 
     @SerializedName("status_extra_info")
     @Expose
-    private Object statusExtraInfo;
+    private StatusExtraInfo statusExtraInfo;
 
     @SerializedName("subject")
     @Expose
@@ -514,11 +515,11 @@ public class UserStoryDetail {
         this.status = status;
     }
 
-    public Object getStatusExtraInfo() {
+    public StatusExtraInfo getStatusExtraInfo() {
         return statusExtraInfo;
     }
 
-    public void setStatusExtraInfo(Object statusExtraInfo) {
+    public void setStatusExtraInfo(StatusExtraInfo statusExtraInfo) {
         this.statusExtraInfo = statusExtraInfo;
     }
 
