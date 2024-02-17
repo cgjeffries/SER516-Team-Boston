@@ -17,6 +17,8 @@ public class MetricSelection extends Screen<VBox> {
     private static final VBox root = new VBox();
     @FXML
     private Tile burndown_tile;
+    @FXML
+    private Tile cycletime_tile;
 
     public MetricSelection(ScreenManager screenManager, String name) {
         super(screenManager, name);
@@ -37,6 +39,12 @@ public class MetricSelection extends Screen<VBox> {
         burndown_tile.setGraphic(new Icon(BoxiconsRegular.LINE_CHART_DOWN, 48));
         burndown_tile.setActionHandler(() -> {
             Settings.get().getAppModel().setSelectedMetric("Burndown");
+            screenManager.switchScreen("project_selection");
+        });
+        //Can change the icon, set to arrow in circle for now
+        cycletime_tile.setGraphic(new Icon(BoxiconsRegular.RIGHT_ARROW_CIRCLE, 48));
+        cycletime_tile.setActionHandler(() -> {
+            Settings.get().getAppModel().setSelectedMetric("Cycle Time");
             screenManager.switchScreen("project_selection");
         });
     }
