@@ -1,42 +1,83 @@
 package taiga.util.timeAnalysis;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import taiga.model.query.history.History;
+import taiga.model.query.sprint.UserStory;
+import taiga.model.query.taskhistory.ItemHistory;
+import taiga.model.query.taskhistory.ItemHistoryValuesDiff;
 
-public class LeadTimeEntry {
-    private final Date createdInBacklog;
-    private final Date addedToSprint;
+public class LeadTimeEntry{
 
-    private final Date inProgress;
+    private List<ItemHistory> historyList;
+    private Date createdDate;
 
-    private final Date done;
-
-    public LeadTimeEntry(Date createdInBacklog, Date addedToSprint, Date inProgress, Date done){
-        this.createdInBacklog = createdInBacklog;
-        this.addedToSprint = addedToSprint;
-        this.inProgress = inProgress;
-        this.done = done;
+    public enum Status{
+        NOT_CREATED,
+        BACKLOG,
+        IN_SPRINT,
+        IN_PROGRESS,
+        READY_FOR_TEST,
+        DONE
     }
 
-    public Date getCreatedInBacklog(){
-        return createdInBacklog;
+
+    public LeadTimeEntry(List<ItemHistory> historyList, Date createdDate){
+        this.historyList=historyList;
+        Collections.sort(this.historyList);
+        this.createdDate = createdDate;
     }
 
-    public Date getAddedToSprint(){
-        return addedToSprint;
-    }
-
-    public Date getInProgress(){
-        return inProgress;
-    }
-
-    public Date getDone(){
-        return done;
-    }
-
-    public Long getLeadTime(){
-        if(createdInBacklog == null || done == null){
-            return 0L;
+    /**
+     *
+     * @param date
+     * @return
+     */
+    public Status getStatusForDate(Date date){
+        if(date.before(createdDate)){
+            return Status.NOT_CREATED;
         }
-        return done.getTime() - createdInBacklog.getTime();
+
+        Status lastStatus = Status.BACKLOG;
+
+        for(ItemHistory history : historyList){
+            ItemHistoryValuesDiff valuesDiff = history.getValuesDiff();
+
+            if(history.getCreatedAt().after(date)){
+                break;
+            }
+
+            if(valuesDiff.getMilestone() != null){
+                if(valuesDiff.getMilestone()[1] != null){
+                    lastStatus = Status.IN_SPRINT;
+                }
+                else{
+                    lastStatus = Status.BACKLOG;
+                }
+            }
+
+            if(valuesDiff.getStatus() == null){
+                continue;
+            }
+
+            String statusString = valuesDiff.getStatus()[1];
+
+            if(statusString.equalsIgnoreCase("Ready For Test")){
+                lastStatus = Status.READY_FOR_TEST;
+            }
+            else if (statusString.equalsIgnoreCase("New")){
+                lastStatus = Status.IN_SPRINT;
+            }
+            else if (statusString.equalsIgnoreCase("Done")){
+                lastStatus = Status.DONE;
+            }
+            else{
+                lastStatus = Status.IN_PROGRESS;
+            }
+        }
+
+        return lastStatus;
     }
+
 }

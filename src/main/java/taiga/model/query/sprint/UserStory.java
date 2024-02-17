@@ -2,6 +2,7 @@ package taiga.model.query.sprint;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public class UserStory {
 
     @SerializedName("created_date")
     @Expose
-    private String createdDate;
+    private Date createdDate;
 
     @SerializedName("due_date")
     @Expose
@@ -163,11 +164,11 @@ public class UserStory {
         this.clientRequirement = clientRequirement;
     }
 
-    public String getCreatedDate() {
+    public Date getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(String createdDate) {
+    public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
     }
 

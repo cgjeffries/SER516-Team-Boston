@@ -140,7 +140,15 @@ public class UserStoryUtils {
         return new CycleTimeEntry(startDate, endDate);
     }
 
-    public static LeadTimeEntry getLeadTimeForUserStory(int storyId){
+    private static LeadTimeEntry getLeadTimeForUserStory(UserStory story){
+        return getLeadTimeForUserStory(story.getId(), story.getCreatedDate());
+    }
+
+    private static LeadTimeEntry getLeadTimeForUserStory(UserStoryDetail storyDetail){
+        return getLeadTimeForUserStory(storyDetail.getId(), storyDetail.getCreatedDate());
+    }
+
+    private static LeadTimeEntry getLeadTimeForUserStory(int storyId, Date createdDate){
         AtomicReference<List<ItemHistory>> historyListReference = new AtomicReference<>();
         userStoryHistoryAPI.getUserStoryHistory(storyId, result ->{
             historyListReference.set(new ArrayList<>(List.of(result.getContent())));
@@ -149,53 +157,7 @@ public class UserStoryUtils {
         List<ItemHistory> historyList = historyListReference.get();
         Collections.sort(historyList);
 
-        if(historyList.isEmpty()){
-            return new LeadTimeEntry(null, null, null, null);
-        }
-
-        Date created = historyList.get(0).getCreatedAt();
-
-
-
-        //get first time moved to "In Progress"
-        Date inProgress = null;
-        for(ItemHistory history : historyList){
-            ItemHistoryValuesDiff valuesDiff = history.getValuesDiff();
-            if(valuesDiff.getStatus() == null){
-                continue;
-            }
-
-            if(valuesDiff.getStatus()[1].equalsIgnoreCase("In progress")){
-                inProgress = history.getCreatedAt();
-                break;
-            }
-        }
-
-        if(inProgress == null){
-            return new LeadTimeEntry(null, null, null, null);
-        }
-
-        //get last time moved to "Done"
-        Collections.reverse(historyList);
-        Date endDate = null;
-        for(ItemHistory history : historyList){
-            ItemHistoryValuesDiff valuesDiff = history.getValuesDiff();
-            if(valuesDiff.getStatus() == null){
-                continue;
-            }
-
-            if(valuesDiff.getStatus()[1].equalsIgnoreCase("Done")){
-                endDate = history.getCreatedAt();
-                break;
-            }
-        }
-
-        if(endDate == null){
-            return null; //TODO: ACTUALLY WRITE THIS!!!
-        }
-
-        //return new CycleTimeEntry(startDate, endDate);
-        return null; //TODO: ACTUALLY WRITE THIS!!!
+        return new LeadTimeEntry(historyList, createdDate);
     }
 
     //TODO: remove test code
