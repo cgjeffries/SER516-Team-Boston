@@ -83,14 +83,14 @@ public class UserStoryUtils {
     }
 
     public static CycleTimeEntry getCycleTimeForUserStory(UserStory story){
-        return getCycleTimeForUserStory(story.getId());
+        return getCycleTimeForUserStory(story.getId(), story.getIsClosed());
     }
 
     public static CycleTimeEntry getCycleTimeForUserStory(UserStoryDetail storyDetail){
-        return getCycleTimeForUserStory(storyDetail.getId());
+        return getCycleTimeForUserStory(storyDetail.getId(), storyDetail.getIsClosed());
     }
 
-    public static CycleTimeEntry getCycleTimeForUserStory(int storyId){
+    private static CycleTimeEntry getCycleTimeForUserStory(int storyId, boolean isClosed){
         AtomicReference<List<ItemHistory>> historyListReference = new AtomicReference<>();
         userStoryHistoryAPI.getUserStoryHistory(storyId, result ->{
             historyListReference.set(new ArrayList<>(List.of(result.getContent())));
@@ -132,7 +132,7 @@ public class UserStoryUtils {
             }
         }
 
-        if(endDate == null){
+        if(endDate == null || !isClosed){
             return new CycleTimeEntry(startDate, null);
         }
 

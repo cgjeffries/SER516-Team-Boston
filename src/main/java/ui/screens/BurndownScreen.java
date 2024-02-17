@@ -10,8 +10,8 @@ public class BurndownScreen extends BaseMetricConfiguration {
 
     private Burndown burndown;
 
-    public BurndownScreen(ScreenManager screenManager, String name) {
-        super(screenManager, name);
+    public BurndownScreen(ScreenManager screenManager, String id, String fxmlFilename) {
+        super(screenManager, id, fxmlFilename);
     }
 
     @Override

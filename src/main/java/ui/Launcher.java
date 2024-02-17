@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import settings.Settings;
 import ui.components.screens.ScreenManager;
+import ui.screens.CycleTimeScreen;
 import ui.screens.MetricSelection;
 import ui.screens.ProjectSelection;
 import ui.screens.BurndownScreen;
@@ -24,9 +25,10 @@ public class Launcher extends Application {
     public void start(Stage stage) {
         Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
         ScreenManager screenManager = new ScreenManager();
-        screenManager.initialize(new MetricSelection(screenManager, "metric_selection"));
-        screenManager.addScreen(new ProjectSelection(screenManager, "project_selection"));
-        screenManager.addScreen(new BurndownScreen(screenManager, "metric_configuration"));
+        screenManager.initialize(new MetricSelection(screenManager, "metric_selection", "metric_selection"));
+        screenManager.addScreen(new ProjectSelection(screenManager, "project_selection", "project_selection"));
+        screenManager.addScreen(new BurndownScreen(screenManager, "Burndown", "metric_configuration"));
+        screenManager.addScreen(new CycleTimeScreen(screenManager, "Cycle Time", "metric_configuration"));
         stage.setTitle("SER516 Team Boston");
         stage.setScene(screenManager.getScene());
         stage.show();

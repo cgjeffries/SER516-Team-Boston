@@ -52,9 +52,9 @@ public class ScreenManager {
      * @param shouldSwitch Whether the manager should call {@link #switchScreen(String)}
      */
     public void addScreen(Screen<? extends Parent> screen, boolean shouldSwitch) {
-        screenHashMap.put(screen.getName(), screen);
+        screenHashMap.put(screen.getId(), screen);
         if (shouldSwitch) {
-            switchScreen(screen.getName());
+            switchScreen(screen.getId());
         }
     }
 
