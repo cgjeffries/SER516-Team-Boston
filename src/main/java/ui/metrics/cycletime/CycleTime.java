@@ -1,10 +1,7 @@
 package ui.metrics.cycletime;
 
 import javafx.collections.ObservableList;
-import javafx.scene.chart.AreaChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
+import javafx.scene.chart.*;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -47,11 +44,11 @@ public class CycleTime extends StackPane {
         CategoryAxis date = new CategoryAxis();
         date.setLabel("Date");
         NumberAxis value = new NumberAxis();
-        value.setLabel("Value");
+        value.setLabel("Cycle Time (Days)");
 
         XYChart.Series<String, Number> points = new XYChart.Series<>(data);
 
-        AreaChart<String, Number> chart = new AreaChart<>(date, value);
+        ScatterChart<String, Number> chart = new ScatterChart<>(date, value);
 
         chart.getData().addAll(points);
 
