@@ -18,8 +18,8 @@ public class MetricSelection extends Screen<VBox> {
     @FXML
     private Tile burndown_tile;
 
-    public MetricSelection(ScreenManager screenManager, String name) {
-        super(screenManager, name);
+    public MetricSelection(ScreenManager screenManager, String id, String fxmlFilename) {
+        super(screenManager, id, fxmlFilename);
     }
 
     @Override

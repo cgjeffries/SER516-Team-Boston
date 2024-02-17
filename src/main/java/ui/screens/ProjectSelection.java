@@ -27,6 +27,7 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import settings.Settings;
+import settings.appmodel.AppModel;
 import taiga.api.ProjectAPI;
 import taiga.model.query.project.Project;
 import taiga.util.TaigaUtil;
@@ -62,10 +63,11 @@ public class ProjectSelection extends Screen<VBox> {
      * Create a screen instance
      *
      * @param screenManager a ScreenManager instance
-     * @param name          A unique name for the scene.
+     * @param id            A unique id for the scene.
+     * @param fxmlFilename  The fxml file to load for this screen.
      */
-    public ProjectSelection(ScreenManager screenManager, String name) {
-        super(screenManager, name);
+    public ProjectSelection(ScreenManager screenManager, String id, String fxmlFilename) {
+        super(screenManager, id, fxmlFilename);
         progress = new ProgressIndicator(-1d);
         projects = FXCollections.observableArrayList(Settings.get().getAppModel().getProjects());
         projects.addListener((ListChangeListener<Project>) change -> {
@@ -158,7 +160,7 @@ public class ProjectSelection extends Screen<VBox> {
     }
 
     public void gotoMetricConfiguration() {
-        screenManager.switchScreen("metric_configuration");
+        screenManager.switchScreen(Settings.get().getAppModel().getSelectedMetric().get());
     }
 
     private static class ProjectCell extends ListCell<Project> {
