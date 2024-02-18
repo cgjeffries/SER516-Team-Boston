@@ -43,13 +43,13 @@ public class MetricSelection extends Screen<VBox> {
             Settings.get().getAppModel().setSelectedMetric("Burndown");
             screenManager.switchScreen("project_selection");
         });
-        //Can change the icon, set to arrow in circle for now
+        // Timer icon conveys cycle time
         cycletime_tile.setGraphic(new Icon(BoxiconsRegular.TIMER, 48));
         cycletime_tile.setActionHandler(() -> {
             Settings.get().getAppModel().setSelectedMetric("Cycle Time");
             screenManager.switchScreen("project_selection");
         });
-        //Did a left arrow in circle now, got no better ideas
+        // Calendar icon conveys times entering and leaving
         leadtime_tile.setGraphic(new Icon(BoxiconsRegular.CALENDAR, 48));
         leadtime_tile.setActionHandler(() -> {
             Settings.get().getAppModel().setSelectedMetric("Lead Time");
