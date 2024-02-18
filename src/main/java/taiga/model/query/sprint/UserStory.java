@@ -2,10 +2,12 @@ package taiga.model.query.sprint;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import taiga.model.query.userstories.UserStoryInterface;
 
-public class UserStory {
+public class UserStory implements UserStoryInterface {
 
     @SerializedName("assigned_to")
     @Expose
@@ -29,7 +31,7 @@ public class UserStory {
 
     @SerializedName("created_date")
     @Expose
-    private String createdDate;
+    private Date createdDate;
 
     @SerializedName("due_date")
     @Expose
@@ -53,7 +55,7 @@ public class UserStory {
 
     @SerializedName("finish_date")
     @Expose
-    private Object finishDate; // TODO figure out what this is
+    private Date finishDate;
 
     @SerializedName("id")
     @Expose
@@ -163,11 +165,11 @@ public class UserStory {
         this.clientRequirement = clientRequirement;
     }
 
-    public String getCreatedDate() {
+    public Date getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(String createdDate) {
+    public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
     }
 
@@ -211,11 +213,11 @@ public class UserStory {
         this.externalReference = externalReference;
     }
 
-    public Object getFinishDate() {
+    public Date getFinishDate() {
         return finishDate;
     }
 
-    public void setFinishDate(Object finishDate) {
+    public void setFinishDate(Date finishDate) {
         this.finishDate = finishDate;
     }
 

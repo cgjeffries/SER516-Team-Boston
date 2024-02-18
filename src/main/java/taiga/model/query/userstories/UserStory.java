@@ -1,11 +1,13 @@
 
 package taiga.model.query.userstories;
 
+import java.util.Date;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import taiga.model.query.sprint.Epic;
 
-public class UserStory {
+public class UserStory implements UserStoryInterface {
 
     @SerializedName("assigned_to")
     @Expose
@@ -45,7 +47,7 @@ public class UserStory {
 
     @SerializedName("created_date")
     @Expose
-    private String createdDate;
+    private Date createdDate;
     @SerializedName("description")
     @Expose
     private String description;
@@ -80,7 +82,7 @@ public class UserStory {
 
     @SerializedName("finish_date")
     @Expose
-    private Object finishDate;
+    private Date finishDate;
 
     @SerializedName("generated_from_issue")
     @Expose
@@ -226,10 +228,12 @@ public class UserStory {
     @Expose
     private List<Object> watchers;
 
+    @Override
     public Integer getAssignedTo() {
         return assignedTo;
     }
 
+    @Override
     public void setAssignedTo(Integer assignedTo) {
         this.assignedTo = assignedTo;
     }
@@ -298,11 +302,13 @@ public class UserStory {
         this.comment = comment;
     }
 
-    public String getCreatedDate() {
+    @Override
+    public Date getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(String createdDate) {
+    @Override
+    public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
     }
 
@@ -322,10 +328,12 @@ public class UserStory {
         this.descriptionHtml = descriptionHtml;
     }
 
+    @Override
     public Object getDueDate() {
         return dueDate;
     }
 
+    @Override
     public void setDueDate(Object dueDate) {
         this.dueDate = dueDate;
     }
@@ -354,10 +362,12 @@ public class UserStory {
         this.epicOrder = epicOrder;
     }
 
+    @Override
     public List<Epic> getEpics() {
         return epics;
     }
 
+    @Override
     public void setEpics(List<Epic> epics) {
         this.epics = epics;
     }
@@ -370,11 +380,13 @@ public class UserStory {
         this.externalReference = externalReference;
     }
 
-    public Object getFinishDate() {
+    @Override
+    public Date getFinishDate() {
         return finishDate;
     }
 
-    public void setFinishDate(Object finishDate) {
+    @Override
+    public void setFinishDate(Date finishDate) {
         this.finishDate = finishDate;
     }
 
@@ -394,10 +406,12 @@ public class UserStory {
         this.generatedFromTask = generatedFromTask;
     }
 
+    @Override
     public Integer getId() {
         return id;
     }
 
+    @Override
     public void setId(Integer id) {
         this.id = id;
     }
@@ -442,10 +456,12 @@ public class UserStory {
         this.kanbanOrder = kanbanOrder;
     }
 
+    @Override
     public Integer getMilestone() {
         return milestone;
     }
 
+    @Override
     public void setMilestone(Integer milestone) {
         this.milestone = milestone;
     }
@@ -522,10 +538,12 @@ public class UserStory {
     //     this.points = points;
     // }
 
+    @Override
     public Integer getProject() {
         return project;
     }
 
+    @Override
     public void setProject(Integer project) {
         this.project = project;
     }
@@ -554,10 +572,12 @@ public class UserStory {
         this.sprintOrder = sprintOrder;
     }
 
+    @Override
     public Integer getStatus() {
         return status;
     }
 
+    @Override
     public void setStatus(Integer status) {
         this.status = status;
     }
@@ -618,10 +638,12 @@ public class UserStory {
         this.totalComments = totalComments;
     }
 
+    @Override
     public Double getTotalPoints() {
         return totalPoints;
     }
 
+    @Override
     public void setTotalPoints(Double totalPoints) {
         this.totalPoints = totalPoints;
     }
