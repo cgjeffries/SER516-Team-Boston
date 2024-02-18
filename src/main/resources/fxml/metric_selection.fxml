@@ -21,7 +21,7 @@
                           <children>
                               <Tile fx:id="burndown_tile" description="Show work and value delivered over time" title="Burndown" />
                               <Tile fx:id="cycletime_tile" description="See time to go from in-progress to done" title="Cycle Time" />
-                              <Tile fx:id="leadtime_tile" description="See time from story entering the backlog to appearing in a sprint" title="Lead Time" />
+                              <Tile fx:id="leadtime_tile" description="Track time from backlog entry to sprint delivery" title="Lead Time" />
                   <Separator prefWidth="200.0" />
                           </children>
                       </VBox>
