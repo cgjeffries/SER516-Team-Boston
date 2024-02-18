@@ -20,15 +20,16 @@ public class TaskUtils {
      * @return a CycleTimeEntry object
      */
     public static CycleTimeEntry getCycleTimeForTask(Task task){
-        return getCycleTimeForTask(task.getId());
+        return getCycleTimeForTask(task.getId(), task.getIsClosed());
     }
 
     /**
      * Gets the cycleTime for the specified Task.
      * @param taskId The ID of the Task to get the cycleTime for
+     * @param isClosed whether or not the speicifed task is *currently* closed
      * @return a CycleTimeEntry object
      */
-    public static CycleTimeEntry getCycleTimeForTask(int taskId){
+    private static CycleTimeEntry getCycleTimeForTask(int taskId, boolean isClosed){
         AtomicReference<List<ItemHistory>> historyListReference = new AtomicReference<>();
         taskHistoryAPI.getTaskHistory(taskId, result ->{
             historyListReference.set(new ArrayList<>(List.of(result.getContent())));
@@ -52,7 +53,7 @@ public class TaskUtils {
         }
 
         if(startDate == null){
-            return new CycleTimeEntry(null, null);
+            return new CycleTimeEntry(null, null, false);
         }
 
         //get last time moved to "Done"
@@ -70,8 +71,8 @@ public class TaskUtils {
             }
         }
 
-        if(endDate == null){
-            return new CycleTimeEntry(startDate, null);
+        if(endDate == null || !isClosed){
+            return new CycleTimeEntry(startDate, null, false);
         }
 
         return new CycleTimeEntry(startDate, endDate);

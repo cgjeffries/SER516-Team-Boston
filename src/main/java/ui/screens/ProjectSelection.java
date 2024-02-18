@@ -17,6 +17,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -27,6 +28,7 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import settings.Settings;
+import settings.appmodel.AppModel;
 import taiga.api.ProjectAPI;
 import taiga.model.query.project.Project;
 import taiga.util.TaigaUtil;
@@ -62,10 +64,11 @@ public class ProjectSelection extends Screen<VBox> {
      * Create a screen instance
      *
      * @param screenManager a ScreenManager instance
-     * @param name          A unique name for the scene.
+     * @param id            A unique id for the scene.
+     * @param fxmlFilename  The fxml file to load for this screen.
      */
-    public ProjectSelection(ScreenManager screenManager, String name) {
-        super(screenManager, name);
+    public ProjectSelection(ScreenManager screenManager, String id, String fxmlFilename) {
+        super(screenManager, id, fxmlFilename);
         progress = new ProgressIndicator(-1d);
         projects = FXCollections.observableArrayList(Settings.get().getAppModel().getProjects());
         projects.addListener((ListChangeListener<Project>) change -> {
@@ -128,6 +131,7 @@ public class ProjectSelection extends Screen<VBox> {
             project_search_btn.setDisable(false);
             Animations.shakeX(project_search_bar, 6).playFromStart();
             project_search_bar.pseudoClassStateChanged(Styles.STATE_DANGER, true);
+            showErrorAlert("Invalid search input. Please enter a valid project name or slug.");
             return;
         }
         progress.setVisible(true);
@@ -138,6 +142,7 @@ public class ProjectSelection extends Screen<VBox> {
                 project_search_btn.setDisable(false);
                 progress.setVisible(false);
                 this.getRoot().setDisable(false);
+                showErrorAlert("Failed to fetch project. Please try again later.");
                 return;
             }
             Project project = result.getContent();
@@ -148,8 +153,22 @@ public class ProjectSelection extends Screen<VBox> {
                 this.getRoot().setDisable(false);
                 addProject(project);
                 Platform.runLater(() -> project_search_bar.clear());
+            }).exceptionally(ex -> {
+                showErrorAlert("Failed to load sprints for project: " + project.getName());
+                return null;
             });
+        }).exceptionally(ex -> {
+            showErrorAlert("Failed to fetch project due to an unexpected error.");
+            return null;
         });
+    }
+
+    private void showErrorAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     @FXML
@@ -158,7 +177,7 @@ public class ProjectSelection extends Screen<VBox> {
     }
 
     public void gotoMetricConfiguration() {
-        screenManager.switchScreen("metric_configuration");
+        screenManager.switchScreen(Settings.get().getAppModel().getSelectedMetric().get());
     }
 
     private static class ProjectCell extends ListCell<Project> {

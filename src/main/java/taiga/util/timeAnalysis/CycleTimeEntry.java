@@ -5,10 +5,16 @@ import java.util.Date;
 public class CycleTimeEntry {
     private final Date startDate;
     private final Date endDate;
+    private final boolean valid;
 
-    public CycleTimeEntry(Date start, Date end){
+    public CycleTimeEntry(Date start, Date end, boolean valid){
         this.startDate = start;
         this.endDate = end;
+        this.valid = valid;
+    }
+
+    public CycleTimeEntry(Date start, Date end) {
+        this(start, end, true);
     }
 
     public Date getStartDate() {
@@ -24,6 +30,10 @@ public class CycleTimeEntry {
             return 0L;
         }
         return endDate.getTime() - startDate.getTime();
+    }
+
+    public boolean isValid() {
+        return valid;
     }
 
     @Override

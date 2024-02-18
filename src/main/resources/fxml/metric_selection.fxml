@@ -20,6 +20,7 @@
                       <VBox prefHeight="200.0" prefWidth="100.0">
                           <children>
                               <Tile fx:id="burndown_tile" description="Show work and value delivered over time" title="Burndown" />
+                              <Tile fx:id="cycletime_tile" description="See time to go from in-progress to done" title="Cycle Time" />
                   <Separator prefWidth="200.0" />
                           </children>
                       </VBox>

@@ -10,7 +10,8 @@ import ui.util.FXMLManager;
  * @param <T> The type of root component this screen should have. This needs to be the same as the root element in the corresponding FXML.
  */
 public abstract class Screen<T extends Parent> implements Initializable {
-    private final String name;
+    private final String id;
+    private final String fxmlPath;
     protected ScreenManager screenManager;
 
     protected boolean loaded;
@@ -19,10 +20,12 @@ public abstract class Screen<T extends Parent> implements Initializable {
      * Create a screen instance
      *
      * @param screenManager a ScreenManager instance
-     * @param name          A unique name for the scene.
+     * @param id            A unique id for the scene.
+     * @param fxmlFilename  The fxml file to load for this screen.
      */
-    public Screen(ScreenManager screenManager, String name) {
-        this.name = name;
+    public Screen(ScreenManager screenManager, String id, String fxmlFilename) {
+        this.id = id;
+        this.fxmlPath = fxmlFilename;
         this.screenManager = screenManager;
         this.loaded = false;
     }
@@ -49,12 +52,12 @@ public abstract class Screen<T extends Parent> implements Initializable {
         if (this.loaded) {
             return;
         }
-        FXMLManager.load("/fxml/" + name + ".fxml", getRoot(), getController());
+        FXMLManager.load("/fxml/" + fxmlPath + ".fxml", getRoot(), getController());
         this.loaded = true;
     }
 
-    public String getName() {
-        return this.name;
+    public String getId() {
+        return this.id;
     }
 
     protected abstract void onFocused();

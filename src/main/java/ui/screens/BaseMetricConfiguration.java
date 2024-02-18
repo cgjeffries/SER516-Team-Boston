@@ -47,14 +47,16 @@ public abstract class BaseMetricConfiguration extends Screen<VBox> {
     @FXML
     protected ComboBox<Sprint> sprint_combobox;
 
+
     /**
      * Create a screen instance
      *
      * @param screenManager a ScreenManager instance
-     * @param name          A unique name for the scene.
+     * @param id            A unique id for the scene.
+     * @param fxmlFilename  The fxml file to load for this screen.
      */
-    public BaseMetricConfiguration(ScreenManager screenManager, String name) {
-        super(screenManager, name);
+    public BaseMetricConfiguration(ScreenManager screenManager, String id, String fxmlFilename) {
+        super(screenManager, id, fxmlFilename);
     }
 
     @Override
