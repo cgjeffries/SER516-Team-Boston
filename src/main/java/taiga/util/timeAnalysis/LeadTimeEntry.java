@@ -5,13 +5,16 @@ import java.util.Date;
 import java.util.List;
 import taiga.model.query.history.History;
 import taiga.model.query.sprint.UserStory;
+import taiga.model.query.sprint.UserStoryDetail;
 import taiga.model.query.taskhistory.ItemHistory;
 import taiga.model.query.taskhistory.ItemHistoryValuesDiff;
+import taiga.model.query.userstories.UserStoryInterface;
 
 public class LeadTimeEntry{
 
-    private List<ItemHistory> historyList;
-    private Date createdDate;
+    private final List<ItemHistory> historyList;
+    private final UserStoryInterface userStory;
+
 
     public enum Status{
         NOT_CREATED,
@@ -23,11 +26,12 @@ public class LeadTimeEntry{
     }
 
 
-    public LeadTimeEntry(List<ItemHistory> historyList, Date createdDate){
+    public LeadTimeEntry(List<ItemHistory> historyList, UserStoryInterface userStory){
         this.historyList=historyList;
         Collections.sort(this.historyList);
-        this.createdDate = createdDate;
+        this.userStory = userStory;
     }
+
 
     /**
      *
@@ -35,7 +39,7 @@ public class LeadTimeEntry{
      * @return
      */
     public Status getStatusForDate(Date date){
-        if(date.before(createdDate)){
+        if(date.before(userStory.getCreatedDate())){
             return Status.NOT_CREATED;
         }
 
@@ -80,4 +84,7 @@ public class LeadTimeEntry{
         return lastStatus;
     }
 
+    public UserStoryInterface getUserStory() {
+        return userStory;
+    }
 }

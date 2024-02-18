@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import taiga.model.query.sprint.UserStoryDetail;
 import taiga.model.query.taskhistory.ItemHistory;
 import taiga.model.query.taskhistory.ItemHistoryValuesDiff;
+import taiga.model.query.userstories.UserStoryInterface;
 import taiga.util.timeAnalysis.CycleTimeEntry;
 import taiga.util.timeAnalysis.LeadTimeEntry;
 
@@ -140,24 +141,24 @@ public class UserStoryUtils {
         return new CycleTimeEntry(startDate, endDate);
     }
 
-    private static LeadTimeEntry getLeadTimeForUserStory(UserStory story){
-        return getLeadTimeForUserStory(story.getId(), story.getCreatedDate());
+    public static LeadTimeEntry getLeadTimeForUserStory(UserStory story){
+        return getLeadTimeForUserStory(story, story.getCreatedDate());
     }
 
-    private static LeadTimeEntry getLeadTimeForUserStory(UserStoryDetail storyDetail){
-        return getLeadTimeForUserStory(storyDetail.getId(), storyDetail.getCreatedDate());
+    public static LeadTimeEntry getLeadTimeForUserStory(UserStoryDetail storyDetail){
+        return getLeadTimeForUserStory(storyDetail, storyDetail.getCreatedDate());
     }
 
-    private static LeadTimeEntry getLeadTimeForUserStory(int storyId, Date createdDate){
+    private static LeadTimeEntry getLeadTimeForUserStory(UserStoryInterface story, Date createdDate){
         AtomicReference<List<ItemHistory>> historyListReference = new AtomicReference<>();
-        userStoryHistoryAPI.getUserStoryHistory(storyId, result ->{
+        userStoryHistoryAPI.getUserStoryHistory(story.getId(), result ->{
             historyListReference.set(new ArrayList<>(List.of(result.getContent())));
         }).join();
 
         List<ItemHistory> historyList = historyListReference.get();
         Collections.sort(historyList);
 
-        return new LeadTimeEntry(historyList, createdDate);
+        return new LeadTimeEntry(historyList, story);
     }
 
     //TODO: remove test code

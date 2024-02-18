@@ -5,8 +5,9 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import taiga.model.query.userstories.UserStoryInterface;
 
-public class UserStory {
+public class UserStory implements UserStoryInterface {
 
     @SerializedName("assigned_to")
     @Expose
@@ -54,7 +55,7 @@ public class UserStory {
 
     @SerializedName("finish_date")
     @Expose
-    private Object finishDate; // TODO figure out what this is
+    private Date finishDate;
 
     @SerializedName("id")
     @Expose
@@ -212,11 +213,11 @@ public class UserStory {
         this.externalReference = externalReference;
     }
 
-    public Object getFinishDate() {
+    public Date getFinishDate() {
         return finishDate;
     }
 
-    public void setFinishDate(Object finishDate) {
+    public void setFinishDate(Date finishDate) {
         this.finishDate = finishDate;
     }
 
