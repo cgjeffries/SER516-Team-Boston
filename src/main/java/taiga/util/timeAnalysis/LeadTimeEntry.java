@@ -3,9 +3,6 @@ package taiga.util.timeAnalysis;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import taiga.model.query.history.History;
-import taiga.model.query.sprint.UserStory;
-import taiga.model.query.sprint.UserStoryDetail;
 import taiga.model.query.taskhistory.ItemHistory;
 import taiga.model.query.taskhistory.ItemHistoryValuesDiff;
 import taiga.model.query.userstories.UserStoryInterface;
@@ -15,7 +12,9 @@ public class LeadTimeEntry{
     private final List<ItemHistory> historyList;
     private final UserStoryInterface userStory;
 
-
+    /**
+     * Enum for representing the states that a UserStory can be in
+     */
     public enum Status{
         NOT_CREATED,
         BACKLOG,
@@ -25,18 +24,21 @@ public class LeadTimeEntry{
         DONE
     }
 
-
+    /**
+     * Create a new LeadTimeEntry.
+     * @param historyList the list of ItemHistory objects for the associated UserStory
+     * @param userStory the UserStory associated with the ItemHistory list that we want to be abel to get the status for
+     */
     public LeadTimeEntry(List<ItemHistory> historyList, UserStoryInterface userStory){
         this.historyList=historyList;
         Collections.sort(this.historyList);
         this.userStory = userStory;
     }
 
-
     /**
-     *
-     * @param date
-     * @return
+     * Computes the status of the US on the given date from the History data of the US. Doesn't make any API calls.
+     * @param date the date to compute the status for
+     * @return a Status enum describing the status of the US at the specified date
      */
     public Status getStatusForDate(Date date){
         if(date.before(userStory.getCreatedDate())){

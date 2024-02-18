@@ -3,7 +3,6 @@ package taiga.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import taiga.api.UserStoryAPI;
 import taiga.api.UserStoryCustomAttributesAPI;
 import taiga.api.UserStoryCustomAttributesValuesAPI;
 import taiga.api.UserStoryHistoryAPI;
@@ -15,7 +14,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-import taiga.model.query.sprint.UserStoryDetail;
 import taiga.model.query.taskhistory.ItemHistory;
 import taiga.model.query.taskhistory.ItemHistoryValuesDiff;
 import taiga.model.query.userstories.UserStoryInterface;
@@ -32,6 +30,13 @@ public class UserStoryUtils {
     private static final UserStoryHistoryAPI userStoryHistoryAPI = new UserStoryHistoryAPI();
     private static final HashMap<Integer, UserStoryCustomAttribute> userStoryCustomAttributes = new HashMap<>();
 
+    /**
+     * Gets the Attribute of the UserStory which contains the Business Value. This si tricky because
+     * Business value is not natively supported by Taiga, so we have to parse the custom attributes
+     * and find the one that refers to Business Value specifically, and return it
+     * @param projectId the Id of the project that we are working in
+     * @return A UserStoryCustomAttribute which is the Business Value attribute in this project.
+     */
     private static UserStoryCustomAttribute loadBvAttribute(int projectId) {
         AtomicReference<List<UserStoryCustomAttribute>> attributes = new AtomicReference<>();
         userStoryCustomAttributesAPI.getUserStoryCustomAttributeList(projectId, results -> {
@@ -84,14 +89,20 @@ public class UserStoryUtils {
         return bv;
     }
 
-    public static CycleTimeEntry getCycleTimeForUserStory(UserStory story){
+    /**
+     * Gets the cycle time for the specified UserStory
+     * @param story any UserStory object, including UserStoryDetail etc.
+     * @return a CycleTimeEntry for the specified UserStory
+     */
+    public static CycleTimeEntry getCycleTimeForUserStory(UserStoryInterface story){
         return getCycleTimeForUserStory(story.getId());
     }
 
-    public static CycleTimeEntry getCycleTimeForUserStory(UserStoryDetail storyDetail){
-        return getCycleTimeForUserStory(storyDetail.getId());
-    }
-
+    /**
+     * Gets the cycle time for the specified UserStory
+     * @param storyId the numeric Id of the story
+     * @return a CycleTimeEntry for the specified UserStory
+     */
     public static CycleTimeEntry getCycleTimeForUserStory(int storyId){
         AtomicReference<List<ItemHistory>> historyListReference = new AtomicReference<>();
         userStoryHistoryAPI.getUserStoryHistory(storyId, result ->{
@@ -100,6 +111,14 @@ public class UserStoryUtils {
 
         List<ItemHistory> historyList = historyListReference.get();
         Collections.sort(historyList);
+
+        /*
+        Note here that we take the *first* time the story is moved to in progress and the *last*
+        time that it is moved to Done. This is intentional because regardless of the Scrum Rules,
+        people may move a task to In progress and back to New multiple times, and they may also move
+        the task out of done after placing it there. Therefore we choose to take the time between
+        the first move to In Progress and the last time the Story was moved to Done.
+         */
 
         //get first time moved to "In Progress"
         Date startDate = null;
@@ -141,15 +160,13 @@ public class UserStoryUtils {
         return new CycleTimeEntry(startDate, endDate);
     }
 
-    public static LeadTimeEntry getLeadTimeForUserStory(UserStory story){
-        return getLeadTimeForUserStory(story, story.getCreatedDate());
-    }
-
-    public static LeadTimeEntry getLeadTimeForUserStory(UserStoryDetail storyDetail){
-        return getLeadTimeForUserStory(storyDetail, storyDetail.getCreatedDate());
-    }
-
-    private static LeadTimeEntry getLeadTimeForUserStory(UserStoryInterface story, Date createdDate){
+    /**
+     * Gets a LeadTimeEntry for the specified UserStory. Usually this is not called directly,
+     * instead you might want to consider using the LeadTimeHelper.
+     * @param story any UserStory object, including UserStoryDetail
+     * @return a LeadTimeEntry for this UserStory
+     */
+    public static LeadTimeEntry getLeadTimeForUserStory(UserStoryInterface story){
         AtomicReference<List<ItemHistory>> historyListReference = new AtomicReference<>();
         userStoryHistoryAPI.getUserStoryHistory(story.getId(), result ->{
             historyListReference.set(new ArrayList<>(List.of(result.getContent())));
@@ -159,15 +176,5 @@ public class UserStoryUtils {
         Collections.sort(historyList);
 
         return new LeadTimeEntry(historyList, story);
-    }
-
-    //TODO: remove test code
-    public static void main(String[] args){
-        AtomicReference<UserStoryDetail> userStoryDetail = new AtomicReference<>();
-        (new UserStoryAPI()).getUserStory(5468121, result ->{
-            userStoryDetail.set(result.getContent());
-        }).join();
-
-        CycleTimeEntry time = getCycleTimeForUserStory(userStoryDetail.get());
     }
 }
