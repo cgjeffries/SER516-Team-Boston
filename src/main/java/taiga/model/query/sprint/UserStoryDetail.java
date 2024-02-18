@@ -5,11 +5,12 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 import java.util.List;
 import taiga.model.query.userstories.StatusExtraInfo;
+import taiga.model.query.userstories.UserStoryInterface;
 
-public class UserStoryDetail {
+public class UserStoryDetail implements UserStoryInterface {
     @SerializedName("assigned_to")
     @Expose
-    private Object assignedTo;
+    private Integer assignedTo;
 
     @SerializedName("assigned_to_extra_info")
     @Expose
@@ -61,7 +62,7 @@ public class UserStoryDetail {
 
     @SerializedName("epics")
     @Expose
-    private Object epics;
+    private List<Epic> epics;
 
     @SerializedName("external_reference")
     @Expose
@@ -105,7 +106,7 @@ public class UserStoryDetail {
 
     @SerializedName("milestone")
     @Expose
-    private Object milestone;
+    private Integer milestone;
 
     @SerializedName("milestone_name")
     @Expose
@@ -211,11 +212,11 @@ public class UserStoryDetail {
     @Expose
     private List<Object> watchers = null;
 
-    public Object getAssignedTo() {
-        return assignedTo;
+    public Integer getAssignedTo() {
+        return this.assignedTo;
     }
 
-    public void setAssignedTo(Object assignedTo) {
+    public void setAssignedTo(Integer assignedTo) {
         this.assignedTo = assignedTo;
     }
 
@@ -315,11 +316,11 @@ public class UserStoryDetail {
         this.epicOrder = epicOrder;
     }
 
-    public Object getEpics() {
+    public List<Epic> getEpics() {
         return epics;
     }
 
-    public void setEpics(Object epics) {
+    public void setEpics(List<Epic> epics) {
         this.epics = epics;
     }
 
@@ -403,11 +404,11 @@ public class UserStoryDetail {
         this.kanbanOrder = kanbanOrder;
     }
 
-    public Object getMilestone() {
+    public Integer getMilestone() {
         return milestone;
     }
 
-    public void setMilestone(Object milestone) {
+    public void setMilestone(Integer milestone) {
         this.milestone = milestone;
     }
 
