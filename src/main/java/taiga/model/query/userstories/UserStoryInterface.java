@@ -44,4 +44,6 @@ public interface UserStoryInterface {
     Double getTotalPoints();
 
     void setTotalPoints(Double totalPoints);
+
+    Boolean getIsClosed();
 }
