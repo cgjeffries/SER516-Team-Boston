@@ -44,13 +44,13 @@ public class MetricSelection extends Screen<VBox> {
             screenManager.switchScreen("project_selection");
         });
         //Can change the icon, set to arrow in circle for now
-        cycletime_tile.setGraphic(new Icon(BoxiconsRegular.RIGHT_ARROW_CIRCLE, 48));
+        cycletime_tile.setGraphic(new Icon(BoxiconsRegular.TIMER, 48));
         cycletime_tile.setActionHandler(() -> {
             Settings.get().getAppModel().setSelectedMetric("Cycle Time");
             screenManager.switchScreen("project_selection");
         });
         //Did a left arrow in circle now, got no better ideas
-        leadtime_tile.setGraphic(new Icon(BoxiconsRegular.LEFT_ARROW_CIRCLE, 48));
+        leadtime_tile.setGraphic(new Icon(BoxiconsRegular.CALENDAR, 48));
         leadtime_tile.setActionHandler(() -> {
             Settings.get().getAppModel().setSelectedMetric("Lead Time");
             screenManager.switchScreen("project_selection");
