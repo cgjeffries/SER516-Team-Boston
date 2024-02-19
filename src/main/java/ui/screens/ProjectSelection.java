@@ -119,6 +119,11 @@ public class ProjectSelection extends Screen<VBox> {
         Platform.runLater(() -> projects.remove(project));
     }
 
+    /**
+     * Calls the Taiga API at set endpoint with currently entered project slug
+     * 
+     * @param ae The even triggering the function, in this case the search button.
+     */
     @FXML
     public void handleSearch(ActionEvent ae) {
         project_search_bar.setEditable(false);
