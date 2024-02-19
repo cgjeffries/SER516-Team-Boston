@@ -1,10 +1,12 @@
 package taiga.util.timeAnalysis;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import taiga.model.query.userstories.UserStoryInterface;
 
 public class LeadTimeStats {
+    private final Date date;
     private final List<UserStoryInterface> notCreated = new ArrayList<>();
     private final List<UserStoryInterface> inBacklog = new ArrayList<>();
     private final List<UserStoryInterface> inSprint = new ArrayList<>();
@@ -12,12 +14,17 @@ public class LeadTimeStats {
     private final List<UserStoryInterface> inTest = new ArrayList<>();
     private final List<UserStoryInterface> inDone = new ArrayList<>();
 
+    public LeadTimeStats(Date date){
+        this.date = date;
+    }
+
     /**
      * Adds the story to the stats, segmented correctly according to the Status given.
      * @param story The story to categorize
      * @param status the Status of the story, determines which list it gets added to.
      */
     public void addStory(UserStoryInterface story, LeadTimeEntry.Status status){
+
         switch(status){
             case NOT_CREATED:
                 notCreated.add(story);
@@ -85,5 +92,9 @@ public class LeadTimeStats {
      */
     public List<UserStoryInterface> getInDone() {
         return inDone;
+    }
+
+    public Date getDate() {
+        return date;
     }
 }
