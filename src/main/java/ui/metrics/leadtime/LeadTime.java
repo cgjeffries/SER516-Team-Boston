@@ -30,7 +30,6 @@ public class LeadTime extends StackPane {
         Tab usLeadTimeTab = createLeadTimeTab(
             "User Story",
             new Icon(BoxiconsRegular.USER),
-            this.service.getNotCreatedStories(),
             this.service.getInBacklogStories(),
             this.service.getInSprintStories(),
             this.service.getInProgressStories(),
@@ -46,7 +45,6 @@ public class LeadTime extends StackPane {
 
     private Tab createLeadTimeTab(
         String name, Icon icon,
-        ObservableList<XYChart.Data<String, Number>> notCreated,
         ObservableList<XYChart.Data<String, Number>> inBacklog,
         ObservableList<XYChart.Data<String, Number>> inSprint,
         ObservableList<XYChart.Data<String, Number>> inProgress,
@@ -65,8 +63,6 @@ public class LeadTime extends StackPane {
         NumberAxis value = new NumberAxis();
         value.setLabel("User stories");
 
-        XYChart.Series<String, Number> notCreatedSeries = new XYChart.Series<>(notCreated);
-        notCreatedSeries.setName("Not Created");
         XYChart.Series<String, Number> inBacklogSeries = new XYChart.Series<>(inBacklog);
         inBacklogSeries.setName("In Backlog");
         XYChart.Series<String, Number> inSprintSeries = new XYChart.Series<>(inSprint);
@@ -80,8 +76,7 @@ public class LeadTime extends StackPane {
 
         StackedAreaChart<String, Number> chart = new StackedAreaChart<>(date, value);
 
-        chart.getData().addAll(notCreatedSeries, inBacklogSeries, inSprintSeries, inProgressSeries,
-            readyForTestSeries, doneSeries);
+        chart.getData().addAll(doneSeries, readyForTestSeries, inProgressSeries, inSprintSeries, inBacklogSeries);
 
 
         chart.setAnimated(false);

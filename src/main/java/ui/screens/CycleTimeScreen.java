@@ -29,6 +29,9 @@ public class CycleTimeScreen extends BaseMetricConfiguration {
         return this.cycleTime;
     }
 
+    /**
+     * Adds the switch sprint functionality to the sprint dropdown after the page is rendered.
+     */
     @Override
     protected void afterVisualizationMount() {
         sprint_combobox.setOnAction((e) -> {

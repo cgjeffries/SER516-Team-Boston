@@ -10,6 +10,13 @@ public class BurndownScreen extends BaseMetricConfiguration {
 
     private Burndown burndown;
 
+    /**
+     * Create a screen instance
+     *
+     * @param screenManager a ScreenManager instance
+     * @param id            A unique id for the scene.
+     * @param fxmlFilename  The fxml file to load for this screen.
+     */
     public BurndownScreen(ScreenManager screenManager, String id, String fxmlFilename) {
         super(screenManager, id, fxmlFilename);
     }
@@ -24,6 +31,9 @@ public class BurndownScreen extends BaseMetricConfiguration {
         return this.burndown;
     }
 
+    /**
+     * Adds the switch sprint functionality to the sprint dropdown after the page is rendered.
+     */
     @Override
     protected void afterVisualizationMount() {
         sprint_combobox.setOnAction((e) -> {
