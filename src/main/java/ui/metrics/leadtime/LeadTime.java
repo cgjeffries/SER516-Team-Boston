@@ -65,8 +65,8 @@ public class LeadTime extends StackPane {
         NumberAxis value = new NumberAxis();
         value.setLabel("User stories");
 
-        XYChart.Series<String, Number> notCreatedSeries = new XYChart.Series<>(notCreated);
-        notCreatedSeries.setName("Not Created");
+//        XYChart.Series<String, Number> notCreatedSeries = new XYChart.Series<>(notCreated);
+//        notCreatedSeries.setName("Not Created");
         XYChart.Series<String, Number> inBacklogSeries = new XYChart.Series<>(inBacklog);
         inBacklogSeries.setName("In Backlog");
         XYChart.Series<String, Number> inSprintSeries = new XYChart.Series<>(inSprint);
@@ -80,8 +80,7 @@ public class LeadTime extends StackPane {
 
         StackedAreaChart<String, Number> chart = new StackedAreaChart<>(date, value);
 
-        chart.getData().addAll(notCreatedSeries, inBacklogSeries, inSprintSeries, inProgressSeries,
-            readyForTestSeries, doneSeries);
+        chart.getData().addAll(doneSeries, readyForTestSeries, inProgressSeries, inSprintSeries, inBacklogSeries);
 
 
         chart.setAnimated(false);
