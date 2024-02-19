@@ -1,37 +1,41 @@
 package ui.screens;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import org.kordamp.ikonli.boxicons.BoxiconsRegular;
+import org.kordamp.ikonli.javafx.FontIcon;
+
 import atlantafx.base.controls.CustomTextField;
 import atlantafx.base.controls.Tile;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
 import atlantafx.base.util.Animations;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import org.kordamp.ikonli.boxicons.BoxiconsRegular;
-import org.kordamp.ikonli.javafx.FontIcon;
 import settings.Settings;
+import settings.appmodel.AppModel;
 import taiga.api.ProjectAPI;
-import taiga.api.SprintAPI;
 import taiga.model.query.project.Project;
-import taiga.model.query.sprint.Sprint;
 import taiga.util.TaigaUtil;
 import ui.components.Icon;
-import ui.components.Screen;
+import ui.components.screens.Screen;
+import ui.components.screens.ScreenManager;
 import ui.util.DefaultLogoResolver;
-import ui.util.ScreenManager;
-
-import java.net.URL;
-import java.util.Arrays;
-import java.util.ResourceBundle;
 
 public class ProjectSelection extends Screen<VBox> {
 
@@ -60,10 +64,11 @@ public class ProjectSelection extends Screen<VBox> {
      * Create a screen instance
      *
      * @param screenManager a ScreenManager instance
-     * @param name          A unique name for the scene.
+     * @param id            A unique id for the scene.
+     * @param fxmlFilename  The fxml file to load for this screen.
      */
-    public ProjectSelection(ScreenManager screenManager, String name) {
-        super(screenManager, name);
+    public ProjectSelection(ScreenManager screenManager, String id, String fxmlFilename) {
+        super(screenManager, id, fxmlFilename);
         progress = new ProgressIndicator(-1d);
         projects = FXCollections.observableArrayList(Settings.get().getAppModel().getProjects());
         projects.addListener((ListChangeListener<Project>) change -> {
@@ -114,6 +119,11 @@ public class ProjectSelection extends Screen<VBox> {
         Platform.runLater(() -> projects.remove(project));
     }
 
+    /**
+     * Calls the Taiga API at set endpoint with currently entered project slug
+     * 
+     * @param ae The even triggering the function, in this case the search button.
+     */
     @FXML
     public void handleSearch(ActionEvent ae) {
         project_search_bar.setEditable(false);
@@ -126,6 +136,7 @@ public class ProjectSelection extends Screen<VBox> {
             project_search_btn.setDisable(false);
             Animations.shakeX(project_search_bar, 6).playFromStart();
             project_search_bar.pseudoClassStateChanged(Styles.STATE_DANGER, true);
+            showErrorAlert("Invalid search input. Please enter a valid project name or slug.");
             return;
         }
         progress.setVisible(true);
@@ -136,6 +147,7 @@ public class ProjectSelection extends Screen<VBox> {
                 project_search_btn.setDisable(false);
                 progress.setVisible(false);
                 this.getRoot().setDisable(false);
+                showErrorAlert("Failed to fetch project. Please try again later.");
                 return;
             }
             Project project = result.getContent();
@@ -146,8 +158,22 @@ public class ProjectSelection extends Screen<VBox> {
                 this.getRoot().setDisable(false);
                 addProject(project);
                 Platform.runLater(() -> project_search_bar.clear());
+            }).exceptionally(ex -> {
+                showErrorAlert("Failed to load sprints for project: " + project.getName());
+                return null;
             });
+        }).exceptionally(ex -> {
+            showErrorAlert("Failed to fetch project due to an unexpected error.");
+            return null;
         });
+    }
+
+    private void showErrorAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     @FXML
@@ -155,8 +181,8 @@ public class ProjectSelection extends Screen<VBox> {
         screenManager.switchScreen("metric_selection");
     }
 
-    public void gotoSprintSelection() {
-        screenManager.switchScreen(("sprint_selection"));
+    public void gotoMetricConfiguration() {
+        screenManager.switchScreen(Settings.get().getAppModel().getSelectedMetric().get());
     }
 
     private static class ProjectCell extends ListCell<Project> {
@@ -192,12 +218,15 @@ public class ProjectSelection extends Screen<VBox> {
             root.setDescription(project.getDescription());
             root.setAction(menu);
             root.setActionHandler(() -> {
-                // TODO: transition to next screen
                 Settings.get().getAppModel().setCurrentProject(project);
-                projectSelection.gotoSprintSelection();
-                System.out.println(project.getName());
+                projectSelection.gotoMetricConfiguration();
             });
             setGraphic(root);
         }
+    }
+
+    @Override
+    protected void onFocused() {
+
     }
 }

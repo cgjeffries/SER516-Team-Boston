@@ -4,22 +4,29 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+import taiga.model.query.userstories.StatusExtraInfo;
 import taiga.model.query.userstories.UserStoryInterface;
 
-public class UserStory implements UserStoryInterface {
-
+public class UserStoryDetail implements UserStoryInterface {
     @SerializedName("assigned_to")
     @Expose
     private Integer assignedTo;
 
     @SerializedName("assigned_to_extra_info")
     @Expose
-    private AssignedToExtraInfo assignedToExtraInfo;
+    private Object assignedToExtraInfo;
+
+    @SerializedName("assigned_users")
+    @Expose
+    private List<Object> assignedUsers = null;
+
+    @SerializedName("attachments")
+    @Expose
+    private List<Object> attachments = null;
 
     @SerializedName("backlog_order")
     @Expose
-    private Long backlogOrder;
+    private long backlogOrder;
 
     @SerializedName("blocked_note")
     @Expose
@@ -29,13 +36,17 @@ public class UserStory implements UserStoryInterface {
     @Expose
     private Boolean clientRequirement;
 
+    @SerializedName("comment")
+    @Expose
+    private String comment;
+
     @SerializedName("created_date")
     @Expose
     private Date createdDate;
 
     @SerializedName("due_date")
     @Expose
-    private Object dueDate; // TODO figure out what this is
+    private Object dueDate;
 
     @SerializedName("due_date_reason")
     @Expose
@@ -45,17 +56,29 @@ public class UserStory implements UserStoryInterface {
     @Expose
     private String dueDateStatus;
 
+    @SerializedName("epic_order")
+    @Expose
+    private Object epicOrder;
+
     @SerializedName("epics")
     @Expose
-    private List<Epic> epics = null;
+    private List<Epic> epics;
 
     @SerializedName("external_reference")
     @Expose
-    private Object externalReference; // TODO figure out what this is
+    private Object externalReference;
 
     @SerializedName("finish_date")
     @Expose
     private Date finishDate;
+
+    @SerializedName("generated_from_issue")
+    @Expose
+    private Object generatedFromIssue;
+
+    @SerializedName("generated_from_task")
+    @Expose
+    private Object generatedFromTask;
 
     @SerializedName("id")
     @Expose
@@ -69,21 +92,53 @@ public class UserStory implements UserStoryInterface {
     @Expose
     private Boolean isClosed;
 
+    @SerializedName("is_voter")
+    @Expose
+    private Boolean isVoter;
+
+    @SerializedName("is_watcher")
+    @Expose
+    private Boolean isWatcher;
+
     @SerializedName("kanban_order")
     @Expose
-    private Long kanbanOrder;
+    private long kanbanOrder;
 
     @SerializedName("milestone")
     @Expose
     private Integer milestone;
 
+    @SerializedName("milestone_name")
+    @Expose
+    private Object milestoneName;
+
+    @SerializedName("milestone_slug")
+    @Expose
+    private Object milestoneSlug;
+
     @SerializedName("modified_date")
     @Expose
     private String modifiedDate;
 
+    @SerializedName("origin_issue")
+    @Expose
+    private Object originIssue;
+
+    @SerializedName("origin_task")
+    @Expose
+    private Object originTask;
+
+    @SerializedName("owner")
+    @Expose
+    private Integer owner;
+
+    @SerializedName("owner_extra_info")
+    @Expose
+    private Object ownerExtraInfo;
+
     @SerializedName("points")
     @Expose
-    private Map<String, String> points;
+    private Object points;
 
     @SerializedName("project")
     @Expose
@@ -91,7 +146,7 @@ public class UserStory implements UserStoryInterface {
 
     @SerializedName("project_extra_info")
     @Expose
-    private UserStoryProjectExtraInfo projectExtraInfo;
+    private Object projectExtraInfo;
 
     @SerializedName("ref")
     @Expose
@@ -113,39 +168,87 @@ public class UserStory implements UserStoryInterface {
     @Expose
     private String subject;
 
+    @SerializedName("tags")
+    @Expose
+    private List<List<String>> tags = null;
+
+    @SerializedName("tasks")
+    @Expose
+    private List<Object> tasks = null;
+
     @SerializedName("team_requirement")
     @Expose
     private Boolean teamRequirement;
+
+    @SerializedName("total_attachments")
+    @Expose
+    private Integer totalAttachments;
+
+    @SerializedName("total_comments")
+    @Expose
+    private Integer totalComments;
 
     @SerializedName("total_points")
     @Expose
     private Double totalPoints;
 
+    @SerializedName("total_voters")
+    @Expose
+    private Integer totalVoters;
+
+    @SerializedName("total_watchers")
+    @Expose
+    private Integer totalWatchers;
+
+    @SerializedName("tribe_gig")
+    @Expose
+    private Object tribeGig;
+
     @SerializedName("version")
     @Expose
     private Integer version;
 
+    @SerializedName("watchers")
+    @Expose
+    private List<Object> watchers = null;
+
     public Integer getAssignedTo() {
-        return assignedTo;
+        return this.assignedTo;
     }
 
     public void setAssignedTo(Integer assignedTo) {
         this.assignedTo = assignedTo;
     }
 
-    public AssignedToExtraInfo getAssignedToExtraInfo() {
+    public Object getAssignedToExtraInfo() {
         return assignedToExtraInfo;
     }
 
-    public void setAssignedToExtraInfo(AssignedToExtraInfo assignedToExtraInfo) {
+    public void setAssignedToExtraInfo(Object assignedToExtraInfo) {
         this.assignedToExtraInfo = assignedToExtraInfo;
     }
 
-    public Long getBacklogOrder() {
+    public List<Object> getAssignedUsers() {
+        return assignedUsers;
+    }
+
+    public void setAssignedUsers(List<Object> assignedUsers) {
+        this.assignedUsers = assignedUsers;
+    }
+
+    public List<Object> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Object> attachments) {
+        this.attachments = attachments;
+    }
+
+    public long getBacklogOrder() {
         return backlogOrder;
     }
 
-    public void setBacklogOrder(Long backlogOrder) {
+    public void setBacklogOrder(long backlogOrder) {
         this.backlogOrder = backlogOrder;
     }
 
@@ -163,6 +266,14 @@ public class UserStory implements UserStoryInterface {
 
     public void setClientRequirement(Boolean clientRequirement) {
         this.clientRequirement = clientRequirement;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public Date getCreatedDate() {
@@ -197,6 +308,14 @@ public class UserStory implements UserStoryInterface {
         this.dueDateStatus = dueDateStatus;
     }
 
+    public Object getEpicOrder() {
+        return epicOrder;
+    }
+
+    public void setEpicOrder(Object epicOrder) {
+        this.epicOrder = epicOrder;
+    }
+
     public List<Epic> getEpics() {
         return epics;
     }
@@ -219,6 +338,22 @@ public class UserStory implements UserStoryInterface {
 
     public void setFinishDate(Date finishDate) {
         this.finishDate = finishDate;
+    }
+
+    public Object getGeneratedFromIssue() {
+        return generatedFromIssue;
+    }
+
+    public void setGeneratedFromIssue(Object generatedFromIssue) {
+        this.generatedFromIssue = generatedFromIssue;
+    }
+
+    public Object getGeneratedFromTask() {
+        return generatedFromTask;
+    }
+
+    public void setGeneratedFromTask(Object generatedFromTask) {
+        this.generatedFromTask = generatedFromTask;
     }
 
     public Integer getId() {
@@ -245,11 +380,27 @@ public class UserStory implements UserStoryInterface {
         this.isClosed = isClosed;
     }
 
-    public Long getKanbanOrder() {
+    public Boolean getIsVoter() {
+        return isVoter;
+    }
+
+    public void setIsVoter(Boolean isVoter) {
+        this.isVoter = isVoter;
+    }
+
+    public Boolean getIsWatcher() {
+        return isWatcher;
+    }
+
+    public void setIsWatcher(Boolean isWatcher) {
+        this.isWatcher = isWatcher;
+    }
+
+    public long getKanbanOrder() {
         return kanbanOrder;
     }
 
-    public void setKanbanOrder(Long kanbanOrder) {
+    public void setKanbanOrder(long kanbanOrder) {
         this.kanbanOrder = kanbanOrder;
     }
 
@@ -261,6 +412,22 @@ public class UserStory implements UserStoryInterface {
         this.milestone = milestone;
     }
 
+    public Object getMilestoneName() {
+        return milestoneName;
+    }
+
+    public void setMilestoneName(Object milestoneName) {
+        this.milestoneName = milestoneName;
+    }
+
+    public Object getMilestoneSlug() {
+        return milestoneSlug;
+    }
+
+    public void setMilestoneSlug(Object milestoneSlug) {
+        this.milestoneSlug = milestoneSlug;
+    }
+
     public String getModifiedDate() {
         return modifiedDate;
     }
@@ -269,11 +436,43 @@ public class UserStory implements UserStoryInterface {
         this.modifiedDate = modifiedDate;
     }
 
-    public Map<String, String> getPoints() {
+    public Object getOriginIssue() {
+        return originIssue;
+    }
+
+    public void setOriginIssue(Object originIssue) {
+        this.originIssue = originIssue;
+    }
+
+    public Object getOriginTask() {
+        return originTask;
+    }
+
+    public void setOriginTask(Object originTask) {
+        this.originTask = originTask;
+    }
+
+    public Integer getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Integer owner) {
+        this.owner = owner;
+    }
+
+    public Object getOwnerExtraInfo() {
+        return ownerExtraInfo;
+    }
+
+    public void setOwnerExtraInfo(Object ownerExtraInfo) {
+        this.ownerExtraInfo = ownerExtraInfo;
+    }
+
+    public Object getPoints() {
         return points;
     }
 
-    public void setPoints(Map<String, String> points) {
+    public void setPoints(Object points) {
         this.points = points;
     }
 
@@ -285,11 +484,11 @@ public class UserStory implements UserStoryInterface {
         this.project = project;
     }
 
-    public UserStoryProjectExtraInfo getProjectExtraInfo() {
+    public Object getProjectExtraInfo() {
         return projectExtraInfo;
     }
 
-    public void setProjectExtraInfo(UserStoryProjectExtraInfo projectExtraInfo) {
+    public void setProjectExtraInfo(Object projectExtraInfo) {
         this.projectExtraInfo = projectExtraInfo;
     }
 
@@ -333,12 +532,44 @@ public class UserStory implements UserStoryInterface {
         this.subject = subject;
     }
 
+    public List<List<String>> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<List<String>> tags) {
+        this.tags = tags;
+    }
+
+    public List<Object> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Object> tasks) {
+        this.tasks = tasks;
+    }
+
     public Boolean getTeamRequirement() {
         return teamRequirement;
     }
 
     public void setTeamRequirement(Boolean teamRequirement) {
         this.teamRequirement = teamRequirement;
+    }
+
+    public Integer getTotalAttachments() {
+        return totalAttachments;
+    }
+
+    public void setTotalAttachments(Integer totalAttachments) {
+        this.totalAttachments = totalAttachments;
+    }
+
+    public Integer getTotalComments() {
+        return totalComments;
+    }
+
+    public void setTotalComments(Integer totalComments) {
+        this.totalComments = totalComments;
     }
 
     public Double getTotalPoints() {
@@ -349,11 +580,43 @@ public class UserStory implements UserStoryInterface {
         this.totalPoints = totalPoints;
     }
 
+    public Integer getTotalVoters() {
+        return totalVoters;
+    }
+
+    public void setTotalVoters(Integer totalVoters) {
+        this.totalVoters = totalVoters;
+    }
+
+    public Integer getTotalWatchers() {
+        return totalWatchers;
+    }
+
+    public void setTotalWatchers(Integer totalWatchers) {
+        this.totalWatchers = totalWatchers;
+    }
+
+    public Object getTribeGig() {
+        return tribeGig;
+    }
+
+    public void setTribeGig(Object tribeGig) {
+        this.tribeGig = tribeGig;
+    }
+
     public Integer getVersion() {
         return version;
     }
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public List<Object> getWatchers() {
+        return watchers;
+    }
+
+    public void setWatchers(List<Object> watchers) {
+        this.watchers = watchers;
     }
 }

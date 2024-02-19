@@ -1,13 +1,12 @@
-package taiga.model.query.sprint;
+package taiga.model.query.tasks;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import taiga.model.query.userstories.UserStoryInterface;
 
-public class UserStory implements UserStoryInterface {
+public class Task {
 
     @SerializedName("assigned_to")
     @Expose
@@ -17,17 +16,13 @@ public class UserStory implements UserStoryInterface {
     @Expose
     private AssignedToExtraInfo assignedToExtraInfo;
 
-    @SerializedName("backlog_order")
+    @SerializedName("attachments")
     @Expose
-    private Long backlogOrder;
+    private List<Object> attachments = null; // TODO figure out what this does
 
     @SerializedName("blocked_note")
     @Expose
     private String blockedNote;
-
-    @SerializedName("client_requirement")
-    @Expose
-    private Boolean clientRequirement;
 
     @SerializedName("created_date")
     @Expose
@@ -35,7 +30,7 @@ public class UserStory implements UserStoryInterface {
 
     @SerializedName("due_date")
     @Expose
-    private Object dueDate; // TODO figure out what this is
+    private Object dueDate; // TODO figure out what this does
 
     @SerializedName("due_date_reason")
     @Expose
@@ -45,17 +40,13 @@ public class UserStory implements UserStoryInterface {
     @Expose
     private String dueDateStatus;
 
-    @SerializedName("epics")
-    @Expose
-    private List<Epic> epics = null;
-
     @SerializedName("external_reference")
     @Expose
-    private Object externalReference; // TODO figure out what this is
+    private Object externalReference; // TODO figure out what this does
 
-    @SerializedName("finish_date")
+    @SerializedName("finished_date")
     @Expose
-    private Date finishDate;
+    private Date finishedDate;
 
     @SerializedName("id")
     @Expose
@@ -69,21 +60,37 @@ public class UserStory implements UserStoryInterface {
     @Expose
     private Boolean isClosed;
 
-    @SerializedName("kanban_order")
+    @SerializedName("is_iocaine")
     @Expose
-    private Long kanbanOrder;
+    private Boolean isIocaine;
+
+    @SerializedName("is_voter")
+    @Expose
+    private Boolean isVoter;
+
+    @SerializedName("is_watcher")
+    @Expose
+    private Boolean isWatcher;
 
     @SerializedName("milestone")
     @Expose
     private Integer milestone;
 
+    @SerializedName("milestone_slug")
+    @Expose
+    private String milestoneSlug;
+
     @SerializedName("modified_date")
     @Expose
     private String modifiedDate;
 
-    @SerializedName("points")
+    @SerializedName("owner")
     @Expose
-    private Map<String, String> points;
+    private Integer owner;
+
+    @SerializedName("owner_extra_info")
+    @Expose
+    private OwnerExtraInfo ownerExtraInfo;
 
     @SerializedName("project")
     @Expose
@@ -91,15 +98,11 @@ public class UserStory implements UserStoryInterface {
 
     @SerializedName("project_extra_info")
     @Expose
-    private UserStoryProjectExtraInfo projectExtraInfo;
+    private ProjectExtraInfo projectExtraInfo;
 
     @SerializedName("ref")
     @Expose
     private Integer ref;
-
-    @SerializedName("sprint_order")
-    @Expose
-    private Long sprintOrder;
 
     @SerializedName("status")
     @Expose
@@ -113,17 +116,45 @@ public class UserStory implements UserStoryInterface {
     @Expose
     private String subject;
 
-    @SerializedName("team_requirement")
+    @SerializedName("tags")
     @Expose
-    private Boolean teamRequirement;
+    private List<List<String>> tags = null;
 
-    @SerializedName("total_points")
+    @SerializedName("taskboard_order")
     @Expose
-    private Double totalPoints;
+    private Long taskboardOrder;
+
+    @SerializedName("total_comments")
+    @Expose
+    private Integer totalComments;
+
+    @SerializedName("total_voters")
+    @Expose
+    private Integer totalVoters;
+
+    @SerializedName("total_watchers")
+    @Expose
+    private Integer totalWatchers;
+
+    @SerializedName("us_order")
+    @Expose
+    private Long usOrder;
+
+    @SerializedName("user_story")
+    @Expose
+    private Integer userStory;
+
+    @SerializedName("user_story_extra_info")
+    @Expose
+    private UserStoryExtraInfo userStoryExtraInfo;
 
     @SerializedName("version")
     @Expose
     private Integer version;
+
+    @SerializedName("watchers")
+    @Expose
+    private List<Integer> watchers = null;
 
     public Integer getAssignedTo() {
         return assignedTo;
@@ -141,12 +172,12 @@ public class UserStory implements UserStoryInterface {
         this.assignedToExtraInfo = assignedToExtraInfo;
     }
 
-    public Long getBacklogOrder() {
-        return backlogOrder;
+    public List<Object> getAttachments() {
+        return attachments;
     }
 
-    public void setBacklogOrder(Long backlogOrder) {
-        this.backlogOrder = backlogOrder;
+    public void setAttachments(List<Object> attachments) {
+        this.attachments = attachments;
     }
 
     public String getBlockedNote() {
@@ -155,14 +186,6 @@ public class UserStory implements UserStoryInterface {
 
     public void setBlockedNote(String blockedNote) {
         this.blockedNote = blockedNote;
-    }
-
-    public Boolean getClientRequirement() {
-        return clientRequirement;
-    }
-
-    public void setClientRequirement(Boolean clientRequirement) {
-        this.clientRequirement = clientRequirement;
     }
 
     public Date getCreatedDate() {
@@ -197,14 +220,6 @@ public class UserStory implements UserStoryInterface {
         this.dueDateStatus = dueDateStatus;
     }
 
-    public List<Epic> getEpics() {
-        return epics;
-    }
-
-    public void setEpics(List<Epic> epics) {
-        this.epics = epics;
-    }
-
     public Object getExternalReference() {
         return externalReference;
     }
@@ -213,12 +228,12 @@ public class UserStory implements UserStoryInterface {
         this.externalReference = externalReference;
     }
 
-    public Date getFinishDate() {
-        return finishDate;
+    public Date getFinishedDate() {
+        return finishedDate;
     }
 
-    public void setFinishDate(Date finishDate) {
-        this.finishDate = finishDate;
+    public void setFinishedDate(Date finishedDate) {
+        this.finishedDate = finishedDate;
     }
 
     public Integer getId() {
@@ -245,12 +260,28 @@ public class UserStory implements UserStoryInterface {
         this.isClosed = isClosed;
     }
 
-    public Long getKanbanOrder() {
-        return kanbanOrder;
+    public Boolean getIsIocaine() {
+        return isIocaine;
     }
 
-    public void setKanbanOrder(Long kanbanOrder) {
-        this.kanbanOrder = kanbanOrder;
+    public void setIsIocaine(Boolean isIocaine) {
+        this.isIocaine = isIocaine;
+    }
+
+    public Boolean getIsVoter() {
+        return isVoter;
+    }
+
+    public void setIsVoter(Boolean isVoter) {
+        this.isVoter = isVoter;
+    }
+
+    public Boolean getIsWatcher() {
+        return isWatcher;
+    }
+
+    public void setIsWatcher(Boolean isWatcher) {
+        this.isWatcher = isWatcher;
     }
 
     public Integer getMilestone() {
@@ -261,6 +292,14 @@ public class UserStory implements UserStoryInterface {
         this.milestone = milestone;
     }
 
+    public String getMilestoneSlug() {
+        return milestoneSlug;
+    }
+
+    public void setMilestoneSlug(String milestoneSlug) {
+        this.milestoneSlug = milestoneSlug;
+    }
+
     public String getModifiedDate() {
         return modifiedDate;
     }
@@ -269,12 +308,20 @@ public class UserStory implements UserStoryInterface {
         this.modifiedDate = modifiedDate;
     }
 
-    public Map<String, String> getPoints() {
-        return points;
+    public Integer getOwner() {
+        return owner;
     }
 
-    public void setPoints(Map<String, String> points) {
-        this.points = points;
+    public void setOwner(Integer owner) {
+        this.owner = owner;
+    }
+
+    public OwnerExtraInfo getOwnerExtraInfo() {
+        return ownerExtraInfo;
+    }
+
+    public void setOwnerExtraInfo(OwnerExtraInfo ownerExtraInfo) {
+        this.ownerExtraInfo = ownerExtraInfo;
     }
 
     public Integer getProject() {
@@ -285,11 +332,11 @@ public class UserStory implements UserStoryInterface {
         this.project = project;
     }
 
-    public UserStoryProjectExtraInfo getProjectExtraInfo() {
+    public ProjectExtraInfo getProjectExtraInfo() {
         return projectExtraInfo;
     }
 
-    public void setProjectExtraInfo(UserStoryProjectExtraInfo projectExtraInfo) {
+    public void setProjectExtraInfo(ProjectExtraInfo projectExtraInfo) {
         this.projectExtraInfo = projectExtraInfo;
     }
 
@@ -299,14 +346,6 @@ public class UserStory implements UserStoryInterface {
 
     public void setRef(Integer ref) {
         this.ref = ref;
-    }
-
-    public Long getSprintOrder() {
-        return sprintOrder;
-    }
-
-    public void setSprintOrder(Long sprintOrder) {
-        this.sprintOrder = sprintOrder;
     }
 
     public Integer getStatus() {
@@ -333,20 +372,68 @@ public class UserStory implements UserStoryInterface {
         this.subject = subject;
     }
 
-    public Boolean getTeamRequirement() {
-        return teamRequirement;
+    public List<List<String>> getTags() {
+        return tags;
     }
 
-    public void setTeamRequirement(Boolean teamRequirement) {
-        this.teamRequirement = teamRequirement;
+    public void setTags(List<List<String>> tags) {
+        this.tags = tags;
     }
 
-    public Double getTotalPoints() {
-        return totalPoints;
+    public Long getTaskboardOrder() {
+        return taskboardOrder;
     }
 
-    public void setTotalPoints(Double totalPoints) {
-        this.totalPoints = totalPoints;
+    public void setTaskboardOrder(Long taskboardOrder) {
+        this.taskboardOrder = taskboardOrder;
+    }
+
+    public Integer getTotalComments() {
+        return totalComments;
+    }
+
+    public void setTotalComments(Integer totalComments) {
+        this.totalComments = totalComments;
+    }
+
+    public Integer getTotalVoters() {
+        return totalVoters;
+    }
+
+    public void setTotalVoters(Integer totalVoters) {
+        this.totalVoters = totalVoters;
+    }
+
+    public Integer getTotalWatchers() {
+        return totalWatchers;
+    }
+
+    public void setTotalWatchers(Integer totalWatchers) {
+        this.totalWatchers = totalWatchers;
+    }
+
+    public Long getUsOrder() {
+        return usOrder;
+    }
+
+    public void setUsOrder(Long usOrder) {
+        this.usOrder = usOrder;
+    }
+
+    public Integer getUserStory() {
+        return userStory;
+    }
+
+    public void setUserStory(Integer userStory) {
+        this.userStory = userStory;
+    }
+
+    public UserStoryExtraInfo getUserStoryExtraInfo() {
+        return userStoryExtraInfo;
+    }
+
+    public void setUserStoryExtraInfo(UserStoryExtraInfo userStoryExtraInfo) {
+        this.userStoryExtraInfo = userStoryExtraInfo;
     }
 
     public Integer getVersion() {
@@ -355,5 +442,13 @@ public class UserStory implements UserStoryInterface {
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public List<Integer> getWatchers() {
+        return watchers;
+    }
+
+    public void setWatchers(List<Integer> watchers) {
+        this.watchers = watchers;
     }
 }
