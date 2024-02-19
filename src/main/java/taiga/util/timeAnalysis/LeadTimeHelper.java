@@ -42,7 +42,7 @@ public class LeadTimeHelper {
      * @return a LeadTimeStats object
      */
     public LeadTimeStats getLeadTimeStatsForDate(Date date){
-        LeadTimeStats stats = new LeadTimeStats();
+        LeadTimeStats stats = new LeadTimeStats(date);
         for(LeadTimeEntry entry : leadTimeEntryList){
             stats.addStory(entry.getUserStory(), entry.getStatusForDate(date));
         }
