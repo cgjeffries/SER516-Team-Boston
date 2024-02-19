@@ -78,12 +78,16 @@ public class UserStoryUtils {
 
         double bv = 0.0;
 
-        try {
-            bv = Double.parseDouble(bvString);
-        } catch (NumberFormatException e) {
-            System.out.println("Business value attribute had non-number value " + bvString + " on User Story " + story.getId() + "!");
-        } catch (Exception e) {
-            System.out.println("Exception during parsing BV attribute in US " + story.getId());
+        if(bvString != null) {
+            try {
+                bv = Double.parseDouble(bvString);
+            } catch (NumberFormatException e) {
+                System.out.println("Business value attribute had non-number value " + bvString +
+                    " on User Story " + story.getId() + "!");
+            } catch (Exception e) {
+                System.out.println("Exception during parsing BV attribute in US " + story.getId());
+                e.printStackTrace();
+            }
         }
 
         return bv;
