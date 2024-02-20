@@ -11,16 +11,18 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 import taiga.model.auth.RefreshResponse;
 import taiga.model.auth.Tokens;
+import taiga.util.APISettingsStore;
 import taiga.util.AuthTokenSingleton;
 import taiga.util.HTTPClientSingleton;
 import taiga.util.TokenStore;
 
 public abstract class APIWrapperBase {
 
-    private static String apiBaseURL = "https://api.taiga.io/api/v1/";
+    private static String apiBaseURL;
     private final String apiEndpoint;
 
     public APIWrapperBase(String endpoint) {
+        apiBaseURL = APISettingsStore.getAPIUrl();
         this.apiEndpoint = endpoint;
     }
 
