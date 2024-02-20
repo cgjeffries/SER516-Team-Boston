@@ -12,6 +12,7 @@ import java.util.List;
 import taiga.model.query.sprint.Sprint;
 
 public class AppModel {
+    private static final String DEFAULT_TAIGA_API_URL= "https://api.taiga.io/api/v1/";
     @Expose
     private String apiURL;
 
@@ -30,6 +31,9 @@ public class AppModel {
     }
 
     public String getApiURL(){
+        if(apiURL == null){
+            this.apiURL = DEFAULT_TAIGA_API_URL;
+        }
         return apiURL;
     }
 

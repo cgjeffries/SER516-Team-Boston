@@ -6,12 +6,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
+import settings.Settings;
 import taiga.model.auth.RefreshResponse;
 import taiga.model.auth.Tokens;
-import taiga.util.APISettingsStore;
 import taiga.util.AuthTokenSingleton;
 import taiga.util.HTTPClientSingleton;
 import taiga.util.TokenStore;
@@ -22,7 +21,7 @@ public abstract class APIWrapperBase {
     private final String apiEndpoint;
 
     public APIWrapperBase(String endpoint) {
-        apiBaseURL = APISettingsStore.getAPIUrl();
+        apiBaseURL = Settings.get().getAppModel().getApiURL();
         this.apiEndpoint = endpoint;
     }
 
