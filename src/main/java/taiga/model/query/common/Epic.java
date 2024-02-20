@@ -1,7 +1,8 @@
-package taiga.model.query.tasks;
+package taiga.model.query.common;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import taiga.model.query.common.Project;
 
 public class Epic {
 
