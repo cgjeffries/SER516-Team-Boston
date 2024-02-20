@@ -1,4 +1,5 @@
-package taiga.model.query.tasks;
+
+package taiga.model.query.common;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -12,7 +13,7 @@ public class Project {
     @SerializedName("name")
     @Expose
     private String name;
-
+    
     @SerializedName("slug")
     @Expose
     private String slug;
@@ -40,4 +41,5 @@ public class Project {
     public void setSlug(String slug) {
         this.slug = slug;
     }
+
 }
