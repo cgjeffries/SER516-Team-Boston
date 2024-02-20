@@ -1,20 +1,17 @@
 package ui.screens;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 
 import atlantafx.base.controls.Tile;
 import javafx.fxml.FXML;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import settings.Settings;
 import ui.components.Icon;
 import ui.components.screens.Screen;
 import ui.components.screens.ScreenManager;
 
-public class MetricSelection extends Screen<VBox> {
-    private static final VBox root = new VBox();
+public class MetricSelection extends Screen<HBox> {
+    private static final HBox root = new HBox();
     @FXML
     private Tile burndown_tile;
     @FXML
@@ -27,7 +24,7 @@ public class MetricSelection extends Screen<VBox> {
     }
 
     @Override
-    public VBox getRoot() {
+    public HBox getRoot() {
         return root;
     }
 
@@ -36,8 +33,7 @@ public class MetricSelection extends Screen<VBox> {
         return this;
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    protected void setup() {
         burndown_tile.setGraphic(new Icon(BoxiconsRegular.LINE_CHART_DOWN, 48));
         burndown_tile.setActionHandler(() -> {
             Settings.get().getAppModel().setSelectedMetric("Burndown");

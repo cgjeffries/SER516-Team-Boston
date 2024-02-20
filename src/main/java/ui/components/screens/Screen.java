@@ -1,20 +1,42 @@
 package ui.components.screens;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import org.kordamp.ikonli.boxicons.BoxiconsSolid;
+
+import atlantafx.base.theme.Styles;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import ui.components.Icon;
 import ui.util.FXMLManager;
 
 /**
- * A screen is a managed container for UI content. To facilitate transitions between screens, see {@link ScreenManager ScreenManager}
+ * A screen is a managed container for UI content. To facilitate transitions
+ * between screens, see {@link ScreenManager ScreenManager}
  *
- * @param <T> The type of root component this screen should have. This needs to be the same as the root element in the corresponding FXML.
+ * @param <T> The type of root component this screen should have. This needs to
+ *            be the same as the root element in the corresponding FXML.
  */
 public abstract class Screen<T extends Parent> implements Initializable {
     private final String id;
     private final String fxmlPath;
     protected ScreenManager screenManager;
 
-    protected boolean loaded;
+    protected boolean contentLoaded;
+    protected boolean rootLoaded;
+
+    @FXML
+    private Button home;
+
+    @FXML
+    private Button account;
+
+    @FXML
+    private Button settings;
 
     /**
      * Create a screen instance
@@ -27,18 +49,21 @@ public abstract class Screen<T extends Parent> implements Initializable {
         this.id = id;
         this.fxmlPath = fxmlFilename;
         this.screenManager = screenManager;
-        this.loaded = false;
+        this.rootLoaded = false;
+        this.contentLoaded = false;
     }
 
     /**
-     * Gets the root element. This needs to be the same as the root element in the corresponding FXML.
+     * Gets the root element. This needs to be the same as the root element in the
+     * corresponding FXML.
      *
      * @return the root element
      */
     public abstract T getRoot();
 
     /**
-     * Get the controller for the screen. This should be the immediate superclass of the screen (so return `this`)
+     * Get the controller for the screen. This should be the immediate superclass of
+     * the screen (so return `this`)
      *
      * @return The controller for the screen
      */
@@ -49,11 +74,34 @@ public abstract class Screen<T extends Parent> implements Initializable {
      * If you are using {@link ScreenManager}, you should not call this manually.
      */
     public void load() {
-        if (this.loaded) {
+        if (this.contentLoaded) {
             return;
         }
-        FXMLManager.load("/fxml/" + fxmlPath + ".fxml", getRoot(), getController());
-        this.loaded = true;
+        FXMLLoader root = FXMLManager.load("/fxml/sidebar.fxml", getRoot(), getController());
+        FXMLManager.load("/fxml/" + fxmlPath + ".fxml", root.getNamespace().get("root"),
+                getController());
+
+        this.contentLoaded = true;
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        if (!this.rootLoaded) {
+            this.rootLoaded = true;
+            initializeRoot();
+            return;
+        }
+        this.contentLoaded = true;
+        setup();
+    }
+
+    private void initializeRoot() {
+        home.setGraphic(new Icon(BoxiconsSolid.HOME, 24));
+        home.getStyleClass().addAll(Styles.BUTTON_ICON);
+        account.setGraphic(new Icon(BoxiconsSolid.USER, 24));
+        account.getStyleClass().addAll(Styles.BUTTON_ICON);
+        settings.setGraphic(new Icon(BoxiconsSolid.COG, 24));
+        settings.getStyleClass().addAll(Styles.BUTTON_ICON);
     }
 
     public String getId() {
@@ -61,5 +109,6 @@ public abstract class Screen<T extends Parent> implements Initializable {
     }
 
     protected abstract void onFocused();
-}
 
+    protected abstract void setup();
+}
