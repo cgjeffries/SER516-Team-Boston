@@ -1,4 +1,4 @@
-package taiga.model.query.sprint;
+package taiga.model.query.common;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -12,7 +12,7 @@ public class StatusExtraInfo {
     @SerializedName("is_closed")
     @Expose
     private Boolean isClosed;
-
+    
     @SerializedName("name")
     @Expose
     private String name;
@@ -40,4 +40,5 @@ public class StatusExtraInfo {
     public void setName(String name) {
         this.name = name;
     }
+
 }

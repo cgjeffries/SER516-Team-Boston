@@ -2,7 +2,7 @@ package taiga.model.query.userstories;
 
 import java.util.Date;
 import java.util.List;
-import taiga.model.query.sprint.Epic;
+import taiga.model.query.common.Epic;
 
 public interface UserStoryInterface {
     Integer getAssignedTo();

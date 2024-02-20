@@ -4,7 +4,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 import java.util.List;
-import taiga.model.query.userstories.StatusExtraInfo;
+import taiga.model.query.common.Epic;
+import taiga.model.query.common.StatusExtraInfo;
 import taiga.model.query.userstories.UserStoryInterface;
 
 public class UserStoryDetail implements UserStoryInterface {
