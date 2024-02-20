@@ -13,6 +13,9 @@ import taiga.model.query.sprint.Sprint;
 
 public class AppModel {
     @Expose
+    private String apiURL;
+
+    @Expose
     private List<Project> projects;
 
     @Expose
@@ -24,6 +27,14 @@ public class AppModel {
     public AppModel() {
         this.selectedMetric = new SimpleStringProperty();
         this.currentProject = new SimpleObjectProperty<>();
+    }
+
+    public String getApiURL(){
+        return apiURL;
+    }
+
+    public void setApiURL(String url){
+        this.apiURL = url;
     }
 
     public List<Project> getProjects() {
