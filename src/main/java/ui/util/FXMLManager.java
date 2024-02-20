@@ -14,7 +14,7 @@ public class FXMLManager {
      * @param root       The root to attach the loaded FXML to
      * @param controller The controller to set for the FXML
      */
-    public static void load(String fxmlPath, Object root, Object controller) {
+    public static FXMLLoader load(String fxmlPath, Object root, Object controller) {
         FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(FXMLManager.class.getResource(fxmlPath)));
         loader.setRoot(root);
         loader.setController(controller);
@@ -23,5 +23,6 @@ public class FXMLManager {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return loader;
     }
 }
