@@ -24,7 +24,8 @@ public class ScreenManager {
     public void initialize(Screen<? extends Parent> screen) {
         addScreen(screen);
         screen.load();
-        scene = new Scene(screen.getRoot(), 800, 600);
+        scene = new Scene(screen.getRoot());
+        scene.getStylesheets().add("/css/style.css");
     }
 
     /**
