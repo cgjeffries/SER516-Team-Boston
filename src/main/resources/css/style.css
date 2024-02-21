@@ -1,0 +1,6 @@
+.sidebar {
+    -fx-padding: 8px;
+    -fx-background-color: -color-bg-inset;
+    -fx-border-color: -color-border-default;
+    -fx-border-width: 0 1px 0 0;  
+}
