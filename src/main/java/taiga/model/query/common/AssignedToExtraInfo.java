@@ -1,4 +1,4 @@
-package taiga.model.query.userstories;
+package taiga.model.query.common;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -88,5 +88,4 @@ public class AssignedToExtraInfo {
     public void setUsername(String username) {
         this.username = username;
     }
-
 }

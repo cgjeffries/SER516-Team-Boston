@@ -5,6 +5,10 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 import java.util.List;
+import taiga.model.query.common.AssignedToExtraInfo;
+import taiga.model.query.common.OwnerExtraInfo;
+import taiga.model.query.common.ProjectExtraInfo;
+import taiga.model.query.common.StatusExtraInfo;
 
 public class Task {
 
