@@ -23,7 +23,7 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import settings.Settings;
 import taiga.api.ProjectAPI;
 import taiga.model.query.project.Project;
@@ -33,9 +33,9 @@ import ui.components.screens.Screen;
 import ui.components.screens.ScreenManager;
 import ui.util.DefaultLogoResolver;
 
-public class ProjectSelection extends Screen<HBox> {
+public class ProjectSelection extends Screen<StackPane> {
 
-    private static final HBox root = new HBox();
+    private static final StackPane root = new StackPane();
 
     @FXML
     private CustomTextField project_search_bar;
@@ -82,7 +82,7 @@ public class ProjectSelection extends Screen<HBox> {
     }
 
     @Override
-    public HBox getRoot() {
+    public StackPane getRoot() {
         return root;
     }
 
@@ -174,7 +174,7 @@ public class ProjectSelection extends Screen<HBox> {
 
     @FXML
     public void goBack(ActionEvent ae) {
-        screenManager.switchScreen("metric_selection");
+        screenManager.switchScreen("Metric Selection");
     }
 
     public void gotoMetricConfiguration() {

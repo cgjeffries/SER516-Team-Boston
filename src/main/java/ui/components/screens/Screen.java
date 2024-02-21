@@ -3,8 +3,10 @@ package ui.components.screens;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 import org.kordamp.ikonli.boxicons.BoxiconsSolid;
 
+import atlantafx.base.controls.ModalPane;
 import atlantafx.base.theme.Styles;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +14,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import ui.components.Icon;
+import ui.dialogs.DialogManager;
 import ui.util.FXMLManager;
 
 /**
@@ -33,10 +36,13 @@ public abstract class Screen<T extends Parent> implements Initializable {
     private Button home;
 
     @FXML
+    private Button settings;
+
+    @FXML
     private Button account;
 
     @FXML
-    private Button settings;
+    private ModalPane modalPane;
 
     /**
      * Create a screen instance
@@ -96,12 +102,16 @@ public abstract class Screen<T extends Parent> implements Initializable {
     }
 
     private void initializeRoot() {
-        home.setGraphic(new Icon(BoxiconsSolid.HOME, 24));
-        home.getStyleClass().addAll(Styles.BUTTON_ICON);
-        account.setGraphic(new Icon(BoxiconsSolid.USER, 24));
-        account.getStyleClass().addAll(Styles.BUTTON_ICON);
-        settings.setGraphic(new Icon(BoxiconsSolid.COG, 24));
-        settings.getStyleClass().addAll(Styles.BUTTON_ICON);
+        home.setGraphic(new Icon(BoxiconsSolid.HOME, 28));
+        home.getStyleClass().addAll(Styles.FLAT);
+        home.setOnAction((e) -> screenManager.switchScreen("Metric Selection"));
+
+        account.setGraphic(new Icon(BoxiconsSolid.USER, 28));
+        account.getStyleClass().addAll(Styles.FLAT);
+
+        settings.setGraphic(new Icon(BoxiconsRegular.SLIDER, 28));
+        settings.getStyleClass().addAll(Styles.FLAT);
+        settings.setOnAction((e) -> DialogManager.show("Settings", modalPane));
     }
 
     public String getId() {

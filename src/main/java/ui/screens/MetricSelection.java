@@ -4,14 +4,14 @@ import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 
 import atlantafx.base.controls.Tile;
 import javafx.fxml.FXML;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import settings.Settings;
 import ui.components.Icon;
 import ui.components.screens.Screen;
 import ui.components.screens.ScreenManager;
 
-public class MetricSelection extends Screen<HBox> {
-    private static final HBox root = new HBox();
+public class MetricSelection extends Screen<StackPane> {
+    private static final StackPane root = new StackPane();
     @FXML
     private Tile burndown_tile;
     @FXML
@@ -24,7 +24,7 @@ public class MetricSelection extends Screen<HBox> {
     }
 
     @Override
-    public HBox getRoot() {
+    public StackPane getRoot() {
         return root;
     }
 
