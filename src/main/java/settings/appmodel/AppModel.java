@@ -1,18 +1,20 @@
 package settings.appmodel;
 
 import com.google.gson.annotations.Expose;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
+import taiga.api.UsersAPI;
+import taiga.model.auth.LoginResponse;
+import taiga.model.auth.Tokens;
 import taiga.model.query.project.Project;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import taiga.model.query.sprint.Sprint;
+import taiga.model.query.user.UserProfile;
 
 public class AppModel {
-    private static final String DEFAULT_TAIGA_API_URL= "https://api.taiga.io/api/v1/";
+    private static final String DEFAULT_TAIGA_API_URL = "https://api.taiga.io/api/v1/";
     @Expose
     private String apiURL;
 
@@ -22,22 +24,43 @@ public class AppModel {
     @Expose
     private List<Sprint> sprints;
 
+    @Expose
+    private Tokens tokens;
+
     private final SimpleObjectProperty<Project> currentProject;
     private final StringProperty selectedMetric;
+
+    private final SimpleObjectProperty<LoginResponse> user;
 
     public AppModel() {
         this.selectedMetric = new SimpleStringProperty();
         this.currentProject = new SimpleObjectProperty<>();
+        this.user = new SimpleObjectProperty<>();
+        this.init();
     }
 
-    public String getApiURL(){
-        if(apiURL == null){
+    private void init() {
+        new UsersAPI().getMe(response -> {
+            if (response.getStatus() != 200) {
+                return;
+            }
+            UserProfile profile = response.getContent();
+            LoginResponse loginData = new LoginResponse();
+            loginData.setGravatarId(profile.getGravatarId());
+            loginData.setUsername(profile.getUsername());
+            loginData.setPhoto(profile.getPhoto());
+            this.user.set(loginData);
+        });
+    }
+
+    public String getApiURL() {
+        if (apiURL == null) {
             this.apiURL = DEFAULT_TAIGA_API_URL;
         }
         return apiURL;
     }
 
-    public void setApiURL(String url){
+    public void setApiURL(String url) {
         this.apiURL = url;
     }
 
@@ -104,5 +127,21 @@ public class AppModel {
 
     public StringProperty getSelectedMetric() {
         return selectedMetric;
+    }
+
+    public Tokens getTokens() {
+        return tokens;
+    }
+
+    public void setTokens(Tokens tokens) {
+        this.tokens = tokens;
+    }
+
+    public SimpleObjectProperty<LoginResponse> getUser() {
+        return user;
+    }
+
+    public void setUser(LoginResponse response) {
+        user.set(response);
     }
 }

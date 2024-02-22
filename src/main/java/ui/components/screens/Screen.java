@@ -3,6 +3,8 @@ package ui.components.screens;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 import org.kordamp.ikonli.boxicons.BoxiconsSolid;
 
@@ -41,6 +43,8 @@ public abstract class Screen<T extends Parent> implements Initializable {
     @FXML
     private ModalPane modalPane;
 
+    private BooleanProperty loggedIn;
+
     /**
      * Create a screen instance
      *
@@ -54,6 +58,7 @@ public abstract class Screen<T extends Parent> implements Initializable {
         this.screenManager = screenManager;
         this.rootLoaded = false;
         this.contentLoaded = false;
+        this.loggedIn = new SimpleBooleanProperty();
     }
 
     /**
