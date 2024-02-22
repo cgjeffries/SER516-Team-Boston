@@ -3,12 +3,11 @@ package ui.dialogs;
 import java.util.HashMap;
 
 import atlantafx.base.controls.ModalPane;
-import javafx.scene.layout.Pane;
 
 public class DialogManager {
-    private final static HashMap<String, ModalDialog<? extends Pane>> dialogs = new HashMap<>();
+    private final static HashMap<String, ModalDialog> dialogs = new HashMap<>();
 
-    public static void add(ModalDialog<? extends Pane> dialog) {
+    public static void add(ModalDialog dialog) {
         if (dialogs.containsKey(dialog.getName())) {
             return;
         }
@@ -16,7 +15,7 @@ public class DialogManager {
     }
 
     public static void show(String name, ModalPane pane) {
-        ModalDialog<? extends Pane> target = dialogs.get(name);
+        ModalDialog target = dialogs.get(name);
         if (target == null) {
             System.err.println("No dialog '" + name + "' was found.");
             return;
