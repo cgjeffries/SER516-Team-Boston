@@ -101,7 +101,7 @@ public abstract class Screen<T extends Parent> implements Initializable {
     private void initializeRoot() {
         account.setGraphic(new Icon(BoxiconsRegular.LOG_IN, 16));
         account.getStyleClass().addAll(Styles.ROUNDED);
-
+        account.setOnAction((e) -> DialogManager.show("Log In", modalPane));
         settings.setGraphic(new Icon(BoxiconsSolid.COG, 16));
         settings.getStyleClass().addAll(Styles.ROUNDED);
         settings.setOnAction((e) -> DialogManager.show("Settings", modalPane));
