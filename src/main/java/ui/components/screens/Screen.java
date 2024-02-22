@@ -33,9 +33,6 @@ public abstract class Screen<T extends Parent> implements Initializable {
     protected boolean rootLoaded;
 
     @FXML
-    private Button home;
-
-    @FXML
     private Button settings;
 
     @FXML
@@ -83,7 +80,7 @@ public abstract class Screen<T extends Parent> implements Initializable {
         if (this.contentLoaded) {
             return;
         }
-        FXMLLoader root = FXMLManager.load("/fxml/sidebar.fxml", getRoot(), getController());
+        FXMLLoader root = FXMLManager.load("/fxml/app_root.fxml", getRoot(), getController());
         FXMLManager.load("/fxml/" + fxmlPath + ".fxml", root.getNamespace().get("root"),
                 getController());
 
@@ -102,18 +99,11 @@ public abstract class Screen<T extends Parent> implements Initializable {
     }
 
     private void initializeRoot() {
-        modalPane.usePredefinedTransitionFactories(null);
-    
-        home.setGraphic(new Icon(BoxiconsSolid.HOME, 28));
-        home.getStyleClass().addAll(Styles.FLAT);
-        home.setOnAction((e) -> screenManager.switchScreen("Metric Selection"));
+        account.setGraphic(new Icon(BoxiconsRegular.LOG_IN, 16));
+        account.getStyleClass().addAll(Styles.ROUNDED);
 
-        account.setGraphic(new Icon(BoxiconsSolid.USER, 28));
-        account.getStyleClass().addAll(Styles.FLAT);
-        account.setOnAction((e) -> DialogManager.show("Log In", modalPane));
-
-        settings.setGraphic(new Icon(BoxiconsRegular.SLIDER, 28));
-        settings.getStyleClass().addAll(Styles.FLAT);
+        settings.setGraphic(new Icon(BoxiconsSolid.COG, 16));
+        settings.getStyleClass().addAll(Styles.ROUNDED);
         settings.setOnAction((e) -> DialogManager.show("Settings", modalPane));
     }
 
