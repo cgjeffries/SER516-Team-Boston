@@ -115,105 +115,89 @@ public abstract class APIWrapperBase {
     protected <T> CompletableFuture<APIResponse<T>> queryAsync(
             String query, Class<T> responseType, boolean retry, boolean enable_pagination) {
         try {
-            // Construct HTTP request
             HttpRequest.Builder request =
                     HttpRequest.newBuilder()
                             .uri(new URI(apiBaseURL + apiEndpoint + query))
                             .header("Content-Type", "application/json");
 
-            if(!enable_pagination){
+            if (!enable_pagination) {
                 request.header("x-disable-pagination", "true");
             }
 
-            // Add token to header if we have one
-            if (getAuthToken() != null) {
-                request.header("Authorization", "Bearer " + getAuthToken());
+            String authToken = getAuthToken();
+
+            if (authToken != null) {
+                request.header("Authorization", "Bearer " + authToken);
             }
 
-            // Make request
             return HTTPClientSingleton.getInstance()
                     .sendAsync(request.GET().build(), HttpResponse.BodyHandlers.ofString())
-                    .exceptionally(
-                            error -> {
-                                error.printStackTrace();
-                                return null;
-                            })
-                    .thenApply(
-                            response -> {
-                                AtomicReference<APIResponse<T>> apiResponse =
-                                        new AtomicReference<>(
-                                                createResponse(response, responseType));
+                    .exceptionally(error -> {
+                        error.printStackTrace();
+                        return null;
+                    })
+                    .thenApply(response -> {
+                        AtomicReference<APIResponse<T>> apiResponse =
+                                new AtomicReference<>(createResponse(response, responseType));
 
-                                if (retry) {
-                                    // if the response was a 401, meaning invalid/expired token,
-                                    // lets
-                                    // try to refresh the token once
-                                    if (apiResponse.get().getStatus() == 401) {
-                                        AuthAPI auth = new AuthAPI();
-                                        Tokens tokens = TokenStore.retrieveTokens();
-                                        String refresh =
-                                                (tokens == null) ? null : tokens.getRefresh();
-
-                                        // make sure that the refresh is actually non-null (this
-                                        // should
-                                        // always be non-null)
-                                        if (refresh != null) {
-                                            System.out.println("attempting to refresh auth token.");
-
-                                            // use the taiga api to refresh the auth token
-                                            AtomicReference<APIResponse<RefreshResponse>>
-                                                    refreshAPIResponse = new AtomicReference<>();
-
-                                            CompletableFuture<Void> completableFutureRefresh =
-                                                    auth.refresh(refresh, refreshAPIResponse::set);
-
-                                            completableFutureRefresh.join();
-
-                                            RefreshResponse refreshResponse =
-                                                    refreshAPIResponse.get().getContent();
-                                            tokens = new Tokens();
-
-                                            // if the refresh attempt was successful
-                                            if (refreshAPIResponse.get().getStatus() == 200) {
-                                                tokens.setAuth(refreshResponse.getAuthToken());
-                                                tokens.setRefresh(refreshResponse.getRefresh());
-                                            }
-                                            // if the refresh attempt failed, set everything to
-                                            // null.
-                                            else {
-                                                tokens.setAuth(null);
-                                                tokens.setRefresh(null);
-                                            }
-
-                                            // save the new tokens to disk
-                                            TokenStore.saveTokens(tokens);
-
-                                            // set teh shared singleton's token
-                                            AuthTokenSingleton.getInstance().setTokens(tokens);
-
-                                            // call the same query a second time now that we
-                                            // (hopefully)
-                                            // have a valid set of tokens
-                                            CompletableFuture<APIResponse<T>>
-                                                    completableFutureQuery =
-                                                            queryAsync(query, responseType, false, enable_pagination);
-
-                                            // change the api response to the value of the retry
-                                            completableFutureQuery.thenAccept(apiResponse::set);
-
-                                            // wait for it since we want to return this one not the
-                                            // original response
-                                            completableFutureQuery.join();
-                                        }
-                                    }
-                                }
-                                return apiResponse.get();
-                            });
+                        if (retry && apiResponse.get().getStatus() == 401) {
+                            refreshAuthToken(query, responseType, apiResponse, retry, enable_pagination);
+                        }
+                        return apiResponse.get();
+                    });
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
 
         return null;
+    }
+
+    /**
+     * Refreshes the authentication token and retries the query if needed.
+     *
+     * @param <T> The type of expected response object.
+     * @param query The query string to be appended to the base API endpoint configured.
+     * @param responseType The class of expected response object.
+     * @param apiResponse The reference to the APIResponse object.
+     * @param retry Indicates whether to retry the query if authentication token refresh is needed.
+     * @param enable_pagination Indicates whether pagination should be enabled.
+     */
+    private <T> void refreshAuthToken(String query, Class<T> responseType,
+                                       AtomicReference<APIResponse<T>> apiResponse,
+                                       boolean retry, boolean enable_pagination) {
+        AuthAPI auth = new AuthAPI();
+        Tokens tokens = TokenStore.retrieveTokens();
+        String refresh = (tokens == null) ? null : tokens.getRefresh();
+
+        if (refresh != null) {
+            System.out.println("attempting to refresh auth token.");
+
+            AtomicReference<APIResponse<RefreshResponse>> refreshAPIResponse = new AtomicReference<>();
+
+            CompletableFuture<Void> completableFutureRefresh = auth.refresh(refresh, refreshAPIResponse::set);
+
+            completableFutureRefresh.join();
+
+            RefreshResponse refreshResponse = refreshAPIResponse.get().getContent();
+            tokens = new Tokens();
+
+            if (refreshAPIResponse.get().getStatus() == 200) {
+                tokens.setAuth(refreshResponse.getAuthToken());
+                tokens.setRefresh(refreshResponse.getRefresh());
+            } else {
+                tokens.setAuth(null);
+                tokens.setRefresh(null);
+            }
+
+            TokenStore.saveTokens(tokens);
+            AuthTokenSingleton.getInstance().setTokens(tokens);
+
+            CompletableFuture<APIResponse<T>> completableFutureQuery =
+                    queryAsync(query, responseType, false, enable_pagination);
+
+            completableFutureQuery.thenAccept(apiResponse::set);
+            completableFutureQuery.join();
+        }
     }
 
     /**
