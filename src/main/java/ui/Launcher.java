@@ -2,14 +2,17 @@ package ui;
 
 import atlantafx.base.theme.PrimerLight;
 import javafx.application.Application;
+import javafx.application.HostServices;
 import javafx.stage.Stage;
 import settings.Settings;
 import ui.components.screens.ScreenManager;
 import ui.dialogs.DialogManager;
+import ui.dialogs.LoginDialog;
 import ui.dialogs.SettingsDialog;
 import ui.screens.*;
 
 public class Launcher extends Application {
+    private static HostServices hostServices;
 
     public static void main(String[] args) {
         launch(args);
@@ -17,6 +20,7 @@ public class Launcher extends Application {
 
     @Override
     public void init() {
+        hostServices = getHostServices();
         Settings.get().load();
     }
 
@@ -25,6 +29,7 @@ public class Launcher extends Application {
         Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
 
         DialogManager.add(new SettingsDialog());
+        DialogManager.add(new LoginDialog());
 
         ScreenManager screenManager = new ScreenManager();
         screenManager.initialize(new MetricSelection(screenManager, "Metric Selection", "metric_selection"));
@@ -41,5 +46,9 @@ public class Launcher extends Application {
     @Override
     public void stop() {
         Settings.get().save();
+    }
+
+    public static void openUrl(String url) {
+        hostServices.showDocument(url);
     }
 }

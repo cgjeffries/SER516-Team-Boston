@@ -93,8 +93,8 @@ public abstract class Screen<T extends Parent> implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if (!this.rootLoaded) {
-            this.rootLoaded = true;
             initializeRoot();
+            this.rootLoaded = true;
             return;
         }
         this.contentLoaded = true;
@@ -102,12 +102,15 @@ public abstract class Screen<T extends Parent> implements Initializable {
     }
 
     private void initializeRoot() {
+        modalPane.usePredefinedTransitionFactories(null);
+    
         home.setGraphic(new Icon(BoxiconsSolid.HOME, 28));
         home.getStyleClass().addAll(Styles.FLAT);
         home.setOnAction((e) -> screenManager.switchScreen("Metric Selection"));
 
         account.setGraphic(new Icon(BoxiconsSolid.USER, 28));
         account.getStyleClass().addAll(Styles.FLAT);
+        account.setOnAction((e) -> DialogManager.show("Log In", modalPane));
 
         settings.setGraphic(new Icon(BoxiconsRegular.SLIDER, 28));
         settings.getStyleClass().addAll(Styles.FLAT);

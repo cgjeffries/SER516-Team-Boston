@@ -1,18 +1,21 @@
 package ui.dialogs;
 
+import atlantafx.base.theme.Styles;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import settings.Settings;
 
-public class SettingsDialog extends ModalDialog<VBox> {
+public class SettingsDialog extends ModalDialog {
     private VBox root;
 
     @FXML
     private TextField server_url;
 
     public SettingsDialog() {
-        super("Settings", "/fxml/settings.fxml");
+        super("/fxml/settings.fxml");
     }
 
     @Override
@@ -21,7 +24,14 @@ public class SettingsDialog extends ModalDialog<VBox> {
     }
 
     @Override
-    protected VBox getRoot() {
+    protected Node getHeader() {
+        Label header = new Label("Settings");
+        header.getStyleClass().add(Styles.TITLE_2);
+        return header;
+    }
+
+    @Override
+    protected VBox getBody() {
         if (root == null) {
             root = new VBox();
         }
