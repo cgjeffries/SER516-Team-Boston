@@ -6,9 +6,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
+import settings.Settings;
 import taiga.model.auth.RefreshResponse;
 import taiga.model.auth.Tokens;
 import taiga.util.AuthTokenSingleton;
@@ -17,15 +17,31 @@ import taiga.util.TokenStore;
 
 public abstract class APIWrapperBase {
 
-    private static String apiBaseURL = "https://api.taiga.io/api/v1/";
+    private String apiBaseURL;
     private final String apiEndpoint;
 
     public APIWrapperBase(String endpoint) {
         this.apiEndpoint = endpoint;
     }
 
-    public static void setAPIBaseURL(String url) {
+    /**
+     * Manually override the api base url. Normally only used in testing.
+     * @param url the url of the taiga api
+     */
+    public void setAPIBaseURL(String url) {
         apiBaseURL = url;
+    }
+
+    /**
+     * Helper function to get the api base url. Defaults to what the settings has, but if the baseurl
+     * has been set manually (through setAPIBaseURL()) then that value will override.
+     * @return the taiga api base url
+     */
+    private String getAPIBaseURL(){
+        if(this.apiBaseURL != null){
+            return this.apiBaseURL;
+        }
+        return Settings.get().getAppModel().getApiURL();
     }
 
     /**
@@ -117,7 +133,7 @@ public abstract class APIWrapperBase {
         try {
             HttpRequest.Builder request =
                     HttpRequest.newBuilder()
-                            .uri(new URI(apiBaseURL + apiEndpoint + query))
+                            .uri(new URI(getAPIBaseURL() + apiEndpoint + query))
                             .header("Content-Type", "application/json");
 
             if (!enable_pagination) {
@@ -257,7 +273,7 @@ public abstract class APIWrapperBase {
             // Construct HTTP request
             HttpRequest.Builder request =
                     HttpRequest.newBuilder()
-                            .uri(new URI(apiBaseURL + apiEndpoint + path))
+                            .uri(new URI(getAPIBaseURL() + apiEndpoint + path))
                             .header("Content-Type", "application/json")
                             .header("x-disable-pagination", "true")
                             .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(body)));

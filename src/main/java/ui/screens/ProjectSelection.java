@@ -1,8 +1,5 @@
 package ui.screens;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -26,9 +23,8 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.StackPane;
 import settings.Settings;
-import settings.appmodel.AppModel;
 import taiga.api.ProjectAPI;
 import taiga.model.query.project.Project;
 import taiga.util.TaigaUtil;
@@ -37,9 +33,9 @@ import ui.components.screens.Screen;
 import ui.components.screens.ScreenManager;
 import ui.util.DefaultLogoResolver;
 
-public class ProjectSelection extends Screen<VBox> {
+public class ProjectSelection extends Screen<StackPane> {
 
-    private static final VBox root = new VBox();
+    private static final StackPane root = new StackPane();
 
     @FXML
     private CustomTextField project_search_bar;
@@ -86,7 +82,7 @@ public class ProjectSelection extends Screen<VBox> {
     }
 
     @Override
-    public VBox getRoot() {
+    public StackPane getRoot() {
         return root;
     }
 
@@ -96,7 +92,7 @@ public class ProjectSelection extends Screen<VBox> {
     }
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    protected void setup() {
         metric_label.textProperty().bind(Settings.get().getAppModel().getSelectedMetric());
         project_search_bar.setLeft(new Icon(BoxiconsRegular.SEARCH, 16));
         project_search_btn.setGraphic(new Icon(BoxiconsRegular.SEARCH, 16));
@@ -178,7 +174,7 @@ public class ProjectSelection extends Screen<VBox> {
 
     @FXML
     public void goBack(ActionEvent ae) {
-        screenManager.switchScreen("metric_selection");
+        screenManager.switchScreen("Metric Selection");
     }
 
     public void gotoMetricConfiguration() {
