@@ -21,6 +21,8 @@ public class MetricSelection extends Screen<VBox> {
     private Tile cycletime_tile;
     @FXML
     private Tile leadtime_tile;
+    @FXML
+    private Tile pbchange_title;
 
     public MetricSelection(ScreenManager screenManager, String id, String fxmlFilename) {
         super(screenManager, id, fxmlFilename);
@@ -53,6 +55,12 @@ public class MetricSelection extends Screen<VBox> {
         leadtime_tile.setGraphic(new Icon(BoxiconsRegular.CALENDAR, 48));
         leadtime_tile.setActionHandler(() -> {
             Settings.get().getAppModel().setSelectedMetric("Lead Time");
+            screenManager.switchScreen("project_selection");
+        });
+        // Calendar icon conveys times entering and leaving
+        pbchange_title.setGraphic(new Icon(BoxiconsRegular.LIST_UL, 48));
+        pbchange_title.setActionHandler(() -> {
+            Settings.get().getAppModel().setSelectedMetric("Backlog Changes");
             screenManager.switchScreen("project_selection");
         });
     }
