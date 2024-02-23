@@ -1,7 +1,9 @@
 package taiga.util.services;
 
+import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import settings.Settings;
 import taiga.api.AuthAPI;
 import taiga.model.auth.LoginResponse;
 import taiga.model.auth.Tokens;
@@ -10,13 +12,12 @@ import taiga.util.TokenStore;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class AuthenticationService extends Service<Boolean> {
+public class LoginService extends Service<Boolean> {
     private final AuthAPI authAPI;
-    private boolean authenticated;
     private String username;
     private String password;
 
-    public AuthenticationService() {
+    public LoginService() {
         this.authAPI = new AuthAPI();
     }
 
@@ -35,10 +36,6 @@ public class AuthenticationService extends Service<Boolean> {
         this.restart();
     }
 
-    public void logout() {
-        AuthTokenSingleton.getInstance().setTokens(new Tokens(null, null));
-    }
-
     @Override
     protected Task<Boolean> createTask() {
         return new Task<>() {
@@ -46,6 +43,7 @@ public class AuthenticationService extends Service<Boolean> {
             protected Boolean call() throws Exception {
                 AtomicBoolean success = new AtomicBoolean(true);
                 authAPI.authenticate(username, password, response -> {
+                    System.out.println(response.getStatus());
                     if (response.getStatus() != 200) {
                         success.set(false);
                         return;
@@ -54,7 +52,9 @@ public class AuthenticationService extends Service<Boolean> {
                     Tokens tokens = new Tokens(loginResponse.getAuthToken(), loginResponse.getRefresh());
                     TokenStore.saveTokens(tokens);
                     AuthTokenSingleton.getInstance().setTokens(tokens);
-                });
+                    Platform.runLater(() -> Settings.get().getAppModel().loadUser());
+                    ;
+                }).join();
                 return success.get();
             }
         };

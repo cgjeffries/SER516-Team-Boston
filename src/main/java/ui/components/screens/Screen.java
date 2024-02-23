@@ -3,8 +3,7 @@ package ui.components.screens;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.binding.Bindings;
 import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 import org.kordamp.ikonli.boxicons.BoxiconsSolid;
 
@@ -15,8 +14,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import settings.Settings;
+import taiga.model.auth.LoginResponse;
+import taiga.model.auth.Tokens;
+import taiga.util.AuthTokenSingleton;
 import ui.components.Icon;
 import ui.dialogs.DialogManager;
+import ui.util.DefaultLogoResolver;
 import ui.util.FXMLManager;
 
 /**
@@ -38,12 +44,19 @@ public abstract class Screen<T extends Parent> implements Initializable {
     private Button settings;
 
     @FXML
-    private Button account;
+    private Button login_btn;
+
+    @FXML
+    private Button logout_btn;
 
     @FXML
     private ModalPane modalPane;
 
-    private BooleanProperty loggedIn;
+    @FXML
+    private ImageView user_logo;
+
+    @FXML
+    private Label login_info;
 
     /**
      * Create a screen instance
@@ -58,7 +71,6 @@ public abstract class Screen<T extends Parent> implements Initializable {
         this.screenManager = screenManager;
         this.rootLoaded = false;
         this.contentLoaded = false;
-        this.loggedIn = new SimpleBooleanProperty();
     }
 
     /**
@@ -104,12 +116,40 @@ public abstract class Screen<T extends Parent> implements Initializable {
     }
 
     private void initializeRoot() {
-        account.setGraphic(new Icon(BoxiconsRegular.LOG_IN, 16));
-        account.getStyleClass().addAll(Styles.ROUNDED);
-        account.setOnAction((e) -> DialogManager.show("Log In", modalPane));
+        login_btn.setGraphic(new Icon(BoxiconsRegular.LOG_IN, 16));
+        login_btn.getStyleClass().addAll(Styles.ROUNDED);
+        login_btn.setOnAction((e) -> DialogManager.show("Log In", modalPane));
+        login_btn.visibleProperty().bind(Settings.get().getAppModel().getUser().isNull());
+        login_btn.managedProperty().bind(login_btn.visibleProperty());
+
+        logout_btn.setGraphic(new Icon(BoxiconsRegular.LOG_OUT, 16));
+        logout_btn.getStyleClass().addAll(Styles.ROUNDED);
+        logout_btn.setOnAction((e) -> {
+            AuthTokenSingleton.getInstance().setTokens(new Tokens(null, null));
+            Settings.get().getAppModel().setUser(null);
+        });
+        logout_btn.visibleProperty().bind(Settings.get().getAppModel().getUser().isNotNull());
+        logout_btn.managedProperty().bind(logout_btn.visibleProperty());
+
         settings.setGraphic(new Icon(BoxiconsSolid.COG, 16));
         settings.getStyleClass().addAll(Styles.ROUNDED);
         settings.setOnAction((e) -> DialogManager.show("Settings", modalPane));
+
+        login_info.textProperty().bind(Bindings.createStringBinding(() -> {
+            LoginResponse user = Settings.get().getAppModel().getUser().get();
+            if (user == null) {
+                return "";
+            }
+            return "Logged in as " + user.getUsername();
+        }, Settings.get().getAppModel().getUser()));
+
+        user_logo.imageProperty().bind(Bindings.createObjectBinding(() -> {
+            LoginResponse user = Settings.get().getAppModel().getUser().get();
+            if (user == null) {
+                return null;
+            }
+            return DefaultLogoResolver.getUserLogoImage(user);
+        }, Settings.get().getAppModel().getUser()));
     }
 
     public String getId() {

@@ -5,13 +5,14 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<fx:root prefHeight="720.0" prefWidth="1280.0" type="StackPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root prefHeight="720.0" prefWidth="1280.0" type="StackPane" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ModalPane fx:id="modalPane" />
       <VBox>
@@ -25,8 +26,11 @@
                   </Label>
                   <Separator orientation="VERTICAL" />
                   <Region HBox.hgrow="ALWAYS" />
-                  <Button fx:id="logout" mnemonicParsing="false" text="Log Out" />
-                  <Button fx:id="account" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" styleClass="login" text="Log In" />
+                  <ImageView fx:id="user_logo" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />
+                  <Label fx:id="login_info" text="[Login Info]" />
+                  <Separator orientation="VERTICAL" />
+                  <Button fx:id="logout_btn" mnemonicParsing="false" styleClass="logout" text="Log Out" />
+                  <Button fx:id="login_btn" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" styleClass="login" text="Log In" />
                   <Button fx:id="settings" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" styleClass="settings" />
                </children>
                <padding>
