@@ -12,10 +12,10 @@ import atlantafx.base.theme.Styles;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import settings.Settings;
 import taiga.model.auth.LoginResponse;
 import taiga.model.auth.Tokens;
@@ -32,7 +32,7 @@ import ui.util.FXMLManager;
  * @param <T> The type of root component this screen should have. This needs to
  *            be the same as the root element in the corresponding FXML.
  */
-public abstract class Screen<T extends Parent> implements Initializable {
+public abstract class Screen implements Initializable {
     private final String id;
     private final String fxmlPath;
     protected ScreenManager screenManager;
@@ -79,7 +79,7 @@ public abstract class Screen<T extends Parent> implements Initializable {
      *
      * @return the root element
      */
-    public abstract T getRoot();
+    public abstract Pane getRoot();
 
     /**
      * Get the controller for the screen. This should be the immediate superclass of

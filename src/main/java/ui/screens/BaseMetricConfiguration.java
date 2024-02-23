@@ -23,7 +23,7 @@ import ui.components.Icon;
 import ui.components.screens.Screen;
 import ui.components.screens.ScreenManager;
 
-public abstract class BaseMetricConfiguration extends Screen<StackPane> {
+public abstract class BaseMetricConfiguration extends Screen {
     private final StackPane root = new StackPane();
 
     @FXML

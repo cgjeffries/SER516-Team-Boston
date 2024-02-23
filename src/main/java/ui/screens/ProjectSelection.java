@@ -33,7 +33,7 @@ import ui.components.screens.Screen;
 import ui.components.screens.ScreenManager;
 import ui.util.DefaultLogoResolver;
 
-public class ProjectSelection extends Screen<StackPane> {
+public class ProjectSelection extends Screen {
 
     private static final StackPane root = new StackPane();
 
