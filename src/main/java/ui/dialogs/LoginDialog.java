@@ -12,9 +12,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
-import taiga.util.services.LoginService;
 import ui.Launcher;
 import ui.components.Icon;
+import ui.services.LoginService;
 
 public class LoginDialog extends ModalDialog {
     private HBox body;

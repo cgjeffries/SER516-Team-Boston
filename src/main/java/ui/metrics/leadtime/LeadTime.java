@@ -3,7 +3,6 @@ package ui.metrics.leadtime;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.StackedAreaChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ProgressIndicator;
@@ -12,8 +11,8 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.StackPane;
 import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 import taiga.model.query.sprint.Sprint;
-import taiga.util.timeAnalysis.LeadTimeStats;
 import ui.components.Icon;
+import ui.services.LeadTimeService;
 
 public class LeadTime extends StackPane {
     private final LeadTimeService service;
