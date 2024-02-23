@@ -1,5 +1,6 @@
 package taiga.model.query.epic;
 
+import java.util.Date;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -36,7 +37,7 @@ public class EpicDetail {
     private String comment;
     @SerializedName("created_date")
     @Expose
-    private String createdDate;
+    private Date createdDate;
     @SerializedName("description")
     @Expose
     private String description;
@@ -177,11 +178,11 @@ public class EpicDetail {
         this.comment = comment;
     }
 
-    public String getCreatedDate() {
+    public Date getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(String createdDate) {
+    public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
     }
 
