@@ -1,6 +1,8 @@
 package settings.appmodel;
 
 import com.google.gson.annotations.Expose;
+
+import javafx.application.Platform;
 import javafx.beans.property.*;
 import taiga.api.UsersAPI;
 import taiga.model.auth.LoginResponse;
@@ -36,10 +38,9 @@ public class AppModel {
         this.selectedMetric = new SimpleStringProperty();
         this.currentProject = new SimpleObjectProperty<>();
         this.user = new SimpleObjectProperty<>();
-        this.init();
     }
 
-    private void init() {
+    public void loadUser() {
         new UsersAPI().getMe(response -> {
             if (response.getStatus() != 200) {
                 return;
@@ -49,7 +50,7 @@ public class AppModel {
             loginData.setGravatarId(profile.getGravatarId());
             loginData.setUsername(profile.getUsername());
             loginData.setPhoto(profile.getPhoto());
-            this.user.set(loginData);
+            Platform.runLater(() -> this.user.set(loginData));
         });
     }
 

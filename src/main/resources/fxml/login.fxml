@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import atlantafx.base.controls.Message?>
 <?import atlantafx.base.controls.PasswordTextField?>
 <?import atlantafx.base.controls.Spacer?>
 <?import javafx.geometry.Insets?>
@@ -23,12 +24,12 @@
             <Spacer prefHeight="10.0" />
             <VBox VBox.vgrow="NEVER">
                <children>
-                  <Label text="Username or Email" VBox.vgrow="NEVER">
+                  <Label text="Username/Email" VBox.vgrow="NEVER">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="username" promptText="Username..." VBox.vgrow="NEVER" />
+                  <TextField fx:id="username" promptText="Enter username/email..." VBox.vgrow="NEVER" />
                </children>
             </VBox>
             <VBox>
@@ -38,15 +39,21 @@
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </Label>
-                  <PasswordTextField fx:id="password" promptText="Password..." />
+                  <PasswordTextField fx:id="password" promptText="Enter password..." />
                </children>
             </VBox>
+            <Message fx:id="login_error" title="Incorrect username/email or password" />
             <Button fx:id="login" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#doLogin" text="Log In">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
             </Button>
-            <Hyperlink fx:id="taiga_link" alignment="CENTER" onAction="#openTaiga" text="Create an account on Taiga" />
+            <HBox alignment="CENTER" spacing="5.0" VBox.vgrow="NEVER">
+               <children>
+                  <Label text="No account?" />
+                  <Hyperlink fx:id="taiga_link" alignment="CENTER" onAction="#openTaiga" text="Create an account on Taiga" />
+               </children>
+            </HBox>
          </children>
       </VBox>
    </children>

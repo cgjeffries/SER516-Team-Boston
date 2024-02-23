@@ -4,7 +4,7 @@
     -fx-border-width: 0 0 1px 0;
 }
 
-.login {
+.login, .logout {
     -fx-padding: 10px 30px;
     -fx-font-weight: bold;
 }
