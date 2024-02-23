@@ -1,4 +1,4 @@
-package taiga.util.services;
+package ui.services;
 
 import javafx.application.Platform;
 import javafx.concurrent.Service;

@@ -1,6 +1,5 @@
 package ui.metrics.cycletime;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.*;
 import javafx.scene.control.ProgressIndicator;
@@ -10,6 +9,7 @@ import javafx.scene.layout.StackPane;
 import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 import taiga.model.query.sprint.Sprint;
 import ui.components.Icon;
+import ui.services.CycleTimeService;
 
 public class CycleTime extends StackPane {
 
