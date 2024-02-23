@@ -1,12 +1,10 @@
-package ui.metrics.leadtime;
+package ui.services;
 
-import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,7 +13,6 @@ import javafx.concurrent.Task;
 import javafx.scene.chart.XYChart;
 import taiga.model.query.sprint.Sprint;
 import taiga.model.query.userstories.UserStoryInterface;
-import taiga.util.timeAnalysis.CycleTimeEntry;
 import taiga.util.timeAnalysis.LeadTimeHelper;
 import taiga.util.timeAnalysis.LeadTimeStats;
 import ui.util.DateUtil;

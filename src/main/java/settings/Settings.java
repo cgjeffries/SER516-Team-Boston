@@ -48,6 +48,7 @@ public class Settings {
                 JsonReader jsonReader = new JsonReader(fileReader);
                 AppModel result = gson.fromJson(jsonReader, AppModel.class);
                 appModel = Objects.requireNonNullElseGet(result, () -> new AppModel());
+                appModel.loadUser();
             }
         } catch (IOException e) {
             System.err.println(e);

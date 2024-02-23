@@ -1,4 +1,4 @@
-package ui.metrics.burndown;
+package ui.services;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -10,6 +10,10 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.chart.XYChart;
 import taiga.model.query.sprint.Sprint;
+import ui.metrics.burndown.BurnDownEntry;
+import ui.metrics.burndown.BusinessValueBurndown;
+import ui.metrics.burndown.TaskBurndown;
+import ui.metrics.burndown.UserStoryBurndown;
 
 public class BurndownService extends Service<Object> {
     private Sprint sprint;
@@ -37,15 +41,15 @@ public class BurndownService extends Service<Object> {
         this.restart();
     }
 
-    protected Data getTaskData() {
+    public Data getTaskData() {
         return this.taskBurndownData;
     }
 
-    protected Data getUserStoryData() {
+    public Data getUserStoryData() {
         return this.userStoryBurndownData;
     }
 
-    protected Data getBusinessValueData() {
+    public Data getBusinessValueData() {
         return this.businessValueBurndownData;
     }
 
@@ -88,7 +92,7 @@ public class BurndownService extends Service<Object> {
         burndownData.setCalculated(entries.stream().map(d -> new XYChart.Data<>(format.format(d.getDate()), (Number) d.getCurrent())).toList());
     }
 
-    protected static class Data {
+    public static class Data {
         private final ObservableList<XYChart.Data<String, Number>> calculated;
         private final ObservableList<XYChart.Data<String, Number>> ideal;
 
@@ -105,11 +109,11 @@ public class BurndownService extends Service<Object> {
             this.ideal.setAll(ideal);
         }
 
-        protected ObservableList<XYChart.Data<String, Number>> getCalculated() {
+        public ObservableList<XYChart.Data<String, Number>> getCalculated() {
             return calculated;
         }
 
-        protected ObservableList<XYChart.Data<String, Number>> getIdeal() {
+        public ObservableList<XYChart.Data<String, Number>> getIdeal() {
             return ideal;
         }
     }

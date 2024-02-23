@@ -10,7 +10,7 @@ import ui.components.Icon;
 import ui.components.screens.Screen;
 import ui.components.screens.ScreenManager;
 
-public class MetricSelection extends Screen<StackPane> {
+public class MetricSelection extends Screen {
     private static final StackPane root = new StackPane();
     @FXML
     private Tile burndown_tile;
