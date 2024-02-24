@@ -1,13 +1,10 @@
 package ui.metrics.pbchange;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.chart.*;
-import javafx.scene.control.ProgressIndicator;
+import atlantafx.base.controls.Tile;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.StackPane;
-import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 import taiga.model.query.sprint.Sprint;
 import ui.components.Icon;
 
@@ -33,5 +30,37 @@ public class PBChange extends StackPane {
     public void focusFirstTab() {
         tabPane.getSelectionModel().selectFirst();
     }
-}
 
+    private Tab createPBChangeTab(String name, Icon icon) {
+        return null;
+    }
+
+    private static class PBChangeCell<T> extends ListCell<T> {
+
+        public PBChangeCell() {
+
+        }
+
+        @Override
+        protected void updateItem(T project, boolean empty) {
+            super.updateItem(project, empty);
+            if (empty || project == null) {
+                setGraphic(null);
+                return;
+            }
+            setStyle(getStyle() + "-fx-padding: 0px;");
+            Tile root = new Tile();
+            root.setTitle(getTitle());
+            root.setDescription(getDescription());
+            setGraphic(root);
+        }
+
+        protected String getTitle() {
+            return "";
+        }
+
+        protected String getDescription() {
+            return "";
+        }
+    }
+}
