@@ -1,4 +1,4 @@
-package ui.metrics.pbChange;
+package ui.metrics.pbchange;
 
 import java.util.ArrayList;
 import java.util.List;
