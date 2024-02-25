@@ -8,6 +8,7 @@ import javafx.scene.layout.StackPane;
 import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 import taiga.model.query.sprint.Sprint;
 import ui.components.Icon;
+import ui.services.BurndownService;
 
 public class Burndown extends StackPane {
     private final BurndownService service;
