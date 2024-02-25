@@ -1,4 +1,4 @@
-package taiga.util.pbChange;
+package taiga.util.metrics.pbChange;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,29 +7,24 @@ import java.util.concurrent.atomic.AtomicReference;
 import settings.Settings;
 import taiga.api.EpicsAPI;
 import taiga.api.HistoryAPI;
-import taiga.api.SprintAPI;
 import taiga.api.UserStoryAPI;
 import taiga.model.query.epic.EpicDetail;
 import taiga.model.query.history.History;
-import taiga.model.query.sprint.Sprint;
 import taiga.model.query.sprint.UserStoryDetail;
 
 public class PBHelper {
 
-    private List<Sprint> sprintList;
     private List<UserStoryDetail> userStoryList;
     private List<EpicDetail> epicList;
     private List<History> userStoryHistoryList = new ArrayList<>();
 
     UserStoryAPI userStoryAPI = new UserStoryAPI();
-    SprintAPI sprintAPI = new SprintAPI();
     EpicsAPI epicAPI = new EpicsAPI();
     HistoryAPI historyAPI = new HistoryAPI();
     
     private int projectId;
 
     public PBHelper() {
-        sprintList = new ArrayList<>();
         userStoryList = new ArrayList<>();
         epicList = new ArrayList<>();
         userStoryHistoryList = new ArrayList<>();
@@ -67,10 +62,6 @@ public class PBHelper {
             userStoryHistoryList.addAll(historyListReference.get());
         }
 
-    }
-
-    public List<Sprint> getSprintList() {
-        return sprintList;
     }
 
     public List<UserStoryDetail> getUserStoryList() {
