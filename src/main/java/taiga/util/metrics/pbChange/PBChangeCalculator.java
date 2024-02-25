@@ -1,12 +1,10 @@
-package taiga.util.pbChange;
+package taiga.util.metrics.pbChange;
 
 import java.util.ArrayList;
 import java.util.List;
 import taiga.model.query.epic.EpicDetail;
-import taiga.model.query.history.History;
 import taiga.model.query.sprint.Sprint;
 import taiga.model.query.sprint.UserStoryDetail;
-import taiga.model.query.taskhistory.ItemHistory;
 import taiga.model.query.userstories.UserStoryInterface;
 
 public class PBChangeCalculator {
@@ -30,14 +28,6 @@ public class PBChangeCalculator {
         return addedAfterStart;
     }
 
-    /**
-     * Returns a list of the histories that were deleted after sprint start date.
-     * IMPORTANT: Assumes using list of only userstory histories, see PBHelper
-     * 
-     * @param userStoryHistoryList The list of user story histories, see PBHelper
-     * @param sprint The sprint start date being analyzed
-     * @return A list of only those stories deleted/removed after start date
-     */
     public static List<UserStoryDetail> filterUSRemovedAfterSprintStart(List<UserStoryDetail> userStories, Sprint sprint) {
         List<UserStoryDetail> removedAfterStart = new ArrayList<>();
         for (UserStoryDetail userStory : userStories) {
