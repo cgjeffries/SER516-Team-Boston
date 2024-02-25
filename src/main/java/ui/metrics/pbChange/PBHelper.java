@@ -1,4 +1,4 @@
-package taiga.util.metrics.pbChange;
+package ui.metrics.pbChange;
 
 import java.util.ArrayList;
 import java.util.List;
