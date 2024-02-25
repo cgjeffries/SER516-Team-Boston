@@ -45,15 +45,6 @@ public class PBHelper {
         userStoryList = userStoryListReference.get();
     }
 
-    public void fetchSprintList() {
-        AtomicReference<List<Sprint>> sprintListReference = new AtomicReference<>();
-        sprintAPI.listSprints(projectId, result -> {
-            sprintListReference.set(new ArrayList<>(List.of(result.getContent())));
-        }).join();
-
-        sprintList = sprintListReference.get();
-    }
-
     public void fetchEpicList() {
         AtomicReference<List<EpicDetail>> epicListReference = new AtomicReference<>();
         epicAPI.listEpics(result -> {
