@@ -5,6 +5,7 @@ import java.util.List;
 import taiga.model.query.epic.EpicDetail;
 import taiga.model.query.history.History;
 import taiga.model.query.sprint.Sprint;
+import taiga.model.query.sprint.UserStoryDetail;
 import taiga.model.query.taskhistory.ItemHistory;
 import taiga.model.query.userstories.UserStoryInterface;
 
@@ -37,11 +38,13 @@ public class PBChangeCalculator {
      * @param sprint The sprint start date being analyzed
      * @return A list of only those stories deleted/removed after start date
      */
-    public static List<History> filterUSRemovedAfterSprint(List<History> userStoryHistoryList, Sprint sprint) {
-        List<History> removedAfterStart = new ArrayList<>();
-        for (History history : userStoryHistoryList) {
-            if (history.getDeleteCommentDate().after(sprint.getEstimatedStart())) {//Think this works, needs reviewing
-                removedAfterStart.add(history);
+    public static List<UserStoryDetail> filterUSRemovedAfterSprintStart(List<UserStoryDetail> userStories, Sprint sprint) {
+        List<UserStoryDetail> removedAfterStart = new ArrayList<>();
+        for (UserStoryDetail userStory : userStories) {
+            if (userStory.getMilestone() != null) {
+                if (userStory.getModifiedDate().after(sprint.getEstimatedStart())) {
+                    removedAfterStart.add(userStory);
+                }
             }
         }
         return removedAfterStart;
