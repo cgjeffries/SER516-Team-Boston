@@ -1,10 +1,14 @@
 package ui.metrics.pbchange;
 
+import taiga.model.query.sprint.UserStoryDetail;
+
 public class PBChangeItem {
+    private final UserStoryDetail storyDetail;
     private final boolean addedAfterSprint;
     private final boolean removedAfterSprint;
 
-    public PBChangeItem(boolean added) {
+    public PBChangeItem(UserStoryDetail storyDetail, boolean added) {
+        this.storyDetail = storyDetail;
         this.addedAfterSprint = added;
         this.removedAfterSprint = !added;
     }
@@ -15,5 +19,9 @@ public class PBChangeItem {
 
     public boolean isRemovedAfterSprint() {
         return removedAfterSprint;
+    }
+
+    public UserStoryDetail getStoryDetail() {
+        return storyDetail;
     }
 }
