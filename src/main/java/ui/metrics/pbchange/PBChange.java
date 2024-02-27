@@ -11,6 +11,7 @@ import taiga.model.query.common.Epic;
 import taiga.model.query.sprint.Sprint;
 import taiga.model.query.userstories.UserStory;
 import ui.components.Icon;
+import ui.services.PBChangeService;
 
 public class PBChange extends StackPane {
 
