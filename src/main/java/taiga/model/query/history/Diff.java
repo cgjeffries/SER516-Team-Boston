@@ -31,7 +31,7 @@ public class Diff {
     private List<String> subject;
     @SerializedName("milestone")
     @Expose
-    private List<Object> milestone;
+    private List<Long> milestone;
     @SerializedName("sprint_order")
     @Expose
     private List<Long> sprintOrder;
@@ -92,11 +92,11 @@ public class Diff {
         this.subject = subject;
     }
 
-    public List<Object> getMilestone() {
+    public List<Long> getMilestone() {
         return milestone;
     }
 
-    public void setMilestone(List<Object> milestone) {
+    public void setMilestone(List<Long> milestone) {
         this.milestone = milestone;
     }
 
