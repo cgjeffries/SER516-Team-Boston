@@ -1,11 +1,11 @@
 package ui.metrics.pbHealth;
 
-import javafx.collections.ObservableList;
-import javafx.scene.chart.*;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 import taiga.model.query.sprint.Sprint;
 import ui.components.Icon;
@@ -31,7 +31,36 @@ public class PBHealth extends StackPane {
     }
 
     private void init() {
+        Tab pbHealthTab = createPBHealthTab(
+                "Product Backlog",
+                new Icon(BoxiconsRegular.LIST_CHECK));
 
+        tabPane.getTabs().setAll(pbHealthTab);
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+        getChildren().add(tabPane);
+        this.service.start(); 
     }
 
+    private Tab createPBHealthTab(String name, Icon icon) {
+        StackPane root = new StackPane();
+        Tab tab = new Tab(name);
+        tab.setGraphic(icon);
+
+        // Example of a simple progress indicator and text placeholder for configuration
+        VBox contentBox = new VBox();
+        ProgressIndicator progress = new ProgressIndicator(-1d);
+        progress.visibleProperty().bind(this.service.runningProperty());
+
+        Text placeholderText = new Text("Configuration Options Go Here");
+        contentBox.getChildren().addAll(progress, placeholderText);
+        
+        root.getChildren().add(contentBox);
+        tab.setContent(root);
+
+        return tab;
+    }
+    
+    public void switchSprint(Sprint sprint) {
+        this.service.recalculate(sprint);
+    }
 }
