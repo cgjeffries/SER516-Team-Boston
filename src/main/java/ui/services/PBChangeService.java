@@ -22,7 +22,7 @@ import ui.metrics.pbchange.PBChangeItem;
 
 public class PBChangeService extends Service<Object> {
     private Sprint sprint;
-    private PBChangeCalculator pbChangeCalculator;
+    private final PBChangeCalculator pbChangeCalculator;
 
     private final ObservableList<UserStoryDetail> addedUserStories;
     private final ObservableList<UserStoryDetail> removedUserStories;
@@ -55,24 +55,6 @@ public class PBChangeService extends Service<Object> {
         }
     }
 
-    private void updatePBChanges(){
-        List<PBChangeItem> changes = pbChangeCalculator.calculate(this.sprint.getProject(), this.sprint);
-        addedUserStories.setAll(
-            changes.stream()
-                .filter(PBChangeItem::isAddedAfterSprint)
-                .map(PBChangeItem::getStoryDetail)
-                .toList()
-        );
-
-        removedUserStories.setAll(
-            changes.stream()
-                .filter(PBChangeItem::isRemovedAfterSprint)
-                .map(PBChangeItem::getStoryDetail)
-                .toList()
-        );
-    }
-
-
     @Override
     protected Task<Object> createTask() {
         return new Task<Object>() {
@@ -82,9 +64,22 @@ public class PBChangeService extends Service<Object> {
                     return null;
                 }
 
-                Platform.runLater(() -> {
-                    updatePBChanges();
+                List<PBChangeItem> changes = pbChangeCalculator.calculate(sprint.getProject(), sprint);
 
+                Platform.runLater(() -> {
+                    addedUserStories.setAll(
+                            changes.stream()
+                                    .filter(PBChangeItem::isAddedAfterSprint)
+                                    .map(PBChangeItem::getStoryDetail)
+                                    .toList()
+                    );
+
+                    removedUserStories.setAll(
+                            changes.stream()
+                                    .filter(PBChangeItem::isRemovedAfterSprint)
+                                    .map(PBChangeItem::getStoryDetail)
+                                    .toList()
+                    );
                 });
 
                 return null;

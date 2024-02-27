@@ -43,6 +43,9 @@ public class PBChangeCalculator {
             int addedEntryCount = Arrays.stream(result.getContent())
                     .filter(historyItem -> {
                         List<Long> milestoneDiff = historyItem.getDiff().getMilestone();
+                        if (milestoneDiff == null) {
+                            return false;
+                        }
                         boolean afterStart = historyItem.getCreatedAt().after(sprint.getEstimatedStart());
                         return afterStart && milestoneDiff.get(0) == null && milestoneDiff.get(1) != null;
                     })
@@ -53,11 +56,8 @@ public class PBChangeCalculator {
         return added.get();
     }
 
-    private List<UserStoryDetail> getUserStories() {
-        if (userStories != null) {
-            return userStories;
-        }
-        userStoryAPI.listProjectUserStories(Settings.get().getAppModel().getCurrentProject().get().getId(), result -> {
+    private List<UserStoryDetail> getUserStories(int projectId) {
+        userStoryAPI.listProjectUserStories(projectId, result -> {
             userStories = new ArrayList<>(List.of(result.getContent()));
         }).join();
         return userStories;
@@ -68,16 +68,16 @@ public class PBChangeCalculator {
     }
 
     public List<PBChangeItem> calculate(int projectId, Sprint sprint) {
-        List<UserStoryDetail> stories = getUserStories();
+        List<UserStoryDetail> stories = getUserStories(projectId);
 
         List<PBChangeItem> addedAfterSprint = stories
-                .stream()
+                .parallelStream()
                 .filter(s -> s.getCreatedDate().after(sprint.getEstimatedStart()))
                 .map(s -> new PBChangeItem(s, true))
                 .toList();
 
         List<PBChangeItem> removedFromPbAfterStart = stories
-                .stream()
+                .parallelStream()
                 .filter(s -> wasRemovedFromPbAfterStart(s, sprint))
                 .map(s -> new PBChangeItem(s, false))
                 .toList();

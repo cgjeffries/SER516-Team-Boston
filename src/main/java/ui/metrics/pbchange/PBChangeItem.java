@@ -24,4 +24,13 @@ public class PBChangeItem {
     public UserStoryDetail getStoryDetail() {
         return storyDetail;
     }
+
+    @Override
+    public String toString() {
+        return "PBChangeItem{" +
+                "storyDetail=" + storyDetail +
+                ", addedAfterSprint=" + addedAfterSprint +
+                ", removedAfterSprint=" + removedAfterSprint +
+                '}';
+    }
 }
