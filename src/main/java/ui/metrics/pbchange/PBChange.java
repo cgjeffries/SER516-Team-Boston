@@ -34,13 +34,13 @@ public class PBChange extends StackPane {
                 () ->
                         new PBChangeCell<>(new PBChangeCellRender<>() {
                             @Override
-                            public String getTitle(UserStoryDetail item) {
-                                return item.getSubject();
+                            public String getTitle(PBChangeItem item) {
+                                return item.getStoryDetail().getSubject();
                             }
 
                             @Override
-                            public String getDescription(UserStoryDetail item) {
-                                return "Added on " + item.getCreatedDate();
+                            public String getDescription(PBChangeItem item) {
+                                return "Added on " + item.getChangeDate();
                             }
                         })
 
@@ -52,13 +52,13 @@ public class PBChange extends StackPane {
                 () ->
                         new PBChangeCell<>(new PBChangeCellRender<>() {
                             @Override
-                            public String getTitle(UserStoryDetail item) {
-                                return item.getSubject();
+                            public String getTitle(PBChangeItem item) {
+                                return item.getStoryDetail().getSubject();
                             }
 
                             @Override
-                            public String getDescription(UserStoryDetail item) {
-                                return "Removed on " + item.getCreatedDate();
+                            public String getDescription(PBChangeItem item) {
+                                return "Removed on " + item.getChangeDate();
                             }
                         })
 
