@@ -73,13 +73,13 @@ public class PBChangeCalculator {
         List<PBChangeItem> addedAfterSprint = stories
                 .stream()
                 .filter(s -> s.getCreatedDate().after(sprint.getEstimatedStart()))
-                .map(s -> new PBChangeItem(true))
+                .map(s -> new PBChangeItem(s, true))
                 .toList();
 
         List<PBChangeItem> removedFromPbAfterStart = stories
                 .stream()
                 .filter(s -> wasRemovedFromPbAfterStart(s, sprint))
-                .map(s -> new PBChangeItem(false))
+                .map(s -> new PBChangeItem(s, false))
                 .toList();
 
         List<PBChangeItem> items = new ArrayList<>(addedAfterSprint);
