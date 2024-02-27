@@ -1,4 +1,4 @@
-package ui.metrics.cycletime;
+package ui.services;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

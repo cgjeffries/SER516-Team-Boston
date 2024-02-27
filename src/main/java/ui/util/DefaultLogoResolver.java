@@ -1,6 +1,7 @@
 package ui.util;
 
 import javafx.scene.image.Image;
+import taiga.model.auth.LoginResponse;
 import taiga.model.query.project.Project;
 import taiga.util.MurMurHash3;
 
@@ -51,6 +52,32 @@ public class DefaultLogoResolver {
     public static String getDefaultUserLogo(String gravatarId) {
         long idx = MurMurHash3.hash(gravatarId, HASH_SEED) % DEFAULT_USER_LOGOS.length;
         return DEFAULT_USER_RESOURCE_PATH + DEFAULT_USER_LOGOS[(int) idx];
+    }
+
+    public static Image getUserLogoImage(LoginResponse user) {
+        Image local = new Image(getDefaultUserLogo(user.getGravatarId()));
+        try {
+            Image remoteImage = new Image(user.getPhoto());
+            if (!remoteImage.isError()) {
+                return remoteImage;
+            }
+            return local;
+        } catch (NullPointerException e) {
+            return local;
+        }
+    }
+
+    public static Image getUserLogoImage(LoginResponse user, int width, int height) {
+        Image local = new Image(getDefaultUserLogo(user.getGravatarId()), width, height, false, false);
+        try {
+            Image remoteImage = new Image(user.getPhoto());
+            if (!remoteImage.isError()) {
+                return remoteImage;
+            }
+            return local;
+        } catch (NullPointerException e) {
+            return local;
+        }
     }
 
     /**

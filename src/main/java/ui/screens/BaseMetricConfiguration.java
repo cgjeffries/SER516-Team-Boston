@@ -1,8 +1,5 @@
 package ui.screens;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 
 import atlantafx.base.theme.Styles;
@@ -16,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import settings.Settings;
@@ -25,8 +23,8 @@ import ui.components.Icon;
 import ui.components.screens.Screen;
 import ui.components.screens.ScreenManager;
 
-public abstract class BaseMetricConfiguration extends Screen<VBox> {
-    private final VBox root = new VBox();
+public abstract class BaseMetricConfiguration extends Screen {
+    private final StackPane root = new StackPane();
 
     @FXML
     private Button back;
@@ -60,7 +58,7 @@ public abstract class BaseMetricConfiguration extends Screen<VBox> {
     }
 
     @Override
-    public VBox getRoot() {
+    public StackPane getRoot() {
         return root;
     }
 
@@ -69,8 +67,7 @@ public abstract class BaseMetricConfiguration extends Screen<VBox> {
         return this;
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    protected void setup() {
         SimpleObjectProperty<Project> currentProject = Settings.get().getAppModel().getCurrentProject();
         metric_name.textProperty().bind(Settings.get().getAppModel().getSelectedMetric());
         project_name.textProperty()
