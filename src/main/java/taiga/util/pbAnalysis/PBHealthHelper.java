@@ -43,7 +43,4 @@ public class PBHealthHelper {
             .filter(us -> us.getStatusExtraInfo().getName().equals("New")) //TODO: test if these are the correct strings
             .toList();
     }
-
-
-
 }
