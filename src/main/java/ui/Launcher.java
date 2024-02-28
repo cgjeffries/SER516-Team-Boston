@@ -38,6 +38,7 @@ public class Launcher extends Application {
         screenManager.addScreen(new CycleTimeScreen(screenManager, "Cycle Time", "metric_configuration"));
         screenManager.addScreen(new LeadTimeScreen(screenManager, "Lead Time", "metric_configuration"));
         screenManager.addScreen(new PBChangeScreen(screenManager, "Backlog Changes", "metric_configuration"));
+        screenManager.addScreen(new PBHealthScreen(screenManager, "PB Health", "metric_configuration"));
 
         stage.setTitle("SER516 Team Boston");
         stage.setScene(screenManager.getScene());
