@@ -45,6 +45,12 @@ public abstract class BaseMetricConfiguration extends Screen {
     @FXML
     protected ComboBox<Sprint> sprint_combobox;
 
+    @FXML
+    protected Label sprint_combobox_label;
+
+    @FXML
+    protected VBox sprint_parameter_box;
+
 
     /**
      * Create a screen instance
@@ -94,6 +100,11 @@ public abstract class BaseMetricConfiguration extends Screen {
             visualization_root.getChildren().add(visualizationBody);
             afterVisualizationMount();
         }
+    }
+
+    protected void hideSprintParameter() {
+        sprint_parameter_box.setVisible(false);
+        sprint_parameter_box.setManaged(false);
     }
 
     @FXML

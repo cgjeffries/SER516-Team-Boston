@@ -1,14 +1,18 @@
 package ui.services;
 
+import java.util.List;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableFloatValue;
+import javafx.beans.value.ObservableObjectValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.chart.XYChart;
 import taiga.model.query.sprint.Sprint;
+import taiga.model.query.sprint.UserStoryDetail;
 import taiga.util.pbAnalysis.PBHealthHelper;
-import taiga.util.pbAnalysis.PBHealthStats;
 
 /**
  * PBHealth class is responsible for calculating and visualizing the health of the Product Backlog.
@@ -32,43 +36,31 @@ import taiga.util.pbAnalysis.PBHealthStats;
  */
 public class PBHealthService extends Service<Object> {
     private Sprint sprint;
-    private final ObservableList<XYChart.Data<String, Number>> newStories;
-    private final ObservableList<XYChart.Data<String, Number>> inProgressStories;
-    private final ObservableList<XYChart.Data<String, Number>> testingStories;
-    private final ObservableList<XYChart.Data<String, Number>> doneStories;
+    private SimpleObjectProperty<Double> pbHealthRatio;
 
     public PBHealthService() {
-        this.newStories = FXCollections.observableArrayList();
-        this.inProgressStories = FXCollections.observableArrayList();
-        this.testingStories = FXCollections.observableArrayList();
-        this.doneStories = FXCollections.observableArrayList();
+        this.pbHealthRatio = new SimpleObjectProperty<>();
     }
     
-    // Getters for each story list
-    public ObservableList<XYChart.Data<String, Number>> getNewStories() { return newStories; }
-    public ObservableList<XYChart.Data<String, Number>> getInProgressStories() { return inProgressStories; }
-    public ObservableList<XYChart.Data<String, Number>> getTestingStories() { return testingStories; }
-    public ObservableList<XYChart.Data<String, Number>> getDoneStories() { return doneStories; }
+    public SimpleObjectProperty<Double> getPbHealthRatio(){
+        return pbHealthRatio;
+    }
 
     @Override
     protected Task<Object> createTask() {
         return new Task<>() {
             @Override
             protected Object call() {
-                // Example of commenting out the original logic
-                // PBHealthStats stats = PBHealthHelper.calculateHealth(sprint);
-    
-                // Hard-coded values for demonstration purposes
-                ObservableList<XYChart.Data<String, Number>> hardCodedNewStories = FXCollections.observableArrayList(new XYChart.Data<>("Story 1", 1));
-                ObservableList<XYChart.Data<String, Number>> hardCodedInProgressStories = FXCollections.observableArrayList(new XYChart.Data<>("Story 2", 2));
-                ObservableList<XYChart.Data<String, Number>> hardCodedTestingStories = FXCollections.observableArrayList(new XYChart.Data<>("Story 3", 3));
-                ObservableList<XYChart.Data<String, Number>> hardCodedDoneStories = FXCollections.observableArrayList(new XYChart.Data<>("Story 4", 4));
-    
+
+                PBHealthHelper pbHealthHelper = new PBHealthHelper(sprint.getProject());
+                List<UserStoryDetail> groomedUserStories = pbHealthHelper.getGroomedPB();
+                List<UserStoryDetail> notGroomedUserStories = pbHealthHelper.getNotGroomedPB();
+
+                Double ratio = groomedUserStories.size()/(double)(groomedUserStories.size() + notGroomedUserStories.size());
+
+
                 Platform.runLater(() -> {
-                    newStories.setAll(hardCodedNewStories);
-                    inProgressStories.setAll(hardCodedInProgressStories);
-                    testingStories.setAll(hardCodedTestingStories);
-                    doneStories.setAll(hardCodedDoneStories);
+                    pbHealthRatio.set(ratio);
                 });
     
                 return null;

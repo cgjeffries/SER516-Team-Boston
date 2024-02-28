@@ -31,15 +31,15 @@
             </Label>
          </children>
       </HBox>
-      <TitledPane expanded="false" text="Parameters">
+      <TitledPane text="Parameters">
          <content>
             <ScrollPane prefHeight="200.0" prefWidth="660.0">
                <content>
                   <VBox spacing="10.0">
                      <children>
-                        <VBox>
+                        <VBox fx:id="sprint_parameter_box">
                            <children>
-                              <Label text="Sprint">
+                              <Label fx:id="sprint_combobox_label" text="Sprint">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
