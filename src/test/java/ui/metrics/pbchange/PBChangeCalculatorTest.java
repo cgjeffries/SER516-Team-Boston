@@ -60,11 +60,15 @@ class PBChangeCalculatorTest {
     }
 
     @Test
-    void testNotRemovedFromPbAfterStart() {
-        // Create a sample user story with a created date
+    void testGetRemovedFromPbAfterStartDate() {
         UserStoryDetail userStory = new UserStoryDetail();
-        userStory.setId(1); 
-        userStory.setCreatedDate(new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000))); // User story created one day before
-        assertFalse(pbChangeCalculator.wasRemovedFromPbAfterStart(userStory, mockSprint));
+        userStory.setId(1);
+
+        Sprint sprint = new Sprint();
+        sprint.setEstimatedStart(new Date(System.currentTimeMillis() - (72 * 60 * 60 * 1000)));
+
+        Date removedDate = pbChangeCalculator.getRemovedFromPbAfterStartDate(userStory, sprint);
+        assertNull(removedDate);
     }
+
 }

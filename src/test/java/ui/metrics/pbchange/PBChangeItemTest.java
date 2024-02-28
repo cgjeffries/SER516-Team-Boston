@@ -3,6 +3,8 @@ package ui.metrics.pbchange;
 import org.junit.jupiter.api.Test;
 import taiga.model.query.sprint.UserStoryDetail;
 
+import java.util.Date;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PBChangeItemTest {
@@ -12,16 +14,20 @@ class PBChangeItemTest {
         UserStoryDetail userStoryDetail = new UserStoryDetail();
         userStoryDetail.setId(1); 
 
-        PBChangeItem pbChangeItemAdded = new PBChangeItem(userStoryDetail, true);
+        Date changeDate = new Date();
+
+        PBChangeItem pbChangeItemAdded = new PBChangeItem(changeDate, userStoryDetail, true);
 
         assertEquals(userStoryDetail, pbChangeItemAdded.getStoryDetail());
         assertEquals(true, pbChangeItemAdded.isAddedAfterSprint());
         assertEquals(false, pbChangeItemAdded.isRemovedAfterSprint());
+        assertEquals(changeDate, pbChangeItemAdded.getChangeDate());
 
-        PBChangeItem pbChangeItemRemoved = new PBChangeItem(userStoryDetail, false);
+        PBChangeItem pbChangeItemRemoved = new PBChangeItem(changeDate, userStoryDetail, false);
 
         assertEquals(userStoryDetail, pbChangeItemRemoved.getStoryDetail());
         assertEquals(false, pbChangeItemRemoved.isAddedAfterSprint());
         assertEquals(true, pbChangeItemRemoved.isRemovedAfterSprint());
+        assertEquals(changeDate, pbChangeItemRemoved.getChangeDate());
     }
 }

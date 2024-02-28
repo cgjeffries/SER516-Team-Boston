@@ -30,7 +30,7 @@ public class PBChangeCalculator {
         return addedAfterStart;
     }
 
-    private Date getRemovedFromPbAfterStartDate(UserStoryDetail userStory, Sprint sprint) {
+    protected Date getRemovedFromPbAfterStartDate(UserStoryDetail userStory, Sprint sprint) {
         AtomicReference<Date> removedDate = new AtomicReference<>();
         historyAPI.getUserStoryHistory(userStory.getId(), result -> {
             if (result.getStatus() != 200) {
