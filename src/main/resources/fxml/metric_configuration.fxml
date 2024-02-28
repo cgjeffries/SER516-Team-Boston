@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<fx:root prefHeight="600.0" prefWidth="800.0" spacing="10.0" type="javafx.scene.layout.VBox" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root prefHeight="600.0" prefWidth="800.0" spacing="10.0" type="javafx.scene.layout.VBox" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox alignment="CENTER_LEFT" prefWidth="200.0" spacing="10.0">
          <children>
@@ -56,7 +56,7 @@
       </TitledPane>
       <VBox VBox.vgrow="ALWAYS">
          <children>
-            <ScrollPane fitToWidth="true" nodeOrientation="LEFT_TO_RIGHT" VBox.vgrow="ALWAYS">
+            <ScrollPane fitToHeight="true" fitToWidth="true" nodeOrientation="LEFT_TO_RIGHT" VBox.vgrow="ALWAYS">
                <content>
                   <VBox>
                      <children>
