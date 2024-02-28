@@ -1,7 +1,6 @@
 package taiga.util.pbAnalysis;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import taiga.api.UserStoryAPI;
@@ -10,7 +9,7 @@ import taiga.model.query.sprint.UserStoryDetail;
 
 public class PBHealthHelper {
 
-    private final List<PBHealthEntry> pbHealthEntryList;
+    private final List<UserStoryDetail> pbUserStories;
 
     UserStoryAPI userStoryAPI = new UserStoryAPI();
     public PBHealthHelper(Project project) {
@@ -25,29 +24,26 @@ public class PBHealthHelper {
 
         List<UserStoryDetail> userStoryList = userStoryListReference.get();
 
-        this.pbHealthEntryList = userStoryList
-            .parallelStream()
-            .map(this::createPBHealthEntryForUserStory) // TO DO!
+        this.pbUserStories = userStoryList
+            .stream()
+            .filter(us -> us.getMilestone() == null)
             .toList();
     }
 
-    /**
-     * Given a date, return a PBHealthStats which gives the user stories in each phase for that date
-     * @param date the date we want the stats for
-     * @return a PBHealthStats object
-     */
-    public PBHealthStats getPBHealthStatsForDate(Date date){
-        PBHealthStats stats = new PBHealthStats(date);
-        for(PBHealthEntry entry : pbHealthEntryList){
-            stats.addStory(entry.getUserStory(), entry.getPbStatusForDate(date)); // Implement getPhaseForDate
-        }
-        return stats;
+    public List<UserStoryDetail> getGroomedPB(){
+        return pbUserStories
+            .stream()
+            .filter(us -> us.getStatusExtraInfo().getName().equals("Sprint-ready")) //TODO: test if these are the correct strings
+            .toList();
     }
 
-    // TO DO, placeholder for the method to create PBHealthEntry for a UserStory
-    private PBHealthEntry createPBHealthEntryForUserStory(UserStoryDetail detail) {
-        // depends on how you track the phases of a user story?
-        // analyze the history of status changes?
-        return null;
+    public List<UserStoryDetail> getNotGroomedPB(){
+        return pbUserStories
+            .stream()
+            .filter(us -> us.getStatusExtraInfo().getName().equals("New")) //TODO: test if these are the correct strings
+            .toList();
     }
+
+
+
 }
