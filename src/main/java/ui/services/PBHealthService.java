@@ -2,26 +2,27 @@ package ui.services;
 
 import java.util.List;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import taiga.model.query.sprint.Sprint;
 import taiga.model.query.sprint.UserStoryDetail;
-import taiga.util.pbAnalysis.PBHealthHelper;
+import ui.metrics.pbHealth.PBHealthHelper;
 
 public class PBHealthService extends Service<Object> {
     private Sprint sprint;
-    private SimpleObjectProperty<Double> pbHealthRatio;
+    private DoubleProperty pbHealthRatio;
 
     public PBHealthService() {
-        this.pbHealthRatio = new SimpleObjectProperty<>();
+        this.pbHealthRatio = new SimpleDoubleProperty();
     }
 
     /**
      * Gets an observable object containing the ratio of groomed to total PB user stories.
      * @return a SimpleObjectProperty<Double> containing the ratio of groomed to total PB user stories.
      */
-    public SimpleObjectProperty<Double> getPbHealthRatio(){
+    public DoubleProperty getPbHealthRatio(){
         return pbHealthRatio;
     }
 
