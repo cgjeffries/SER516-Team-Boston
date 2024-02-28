@@ -1,6 +1,5 @@
 package ui.metrics.pbchange;
 
-import settings.Settings;
 import taiga.api.HistoryAPI;
 import taiga.api.UserStoryAPI;
 import taiga.model.query.epic.EpicDetail;
@@ -12,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 public class PBChangeCalculator {
     private List<UserStoryDetail> userStories;
@@ -34,7 +32,7 @@ public class PBChangeCalculator {
         return addedAfterStart;
     }
 
-    private boolean wasRemovedFromPbAfterStart(UserStoryDetail userStory, Sprint sprint) {
+    protected boolean wasRemovedFromPbAfterStart(UserStoryDetail userStory, Sprint sprint) {
         AtomicBoolean added = new AtomicBoolean(false);
         historyAPI.getUserStoryHistory(userStory.getId(), result -> {
             if (result.getStatus() != 200) {
