@@ -1,6 +1,5 @@
 package ui.metrics.pbchange;
 
-import settings.Settings;
 import taiga.api.HistoryAPI;
 import taiga.api.UserStoryAPI;
 import taiga.model.query.epic.EpicDetail;
@@ -8,11 +7,8 @@ import taiga.model.query.project.Project;
 import taiga.model.query.sprint.Sprint;
 import taiga.model.query.sprint.UserStoryDetail;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class PBChangeCalculator {
     private List<UserStoryDetail> userStories;
@@ -34,30 +30,29 @@ public class PBChangeCalculator {
         return addedAfterStart;
     }
 
-    private boolean wasRemovedFromPbAfterStart(UserStoryDetail userStory, Sprint sprint) {
-        AtomicBoolean added = new AtomicBoolean(false);
+    private Date getRemovedFromPbAfterStartDate(UserStoryDetail userStory, Sprint sprint) {
+        AtomicReference<Date> removedDate = new AtomicReference<>();
         historyAPI.getUserStoryHistory(userStory.getId(), result -> {
             if (result.getStatus() != 200) {
                 return;
             }
-            int addedEntryCount = Arrays.stream(result.getContent())
-                    .filter(historyItem -> {
+            Arrays.stream(result.getContent())
+                    .forEach(historyItem -> {
                         List<Long> milestoneDiff = historyItem.getDiff().getMilestone();
+                        if (milestoneDiff == null) {
+                            return;
+                        }
                         boolean afterStart = historyItem.getCreatedAt().after(sprint.getEstimatedStart());
-                        return afterStart && milestoneDiff.get(0) == null && milestoneDiff.get(1) != null;
-                    })
-                    .toList()
-                    .size();
-            added.set(addedEntryCount != 0);
+                        if (afterStart && milestoneDiff.get(0) == null && milestoneDiff.get(1) != null && removedDate.get() == null) {
+                            removedDate.set(historyItem.getCreatedAt());
+                        }
+                    });
         }).join();
-        return added.get();
+        return removedDate.get();
     }
 
-    private List<UserStoryDetail> getUserStories() {
-        if (userStories != null) {
-            return userStories;
-        }
-        userStoryAPI.listProjectUserStories(Settings.get().getAppModel().getCurrentProject().get().getId(), result -> {
+    private List<UserStoryDetail> getUserStories(int projectId) {
+        userStoryAPI.listProjectUserStories(projectId, result -> {
             userStories = new ArrayList<>(List.of(result.getContent()));
         }).join();
         return userStories;
@@ -68,18 +63,24 @@ public class PBChangeCalculator {
     }
 
     public List<PBChangeItem> calculate(int projectId, Sprint sprint) {
-        List<UserStoryDetail> stories = getUserStories();
+        List<UserStoryDetail> stories = getUserStories(projectId);
 
         List<PBChangeItem> addedAfterSprint = stories
-                .stream()
+                .parallelStream()
                 .filter(s -> s.getCreatedDate().after(sprint.getEstimatedStart()))
-                .map(s -> new PBChangeItem(s, true))
+                .map(s -> new PBChangeItem(s.getCreatedDate(), s, true))
                 .toList();
 
         List<PBChangeItem> removedFromPbAfterStart = stories
-                .stream()
-                .filter(s -> wasRemovedFromPbAfterStart(s, sprint))
-                .map(s -> new PBChangeItem(s, false))
+                .parallelStream()
+                .map(s -> {
+                    Date removedDate = getRemovedFromPbAfterStartDate(s, sprint);
+                    if (removedDate == null) {
+                        return null;
+                    }
+                    return  new PBChangeItem(removedDate, s, false);
+                })
+                .filter(Objects::nonNull)
                 .toList();
 
         List<PBChangeItem> items = new ArrayList<>(addedAfterSprint);

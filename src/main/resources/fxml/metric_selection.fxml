@@ -22,6 +22,7 @@
                               <Tile fx:id="burndown_tile" description="Show work and value delivered over time" title="Burndown" />
                               <Tile fx:id="cycletime_tile" description="See time to go from in-progress to done" title="Cycle Time" />
                               <Tile fx:id="leadtime_tile" description="Track time from backlog entry to sprint delivery" title="Lead Time" />
+                              <Tile fx:id="pbchange_title" description="Monitor changes in the product backlog" title="Backlog Changes" />
                               <Tile fx:id="pbhealth_tile" description="Assess the health and trends of your product backlog" title="PB Health" />
                   <Separator prefWidth="200.0" />
                           </children>
