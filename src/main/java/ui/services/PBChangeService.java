@@ -24,8 +24,8 @@ public class PBChangeService extends Service<Object> {
     private Sprint sprint;
     private final PBChangeCalculator pbChangeCalculator;
 
-    private final ObservableList<UserStoryDetail> addedUserStories;
-    private final ObservableList<UserStoryDetail> removedUserStories;
+    private final ObservableList<PBChangeItem> addedUserStories;
+    private final ObservableList<PBChangeItem> removedUserStories;
 
     public PBChangeService() {
         this.pbChangeCalculator = new PBChangeCalculator();
@@ -33,11 +33,11 @@ public class PBChangeService extends Service<Object> {
         this.removedUserStories = FXCollections.observableArrayList();
     }
 
-    public ObservableList<UserStoryDetail> getAddedUserStories() {
+    public ObservableList<PBChangeItem> getAddedUserStories() {
         return addedUserStories;
     }
 
-    public ObservableList<UserStoryDetail> getRemovedUserStories() {
+    public ObservableList<PBChangeItem> getRemovedUserStories() {
         return removedUserStories;
     }
 
@@ -70,14 +70,12 @@ public class PBChangeService extends Service<Object> {
                     addedUserStories.setAll(
                             changes.stream()
                                     .filter(PBChangeItem::isAddedAfterSprint)
-                                    .map(PBChangeItem::getStoryDetail)
                                     .toList()
                     );
 
                     removedUserStories.setAll(
                             changes.stream()
                                     .filter(PBChangeItem::isRemovedAfterSprint)
-                                    .map(PBChangeItem::getStoryDetail)
                                     .toList()
                     );
                 });
