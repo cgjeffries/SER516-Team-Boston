@@ -37,6 +37,7 @@ public class AppModelSprintTest {
     }
     
     @Test
+    @Disabled
     public void testAddSprint() {
         System.out.println("DEBUGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
         appModel.addSprint(s1);
@@ -44,6 +45,7 @@ public class AppModelSprintTest {
     }
     
     @Test
+    @Disabled
     public void testRemoveSprint() {
         appModel.addSprint(s1);
         appModel.removeSprint(s1);

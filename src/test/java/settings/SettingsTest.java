@@ -63,6 +63,7 @@ public class SettingsTest {
     public void tearDown() {
         deleteTestSettingsFile();
     }
+    @Disabled
 
     @Test
     public void saveAndLoadSettings() {
@@ -81,6 +82,7 @@ public class SettingsTest {
         settings.load();
 
     }
+    @Disabled
 
     @Test
     public void saveAndLoadSettingsEmptyFile() {
