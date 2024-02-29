@@ -14,7 +14,6 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-@Disabled
 class PBChangeCalculatorTest {
 
     private PBChangeCalculator pbChangeCalculator;

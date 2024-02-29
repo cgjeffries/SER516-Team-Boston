@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import taiga.model.query.tasks.Task;
-@Disabled
 public class TaskAPITest {
 
     @Test

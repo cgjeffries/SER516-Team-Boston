@@ -9,7 +9,6 @@ import java.util.function.Consumer;
 
 import taiga.model.query.sprint.Sprint;
 
-@Disabled
 class SprintAPITest {
 
     @Test
