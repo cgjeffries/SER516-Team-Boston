@@ -38,6 +38,7 @@ public class AppModelSprintTest {
     
     @Test
     public void testAddSprint() {
+        System.out.println("DEBUGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
         appModel.addSprint(s1);
         assertTrue(appModel.getSprints().contains(s1));
     }
