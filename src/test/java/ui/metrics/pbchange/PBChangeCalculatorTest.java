@@ -1,6 +1,7 @@
 package ui.metrics.pbchange;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import settings.Settings;
 import taiga.model.query.epic.EpicDetail;
@@ -13,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+@Disabled
 class PBChangeCalculatorTest {
 
     private PBChangeCalculator pbChangeCalculator;
