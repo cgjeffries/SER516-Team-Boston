@@ -1,26 +1,27 @@
-# SER516 - Team Boston Peer Review
-
-
-
-### US:
+# US:
 
 ### Description of Changes:
-Description here..
+Description here.
 
 
-### Peer Review Checklist:
+### PR Submitter Checklist:
 - [ ] Taiga updated
-- [ ] Code builds and runs
-- [ ] Code is formatted properly
-- [ ] JavaDoc comments are included on essential methods
-- [ ] Code is clearly documented and understandable
-- [ ] Static analysis checks are passing
-- [ ] Test cases are passing
-- [ ] Critical non-ui code is covered by unit tests
-- [ ] Pipeline runs successfully
-- [ ] All task requirements are fulfilled
-- [ ] All user story requirements are fulfilled
+- [ ] Code Compiles
+- [ ] Tests Pass
+- [ ] Essential code is commented using docstrings
+- [ ] US acceptance criteria are met
+- [ ] Static analysis checks pass
 
 
-### Reviewer Comments:
-Review here..
+### Reviewer Checklist (Copy into your review):
+```markdown
+# Review comments
+
+# Review Checklist
+- [ ] Taiga updated
+- [ ] Code Compiles
+- [ ] Tests Pass
+- [ ] Essential code is commented using docstrings
+- [ ] US acceptance criteria are met
+- [ ] Static analysis checks pass
+```
