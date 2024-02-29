@@ -44,10 +44,9 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Build with Maven
-        run: mvn spotbugs:check
-
+        run: mvn -B verify spotbugs:spotbugs
       - name: Push SpotBugs report
         uses: jwgmeligmeyling/spotbugs-github-action@v1.2
         with:
-          path: '**/spotbugsXml.xml'
+          path: 'target/spotbugsXml.xml'
 
