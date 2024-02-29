@@ -1,4 +1,4 @@
-package taiga.util.pbAnalysis;
+package ui.metrics.pbHealth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,17 +33,14 @@ public class PBHealthHelper {
     public List<UserStoryDetail> getGroomedPB(){
         return pbUserStories
             .stream()
-            .filter(us -> us.getStatusExtraInfo().getName().equals("Sprint-ready")) //TODO: test if these are the correct strings
+            .filter(us -> us.getStatusExtraInfo().getName().equalsIgnoreCase("Sprint-ready")) //TODO: test if these are the correct strings
             .toList();
     }
 
     public List<UserStoryDetail> getNotGroomedPB(){
         return pbUserStories
             .stream()
-            .filter(us -> us.getStatusExtraInfo().getName().equals("New")) //TODO: test if these are the correct strings
+            .filter(us -> us.getStatusExtraInfo().getName().equalsIgnoreCase("New")) //TODO: test if these are the correct strings
             .toList();
     }
-
-
-
 }
