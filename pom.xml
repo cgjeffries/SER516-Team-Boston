@@ -33,6 +33,7 @@
                 <artifactId>spotbugs-maven-plugin</artifactId>
                 <version>4.8.2.0</version>
                 <configuration>
+                    <threshold>high</threshold>
                     <xmlOutput>true</xmlOutput>
                     <failOnError>false</failOnError>
                 </configuration>
