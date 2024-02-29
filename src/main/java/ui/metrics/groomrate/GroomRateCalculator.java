@@ -28,10 +28,15 @@ public class GroomRateCalculator {
         return calculate(project.getId(), sprint);
     }
     
-    private List<GroomRateItem> calculate(int projectId, Sprint sprint) {
-        //TODO
-        return null;
-    }
+    public List<GroomRateItem> calculate(int projectId, Sprint sprint) {
+        List<UserStoryDetail> stories = getUserStories(projectId);
 
-    
+        List<GroomRateItem> modifiedStories = stories
+                .parallelStream()
+                .filter(s -> s.getModifiedDate().after(sprint.getEstimatedStart()))
+                .map(s -> new GroomRateItem(s.getModifiedDate(), s, true))
+                .toList();
+
+        return modifiedStories;
+    }
 }
