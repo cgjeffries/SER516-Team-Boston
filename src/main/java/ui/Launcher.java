@@ -12,15 +12,12 @@ import ui.dialogs.SettingsDialog;
 import ui.screens.*;
 
 public class Launcher extends Application {
-    private static HostServices hostServices;
-
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
     public void init() {
-        hostServices = getHostServices();
         Settings.get().load();
     }
 
@@ -29,7 +26,7 @@ public class Launcher extends Application {
         Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
 
         DialogManager.add(new SettingsDialog());
-        DialogManager.add(new LoginDialog());
+        DialogManager.add(new LoginDialog(getHostServices()));
 
         ScreenManager screenManager = new ScreenManager();
         screenManager.initialize(new MetricSelection(screenManager, "Metric Selection", "metric_selection"));
@@ -48,9 +45,5 @@ public class Launcher extends Application {
     @Override
     public void stop() {
         Settings.get().save();
-    }
-
-    public static void openUrl(String url) {
-        hostServices.showDocument(url);
     }
 }
