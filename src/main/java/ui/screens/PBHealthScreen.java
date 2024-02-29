@@ -7,15 +7,16 @@ import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import settings.Settings;
 import taiga.model.query.sprint.Sprint;
 import ui.components.screens.ScreenManager;
 import ui.metrics.pbHealth.PBHealth;
 
 public class PBHealthScreen extends BaseMetricConfiguration {
     private PBHealth pbHealth;
-    private Spinner<Integer> goodHealthThreshold;
-    private Spinner<Integer> fairHealthThreshold;
-    private Spinner<Integer> poorHealthThreshold;
+    private Spinner<Double> goodHealthThreshold;
+    private Spinner<Double> fairHealthThreshold;
+    private Spinner<Double> poorHealthThreshold;
 
     public PBHealthScreen(ScreenManager screenManager, String id, String fxmlFilename) {
         super(screenManager, id, fxmlFilename);
@@ -23,7 +24,6 @@ public class PBHealthScreen extends BaseMetricConfiguration {
 
     @Override
     protected void beforeVisualizationMount() {
-        this.pbHealth = new PBHealth();
         hideSprintParameter();
     }
 
@@ -32,42 +32,41 @@ public class PBHealthScreen extends BaseMetricConfiguration {
         return this.pbHealth;
     }
 
-    private Spinner<Integer> createThresholdSpinner(int initial) {
-        Spinner<Integer> spinner = new Spinner<>(0, Integer.MAX_VALUE, initial); //TODO nothing i just dont like this
+    private Spinner<Double> createThresholdSpinner(double initial) {
+        Spinner<Double> spinner = new Spinner<>();
+        spinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 1, initial, 0.1));
         spinner.getStyleClass().add(Spinner.STYLE_CLASS_ARROWS_ON_RIGHT_HORIZONTAL);
         return spinner;
     }
 
     @Override
     protected void beforeParameterMount() {
-        this.goodHealthThreshold = createThresholdSpinner(8);
-        this.fairHealthThreshold = createThresholdSpinner(5);
-        this.poorHealthThreshold = createThresholdSpinner(2);
+        this.poorHealthThreshold = createThresholdSpinner(0.1);
+        this.fairHealthThreshold = createThresholdSpinner(0.5);
+        this.goodHealthThreshold = createThresholdSpinner(0.8);
+        this.pbHealth = new PBHealth(this.poorHealthThreshold.valueProperty(), this.fairHealthThreshold.valueProperty(), this.goodHealthThreshold.valueProperty());
     }
 
-    private VBox createThresholdBox(String name, Spinner<Integer> thresholdSpinner) {
+    private VBox createThresholdBox(String name, Spinner<Double> thresholdSpinner) {
         return new VBox(new Label(name), thresholdSpinner);
     }
 
     @Override
     protected Pane parameters() {
         HBox container = new HBox(
-                createThresholdBox("Good: ", goodHealthThreshold),
+                createThresholdBox("Poor: ", poorHealthThreshold),
                 createThresholdBox("Fair: ", fairHealthThreshold),
-                createThresholdBox("Poor: ", poorHealthThreshold)
+                createThresholdBox("Good: ", goodHealthThreshold)
         );
         container.setSpacing(5);
         return container;
     }
 
     @Override
-    protected void afterVisualizationMount() {
-
-
-    }
-
-    @Override
     protected void onFocused() {
-
+        if (this.pbHealth == null) {
+            return;
+        }
+        this.pbHealth.calculate(Settings.get().getAppModel().getCurrentProject().get().getId());
     }
 }
