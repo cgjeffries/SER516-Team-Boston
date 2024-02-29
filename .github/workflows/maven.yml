@@ -35,6 +35,7 @@ jobs:
       run: mvn compile
 
   spotbugs:
+    permissions: write-all
     runs-on: ubuntu-latest
 
     steps:
