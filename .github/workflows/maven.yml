@@ -54,6 +54,6 @@ jobs:
       uses: jwgmeligmeyling/spotbugs-github-action@v1.2
       with:
         path: 'target/spotbugsXml.xml'
-    - name: Build with Maven but fail this time if spotbugs fails
+    - name: Spotbugs with Maven but fail this time if spotbugs fails
       run: mvn spotbugs:check
 
