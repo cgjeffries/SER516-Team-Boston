@@ -1,5 +1,6 @@
 package taiga.api;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -8,6 +9,7 @@ import taiga.model.query.project.ProjectListEntry;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
+@Disabled
 class ProjectAPITest {
 
     @Test

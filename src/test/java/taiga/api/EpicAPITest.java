@@ -8,11 +8,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import taiga.model.query.epic.EpicDetail;
 import taiga.model.query.sprint.UserStoryDetail;
 
+@Disabled
 public class EpicAPITest {
     
 

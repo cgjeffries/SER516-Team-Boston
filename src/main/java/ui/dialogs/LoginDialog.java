@@ -1,5 +1,6 @@
 package ui.dialogs;
 
+import javafx.application.HostServices;
 import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 
 import atlantafx.base.controls.Message;
@@ -20,6 +21,8 @@ public class LoginDialog extends ModalDialog {
     private HBox body;
     private LoginService authenticationService;
 
+    private HostServices applicationHostServices;
+
     @FXML
     private TextField username;
 
@@ -35,8 +38,9 @@ public class LoginDialog extends ModalDialog {
     @FXML
     private Message login_error;
 
-    public LoginDialog() {
+    public LoginDialog(HostServices hostServices) {
         super("/fxml/login.fxml");
+        this.applicationHostServices = hostServices;
         this.authenticationService = new LoginService();
         login_error.setGraphic(new Icon(BoxiconsRegular.ERROR));
         login_error.getStyleClass().add(Styles.DANGER);
@@ -88,7 +92,7 @@ public class LoginDialog extends ModalDialog {
 
     @FXML
     private void openTaiga() {
-        Launcher.openUrl("https://taiga.io");
+        this.applicationHostServices.showDocument("https://taiga.io");
     }
 
     @Override

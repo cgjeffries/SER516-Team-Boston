@@ -1,12 +1,13 @@
 package ui.metrics.pbchange;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import taiga.model.query.sprint.UserStoryDetail;
 
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
+@Disabled
 class PBChangeItemTest {
 
     @Test

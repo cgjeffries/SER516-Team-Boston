@@ -3,6 +3,7 @@ package settings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
+import java.nio.charset.StandardCharsets;
 import settings.appmodel.AppModel;
 
 import java.io.FileReader;
@@ -44,7 +45,7 @@ public class Settings {
             if (created) {
                 System.out.println("Created settings.json at " + FULL_SETTINGS_PATH.toUri());
             }
-            try (FileReader fileReader = new FileReader(FULL_SETTINGS_PATH.toFile())) {
+            try (FileReader fileReader = new FileReader(FULL_SETTINGS_PATH.toFile(), StandardCharsets.UTF_8)) {
                 JsonReader jsonReader = new JsonReader(fileReader);
                 AppModel result = gson.fromJson(jsonReader, AppModel.class);
                 appModel = Objects.requireNonNullElseGet(result, () -> new AppModel());
@@ -58,7 +59,7 @@ public class Settings {
     public void save() {
         System.out.println("Saving settings");
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        try (FileWriter fileWriter = new FileWriter(FULL_SETTINGS_PATH.toFile())) {
+        try (FileWriter fileWriter = new FileWriter(FULL_SETTINGS_PATH.toFile(), StandardCharsets.UTF_8)) {
             gson.toJson(appModel, fileWriter);
         } catch (IOException e) {
             System.err.println(e);
