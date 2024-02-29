@@ -35,7 +35,7 @@
                 <configuration>
                     <threshold>high</threshold>
                     <xmlOutput>true</xmlOutput>
-                    <failOnError>false</failOnError>
+                    <failOnError>true</failOnError>
                 </configuration>
             </plugin>
             <plugin>
