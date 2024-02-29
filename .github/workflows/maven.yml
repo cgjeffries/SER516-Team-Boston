@@ -55,5 +55,5 @@ jobs:
       with:
         path: 'target/spotbugsXml.xml'
     - name: Build with Maven but fail this time if spotbugs fails
-      run: mvn -B verify spotbugs:spotbugs
+      run: mvn spotbugs:check
 
