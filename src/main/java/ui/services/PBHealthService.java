@@ -1,9 +1,12 @@
 package ui.services;
 
 import java.util.List;
+
 import javafx.application.Platform;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import taiga.model.query.sprint.Sprint;
@@ -11,19 +14,32 @@ import taiga.model.query.sprint.UserStoryDetail;
 import ui.metrics.pbHealth.PBHealthHelper;
 
 public class PBHealthService extends Service<Object> {
-    private Sprint sprint;
-    private DoubleProperty pbHealthRatio;
+    private int projectId;
+    private final DoubleProperty pbHealthRatio;
+    private final IntegerProperty groomedStoryCount;
+    private final IntegerProperty totalStoryCount;
 
     public PBHealthService() {
         this.pbHealthRatio = new SimpleDoubleProperty();
+        this.groomedStoryCount = new SimpleIntegerProperty();
+        this.totalStoryCount = new SimpleIntegerProperty();
     }
 
     /**
      * Gets an observable object containing the ratio of groomed to total PB user stories.
+     *
      * @return a SimpleObjectProperty<Double> containing the ratio of groomed to total PB user stories.
      */
-    public DoubleProperty getPbHealthRatio(){
+    public DoubleProperty getPbHealthRatio() {
         return pbHealthRatio;
+    }
+
+    public IntegerProperty getGroomedStoryCount() {
+        return groomedStoryCount;
+    }
+
+    public IntegerProperty getTotalStoryCount() {
+        return totalStoryCount;
     }
 
     @Override
@@ -32,24 +48,31 @@ public class PBHealthService extends Service<Object> {
             @Override
             protected Object call() {
 
-                PBHealthHelper pbHealthHelper = new PBHealthHelper(sprint.getProject());
+                PBHealthHelper pbHealthHelper = new PBHealthHelper(projectId);
                 List<UserStoryDetail> groomedUserStories = pbHealthHelper.getGroomedPB();
                 List<UserStoryDetail> notGroomedUserStories = pbHealthHelper.getNotGroomedPB();
 
-                Double ratio = groomedUserStories.size()/(double)(groomedUserStories.size() + notGroomedUserStories.size());
-
+                int totalUserStoryCount = groomedUserStories.size() + notGroomedUserStories.size();
+                double ratio;
+                if (totalUserStoryCount > 0) {
+                    ratio = (double) groomedUserStories.size() / totalUserStoryCount;
+                } else {
+                    ratio = 0;
+                }
 
                 Platform.runLater(() -> {
                     pbHealthRatio.set(ratio);
+                    groomedStoryCount.set(groomedUserStories.size());
+                    totalStoryCount.set(totalUserStoryCount);
                 });
-    
+
                 return null;
             }
         };
     }
 
-    public void recalculate(Sprint sprint) {
-        this.sprint = sprint;
+    public void recalculate(int projectId) {
+        this.projectId = projectId;
         this.restart();
     }
 

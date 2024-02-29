@@ -103,6 +103,10 @@ public abstract class BaseMetricConfiguration extends Screen {
     }
 
     protected void hideSprintParameter() {
+        sprint_combobox.setVisible(false);
+        sprint_combobox.setManaged(false);
+        sprint_combobox_label.setVisible(false);
+        sprint_combobox_label.setManaged(false);
         sprint_parameter_box.setVisible(false);
         sprint_parameter_box.setManaged(false);
     }
