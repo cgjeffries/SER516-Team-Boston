@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import taiga.model.query.sprint.Sprint;
 
 //Integrate this with AppModelTest when merge
-@Disabled
 public class AppModelSprintTest {
 
     private AppModel appModel;
@@ -37,15 +36,12 @@ public class AppModelSprintTest {
     }
     
     @Test
-    @Disabled
     public void testAddSprint() {
-        System.out.println("DEBUGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
         appModel.addSprint(s1);
         assertTrue(appModel.getSprints().contains(s1));
     }
     
     @Test
-    @Disabled
     public void testRemoveSprint() {
         appModel.addSprint(s1);
         appModel.removeSprint(s1);

@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import taiga.model.query.project.Project;
 
-@Disabled
 public class AppModelTest {
     private AppModel appModel;
 

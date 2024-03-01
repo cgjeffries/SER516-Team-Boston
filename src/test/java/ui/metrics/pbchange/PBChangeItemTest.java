@@ -7,7 +7,6 @@ import taiga.model.query.sprint.UserStoryDetail;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-@Disabled
 class PBChangeItemTest {
 
     @Test
