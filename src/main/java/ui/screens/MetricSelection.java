@@ -69,7 +69,7 @@ public class MetricSelection extends Screen {
             Settings.get().getAppModel().setSelectedMetric("PB Health");
             screenManager.switchScreen("project_selection");
         });
-        scopechange_tile.setGraphic(new Icon(BoxiconsRegular.LIST_CHECK, 48)); // Choose an appropriate icon
+        scopechange_tile.setGraphic(new Icon(BoxiconsRegular.PLUS_CIRCLE, 48)); // Choose an appropriate icon
         scopechange_tile.setActionHandler(() -> {
             Settings.get().getAppModel().setSelectedMetric("Scope Change");
             screenManager.switchScreen("project_selection");

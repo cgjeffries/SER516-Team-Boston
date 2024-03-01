@@ -15,7 +15,7 @@ public class ScopeChange extends StackPane {
 
     private void initUI() {
         // Test component
-        Label placeholderLabel = new Label("Scope Change UI testing");
+        Label placeholderLabel = new Label("Scope Change UI test");
         this.getChildren().add(placeholderLabel);
     }
 }
