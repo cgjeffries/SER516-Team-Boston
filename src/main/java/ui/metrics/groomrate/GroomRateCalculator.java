@@ -20,8 +20,12 @@ public class GroomRateCalculator {
     private LeadTimeHelper leadTimeHelper;
 
     public GroomRateCalculator(int projectId) {
+        this(new LeadTimeHelper(projectId));
+    }
+
+    public GroomRateCalculator(LeadTimeHelper leadTimeHelper) {
         this.userStoryAPI = new UserStoryAPI();
-        leadTimeHelper = new LeadTimeHelper(projectId);
+        this.leadTimeHelper = leadTimeHelper;
     }
 
     /**

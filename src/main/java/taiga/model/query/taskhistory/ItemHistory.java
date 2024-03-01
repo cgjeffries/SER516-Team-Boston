@@ -34,6 +34,10 @@ public class ItemHistory implements Comparable<ItemHistory> {
         return createdAt;
     }
 
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public String getKey() {
         return key;
     }
@@ -48,6 +52,10 @@ public class ItemHistory implements Comparable<ItemHistory> {
 
     public ItemHistoryValuesDiff getValuesDiff() {
         return valuesDiff;
+    }
+
+    public void setValuesDiff(ItemHistoryValuesDiff valuesDiff) {
+        this.valuesDiff = valuesDiff;
     }
 
     @Override
