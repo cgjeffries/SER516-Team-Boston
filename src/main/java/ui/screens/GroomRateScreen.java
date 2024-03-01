@@ -7,15 +7,20 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import settings.Settings;
+import taiga.model.query.project.Project;
+import taiga.model.query.sprint.Sprint;
 import ui.components.screens.ScreenManager;
 import ui.metrics.groomrate.GroomRate;
+import ui.util.DateUtil;
 
 import java.time.LocalDate;
 
-public class GroomRateScreen extends BaseMetricConfiguration{
+public class GroomRateScreen extends BaseMetricConfiguration {
     private GroomRate groomRate;
     private DatePicker startDate;
     private DatePicker endDate;
+
     /**
      * Create a screen instance
      *
@@ -42,6 +47,9 @@ public class GroomRateScreen extends BaseMetricConfiguration{
         this.startDate = new DatePicker();
         this.endDate = new DatePicker();
         this.startDate.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (groomRate != null) {
+                groomRate.recalculate(DateUtil.toDate(newValue), DateUtil.toDate(endDate.getValue()));
+            }
             endDate.setDayCellFactory(picker -> new DateCell() {
                 @Override
                 public void updateItem(LocalDate date, boolean empty) {
@@ -50,6 +58,15 @@ public class GroomRateScreen extends BaseMetricConfiguration{
                 }
             });
         });
+        this.endDate.valueProperty().addListener((obs, oldValue, newValue) -> {
+            if (groomRate != null) {
+                groomRate.recalculate(DateUtil.toDate(startDate.getValue()), DateUtil.toDate(newValue));
+            }
+        });
+        sprint_combobox.getSelectionModel().selectLast();
+        Sprint selectedSprint = sprint_combobox.getValue();
+        this.startDate.setValue(DateUtil.toLocal(selectedSprint.getEstimatedStart()));
+        this.endDate.setValue(DateUtil.toLocal(selectedSprint.getEstimatedFinish()));
         this.groomRate = new GroomRate(this.startDate.valueProperty(), this.endDate.valueProperty());
     }
 
@@ -58,6 +75,7 @@ public class GroomRateScreen extends BaseMetricConfiguration{
         text.getStyleClass().add(Styles.TEXT_BOLD);
         return new VBox(text, datePicker);
     }
+
     @Override
     protected Pane parameters() {
         HBox container = new HBox(
@@ -66,5 +84,18 @@ public class GroomRateScreen extends BaseMetricConfiguration{
         );
         container.setSpacing(5);
         return container;
+    }
+
+    @Override
+    protected void onFocused() {
+        if (this.groomRate == null) {
+            return;
+        }
+        sprint_combobox.getSelectionModel().selectLast();
+        Sprint selectedSprint = sprint_combobox.getValue();
+        this.groomRate.recalculate(
+                selectedSprint.getEstimatedStart(),
+                selectedSprint.getEstimatedFinish()
+        );
     }
 }
