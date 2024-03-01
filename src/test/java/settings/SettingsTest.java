@@ -17,7 +17,6 @@ import settings.appmodel.AppModel;
 import taiga.model.query.project.Project;
 import taiga.model.query.sprint.Sprint;
 
-@Disabled
 public class SettingsTest {
 
     private final String TEST_SETTINGS_FILE = "test_settings.json";
@@ -63,7 +62,6 @@ public class SettingsTest {
     public void tearDown() {
         deleteTestSettingsFile();
     }
-    @Disabled
 
     @Test
     public void saveAndLoadSettings() {
@@ -82,7 +80,6 @@ public class SettingsTest {
         settings.load();
 
     }
-    @Disabled
 
     @Test
     public void saveAndLoadSettingsEmptyFile() {

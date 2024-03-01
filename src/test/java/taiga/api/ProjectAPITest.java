@@ -9,7 +9,6 @@ import taiga.model.query.project.ProjectListEntry;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-@Disabled
 class ProjectAPITest {
 
     @Test

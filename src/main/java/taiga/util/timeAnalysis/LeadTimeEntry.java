@@ -1,5 +1,6 @@
 package taiga.util.timeAnalysis;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -88,5 +89,13 @@ public class LeadTimeEntry{
 
     public UserStoryInterface getUserStory() {
         return userStory;
+    }
+
+    /**
+     * Return the List of ItemHistory's for external processing
+     * @return a List of ItemHistory's
+     */
+    public List<ItemHistory> getHistoryList() {
+        return new ArrayList<>(historyList);
     }
 }
