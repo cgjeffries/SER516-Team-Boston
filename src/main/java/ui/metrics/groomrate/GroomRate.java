@@ -10,14 +10,15 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class GroomRate extends StackPane {
 
-    private final ReadOnlyObjectProperty<Date> endDate;
-    private final ReadOnlyObjectProperty<Date> startDate;
+    private final ReadOnlyObjectProperty<LocalDate> endDate;
+    private final ReadOnlyObjectProperty<LocalDate> startDate;
 
-    public GroomRate(ReadOnlyObjectProperty<Date> startDate, ReadOnlyObjectProperty<Date> endDate) {
+    public GroomRate(ReadOnlyObjectProperty<LocalDate> startDate, ReadOnlyObjectProperty<LocalDate> endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.init();
@@ -33,6 +34,7 @@ public class GroomRate extends StackPane {
 
 
         Text groomRateDesc = new Text("Ratio of Stories groomed between 02/20/2024 and 02/29/2024");
+        groomRateDesc.getStyleClass().add(Styles.TEXT_CAPTION);
 
         Spacer spacer = new Spacer(10);
 
@@ -49,6 +51,7 @@ public class GroomRate extends StackPane {
                 modifiedLabel,
                 totalLabel
         );
+        container.setSpacing(5);
         container.setPrefHeight(VBox.USE_PREF_SIZE);
         container.setAlignment(Pos.CENTER);
         VBox.setVgrow(container, Priority.ALWAYS);
