@@ -35,6 +35,13 @@ public class LeadTimeHelper {
             .toList();
     }
 
+    /**
+     * Return the List of LeadTimeEntries for external processing
+     * @return a List of LeadTimeEntries
+     */
+    public List<LeadTimeEntry> getLeadTimeEntryList() {
+        return new ArrayList<>(leadTimeEntryList);
+    }
 
     /**
      * Given a date, return a LeadTimeStats which gives the user stories at each status level for that date
