@@ -22,6 +22,8 @@ public class MetricSelection extends Screen {
     private Tile pbchange_title;
     @FXML
     private Tile pbhealth_tile;
+    @FXML
+    private Tile scopechange_tile;
 
     public MetricSelection(ScreenManager screenManager, String id, String fxmlFilename) {
         super(screenManager, id, fxmlFilename);
@@ -65,6 +67,11 @@ public class MetricSelection extends Screen {
         pbhealth_tile.setGraphic(new Icon(BoxiconsRegular.HEART, 48));
         pbhealth_tile.setActionHandler(() -> {
             Settings.get().getAppModel().setSelectedMetric("PB Health");
+            screenManager.switchScreen("project_selection");
+        });
+        scopechange_tile.setGraphic(new Icon(BoxiconsRegular.LIST_CHECK, 48)); // Choose an appropriate icon
+        scopechange_tile.setActionHandler(() -> {
+            Settings.get().getAppModel().setSelectedMetric("Scope Change");
             screenManager.switchScreen("project_selection");
         });
     }
