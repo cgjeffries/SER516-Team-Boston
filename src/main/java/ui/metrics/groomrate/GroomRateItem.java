@@ -2,18 +2,21 @@ package ui.metrics.groomrate;
 
 import java.util.Date;
 
+import java.util.List;
 import taiga.model.query.sprint.UserStoryDetail;
+import taiga.model.query.taskhistory.ItemHistory;
+import taiga.model.query.userstories.UserStoryInterface;
 
 public class GroomRateItem {
 
-    private final UserStoryDetail storyDetail;
+    private final UserStoryInterface storyDetail;
     private final boolean modified;
-    private final Date modifiedDate;
+    private final List<ItemHistory> modifications;
 
-    public GroomRateItem (Date modifiedDate, UserStoryDetail storyDetail) {
+    public GroomRateItem (List<ItemHistory> modifications, UserStoryInterface storyDetail) {
         this.storyDetail = storyDetail;
-        this.modifiedDate = modifiedDate;
-        if(modifiedDate != null) {
+        this.modifications = modifications;
+        if(!modifications.isEmpty()) {
             modified = true;
         }
         else {
@@ -21,13 +24,7 @@ public class GroomRateItem {
         }
     }
 
-    public GroomRateItem (Date modifiedDate, UserStoryDetail storyDetail, boolean modified) {
-        this.storyDetail = storyDetail;
-        this.modifiedDate = modifiedDate;
-        this.modified = modified;
-    }
-
-    public UserStoryDetail getStoryDetail() {
+    public UserStoryInterface getStoryDetail() {
         return storyDetail;
     }
 
@@ -35,8 +32,8 @@ public class GroomRateItem {
         return modified;
     }
 
-    public Date getModifiedDate() {
-        return modifiedDate;
+    public List<ItemHistory> getModifications() {
+        return modifications;
     }
 
     @Override
