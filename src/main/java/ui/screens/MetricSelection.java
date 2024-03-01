@@ -5,6 +5,7 @@ import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 import atlantafx.base.controls.Tile;
 import javafx.fxml.FXML;
 import javafx.scene.layout.StackPane;
+import org.kordamp.ikonli.boxicons.BoxiconsSolid;
 import settings.Settings;
 import ui.components.Icon;
 import ui.components.screens.Screen;
@@ -22,7 +23,8 @@ public class MetricSelection extends Screen {
     private Tile pbchange_title;
     @FXML
     private Tile pbhealth_tile;
-
+    @FXML
+    private Tile groomrate_tile;
     public MetricSelection(ScreenManager screenManager, String id, String fxmlFilename) {
         super(screenManager, id, fxmlFilename);
     }
@@ -65,6 +67,12 @@ public class MetricSelection extends Screen {
         pbhealth_tile.setGraphic(new Icon(BoxiconsRegular.HEART, 48));
         pbhealth_tile.setActionHandler(() -> {
             Settings.get().getAppModel().setSelectedMetric("PB Health");
+            screenManager.switchScreen("project_selection");
+        });
+
+        groomrate_tile.setGraphic(new Icon(BoxiconsSolid.EDIT_ALT, 48));
+        groomrate_tile.setActionHandler(() -> {
+            Settings.get().getAppModel().setSelectedMetric("Groom Rate");
             screenManager.switchScreen("project_selection");
         });
     }
