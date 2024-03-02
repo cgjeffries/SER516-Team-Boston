@@ -37,6 +37,7 @@ public class Launcher extends Application {
         screenManager.addScreen(new PBChangeScreen(screenManager, "Backlog Changes", "metric_configuration"));
         screenManager.addScreen(new PBHealthScreen(screenManager, "PB Health", "metric_configuration"));
         screenManager.addScreen(new GroomRateScreen(screenManager, "Groom Rate", "metric_configuration"));
+        screenManager.addScreen(new ScopeChangeScreen(screenManager, "Scope Change", "metric_configuration"));
 
         stage.setTitle("SER516 Team Boston");
         stage.setScene(screenManager.getScene());
