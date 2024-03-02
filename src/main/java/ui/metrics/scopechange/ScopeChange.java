@@ -3,6 +3,7 @@ package ui.metrics.scopechange;
 import atlantafx.base.controls.Tile;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
+import javafx.beans.binding.Bindings;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -47,7 +48,10 @@ public class ScopeChange extends StackPane {
         pbChangeList.setItems(this.service.getScopeChangeStories());
         VBox.setVgrow(pbChangeList, Priority.ALWAYS);
 
-        StackPane root = new StackPane(progress, pbChangeList);
+        Label emptyText = new Label("No scope change stories for current sprint");
+        emptyText.visibleProperty().bind(Bindings.createBooleanBinding(() -> !this.service.isRunning() && this.service.getScopeChangeStories().isEmpty(), this.service.getScopeChangeStories(), this.service.runningProperty()));
+
+        StackPane root = new StackPane(progress, pbChangeList, emptyText);
         VBox.setVgrow(root, Priority.ALWAYS);
 
         getChildren().add(root);
