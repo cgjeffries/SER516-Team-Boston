@@ -24,6 +24,7 @@
                               <Tile fx:id="leadtime_tile" description="Track time from backlog entry to sprint delivery" title="Lead Time" />
                               <Tile fx:id="pbchange_title" description="Monitor changes in the product backlog" title="Backlog Changes" />
                               <Tile fx:id="pbhealth_tile" description="Assess the health and trends of your product backlog" title="PB Health" />
+                              <Tile fx:id="groomrate_tile" description="Show how often stories were groomed within for a given period of time" title="Groom Rate" />
                               <Tile fx:id="scopechange_tile" description="Display the user stories added after the start of the sprint" title="Scope Change" />
                   <Separator prefWidth="200.0" />
                           </children>
