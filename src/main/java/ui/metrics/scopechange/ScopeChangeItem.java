@@ -1,18 +1,18 @@
 package ui.metrics.scopechange;
 
-import taiga.model.query.sprint.UserStoryDetail;
+import taiga.model.query.sprint.UserStory;
 
 import java.util.Date;
 
 public class ScopeChangeItem {
-    private final UserStoryDetail storyDetail;
+    private final UserStory story;
     private final boolean addedToSprintLate;
     private final boolean removedFromSprintLate;
     private final Date changeDate;
 
-    public ScopeChangeItem(Date changeDate, UserStoryDetail storyDetail, boolean added) {
+    public ScopeChangeItem(Date changeDate, UserStory story, boolean added) {
         this.changeDate = changeDate;
-        this.storyDetail = storyDetail;
+        this.story = story;
         this.addedToSprintLate = added;
         this.removedFromSprintLate = !added;
     }
@@ -25,8 +25,8 @@ public class ScopeChangeItem {
         return removedFromSprintLate;
     }
 
-    public UserStoryDetail getStoryDetail() {
-        return storyDetail;
+    public UserStory getStoryDetail() {
+        return story;
     }
 
     public Date getChangeDate() {
@@ -36,7 +36,7 @@ public class ScopeChangeItem {
     @Override
     public String toString() {
         return "ScopeChangeItem{" +
-                "storyDetail=" + storyDetail +
+                "story=" + story +
                 ", AddedToSprintLate=" + addedToSprintLate +
                 ", RemovedFromSprintLate=" + removedFromSprintLate +
                 '}';
