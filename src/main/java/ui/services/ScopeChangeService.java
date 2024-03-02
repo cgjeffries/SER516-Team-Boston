@@ -1,27 +1,52 @@
 package ui.services;
 
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import taiga.model.query.sprint.UserStoryDetail;
-import java.util.ArrayList;
+import taiga.model.query.sprint.Sprint;
+import ui.metrics.scopechange.ScopeChangeCalculator;
+import ui.metrics.scopechange.ScopeChangeItem;
+
 import java.util.List;
 
-public class ScopeChangeService extends Service<List<UserStoryDetail>> {
+public class ScopeChangeService extends Service<Object> {
+
+    private Sprint sprint;
+
+    private final ObservableList<ScopeChangeItem> scopeChangeStories;
+    private final ScopeChangeCalculator scopeChangeCalculator;
 
     public ScopeChangeService() {
-        
+        this.scopeChangeStories = FXCollections.observableArrayList();
+        this.scopeChangeCalculator = new ScopeChangeCalculator();
+    }
+
+    public ObservableList<ScopeChangeItem> getScopeChangeStories() {
+        return scopeChangeStories;
+    }
+
+    public void recalculate(Sprint sprint) {
+        this.sprint = sprint;
+        this.restart();
     }
 
     @Override
-    protected Task<List<UserStoryDetail>> createTask() {
+    protected Task<Object> createTask() {
         return new Task<>() {
             @Override
-            protected List<UserStoryDetail> call() {
-                // Hard-coded list of UserStoryDetail so it runs
-                List<UserStoryDetail> dummyList = new ArrayList<>();
-                dummyList.add(new UserStoryDetail());
-                dummyList.add(new UserStoryDetail());
-                return dummyList;
+            protected Object call() {
+                if (sprint == null) {
+                    return null;
+                }
+
+                List<ScopeChangeItem> stories = scopeChangeCalculator.calculate(sprint);
+
+                Platform.runLater(() -> {
+                    scopeChangeStories.setAll(stories);
+                });
+                return null;
             }
         };
     }
