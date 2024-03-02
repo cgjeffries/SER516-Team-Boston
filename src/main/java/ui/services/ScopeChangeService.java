@@ -1,5 +1,8 @@
 package ui.services;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -41,7 +44,8 @@ public class ScopeChangeService extends Service<Object> {
                     return null;
                 }
 
-                List<ScopeChangeItem> stories = scopeChangeCalculator.calculate(sprint);
+                List<ScopeChangeItem> stories = new ArrayList<>(scopeChangeCalculator.calculate(sprint));
+                stories.sort(Comparator.comparing(ScopeChangeItem::getChangeDate));
 
                 Platform.runLater(() -> {
                     scopeChangeStories.setAll(stories);
