@@ -19,11 +19,24 @@ The Cycle Time feature analyzes the efficiency of the workflow process, measurin
 
 The Lead Time feature measures the duration from when a story or task is added to the product backlog until it is delivered in a sprint, visualized on a Cumulative Flow Diagram (CFD). This metric helps teams understand the overall timeline from idea inception to delivery and the efficiency of the development cycle.
 
+### Product Backlog (PB) Change
+This feature tracks and displays user stories added to the Product Backlog during an active sprint. It allows teams to monitor scope creep and understand how additions to the backlog can impact sprint commitments and overall project timelines.
+
+### Product Backlog (PB) Health
+The PB Health metric provides a comprehensive view of the product backlog's readiness for upcoming sprints by evaluating the ratio of total user stories against those marked as "SprintReady". A "SprintReady" story, indicating it has been groomed and is ready for inclusion in a sprint, helps assess the backlog's balance between preparedness and required development effort, based on story points.
+
+### Groom Rate
+Groom Rate measures the proportion of user stories groomed (modified or updated) within a specific timeframe. This metric highlights the team's effort in refining and estimating the backlog, crucial for maintaining an actionable and prioritized list of user stories. It emphasizes the importance of continuous backlog grooming in agile development.
+
+### Scope Change
+Scope Change focuses on identifying user stories added to the Sprint Backlog after the sprint planning phase. This metric is vital for understanding changes in sprint scope, helping teams to adapt and re-prioritize work effectively, ensuring sprint goals remain achievable despite any alterations to the initially planned scope.
+
+
 ## Setting up the application
 
 ### Requirements and Setup
 
-- JDK17 or higher
+- Java 17 or higher
 
 ### Clone the repository
 
