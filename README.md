@@ -37,6 +37,8 @@ Scope Change focuses on identifying user stories added to the Sprint Backlog aft
 ### Requirements and Setup
 
 - Java 17 or higher
+- Maven for dependency management and running the project
+- Maven will include JavaFX in its dependencies
 
 ### Clone the repository
 
