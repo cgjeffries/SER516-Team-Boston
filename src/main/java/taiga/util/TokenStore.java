@@ -1,5 +1,6 @@
 package taiga.util;
 
+import settings.Settings;
 import taiga.model.auth.Tokens;
 
 public class TokenStore {
@@ -10,8 +11,7 @@ public class TokenStore {
      */
     public static void saveTokens(Tokens tokens) {
         try {
-            //TODO: Build out a way of storing the auth tokens
-
+            Settings.get().getAppModel().setTokens(tokens);
         } catch (Exception e) {
             System.out.println(
                     "Unable to save auth tokens!"); // should we pop up a warning message?
@@ -26,8 +26,7 @@ public class TokenStore {
      */
     public static Tokens retrieveTokens() {
         try {
-            //TODO: Build out a way of storing the auth tokens
-            return null;
+            return Settings.get().getAppModel().getTokens();
         } catch (Exception e) {
             System.out.println(
                     "Unable to retrieve auth tokens!"); // do we need to print the stack trace?

@@ -43,7 +43,7 @@ public class History {
     private String commentHtml;
     @SerializedName("delete_comment_date")
     @Expose
-    private Object deleteCommentDate;
+    private Date deleteCommentDate;
     @SerializedName("delete_comment_user")
     @Expose
     private Object deleteCommentUser;
@@ -145,11 +145,11 @@ public class History {
         this.commentHtml = commentHtml;
     }
 
-    public Object getDeleteCommentDate() {
+    public Date getDeleteCommentDate() {
         return deleteCommentDate;
     }
 
-    public void setDeleteCommentDate(Object deleteCommentDate) {
+    public void setDeleteCommentDate(Date deleteCommentDate) {
         this.deleteCommentDate = deleteCommentDate;
     }
 

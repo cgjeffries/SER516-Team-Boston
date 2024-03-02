@@ -1,6 +1,5 @@
 package ui.components.screens;
 
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 
 import java.util.HashMap;
@@ -9,7 +8,7 @@ import java.util.HashMap;
  * Utility class for managing {@link Screen}s.
  */
 public class ScreenManager {
-    private final HashMap<String, Screen<? extends Parent>> screenHashMap;
+    private final HashMap<String, Screen> screenHashMap;
     private Scene scene;
 
     public ScreenManager() {
@@ -21,10 +20,11 @@ public class ScreenManager {
      *
      * @param screen The screen to add
      */
-    public void initialize(Screen<? extends Parent> screen) {
+    public void initialize(Screen screen) {
         addScreen(screen);
         screen.load();
-        scene = new Scene(screen.getRoot(), 800, 600);
+        scene = new Scene(screen.getRoot());
+        scene.getStylesheets().add("/css/style.css");
     }
 
     /**
@@ -41,7 +41,7 @@ public class ScreenManager {
      *
      * @param screen The screen to add
      */
-    public void addScreen(Screen<? extends Parent> screen) {
+    public void addScreen(Screen screen) {
         addScreen(screen, false);
     }
 
@@ -51,7 +51,7 @@ public class ScreenManager {
      * @param screen       The screen to add.
      * @param shouldSwitch Whether the manager should call {@link #switchScreen(String)}
      */
-    public void addScreen(Screen<? extends Parent> screen, boolean shouldSwitch) {
+    public void addScreen(Screen screen, boolean shouldSwitch) {
         screenHashMap.put(screen.getId(), screen);
         if (shouldSwitch) {
             switchScreen(screen.getId());
@@ -64,7 +64,7 @@ public class ScreenManager {
      * @param screenName The name of the screen to get
      * @return The {@link Screen} instance associated with the screen name
      */
-    public Screen<? extends Parent> getScreen(String screenName) {
+    public Screen getScreen(String screenName) {
         return this.screenHashMap.get(screenName);
     }
 
@@ -74,7 +74,7 @@ public class ScreenManager {
      * @param screenName The name of the screen to switch to
      */
     public void switchScreen(String screenName) {
-        Screen<? extends Parent> targetScreen = getScreen(screenName);
+        Screen targetScreen = getScreen(screenName);
         if (targetScreen == null) {
             System.err.println("No screen '" + screenName + "' was found.");
             return;

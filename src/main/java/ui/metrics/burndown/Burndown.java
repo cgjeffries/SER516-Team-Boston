@@ -8,6 +8,7 @@ import javafx.scene.layout.StackPane;
 import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 import taiga.model.query.sprint.Sprint;
 import ui.components.Icon;
+import ui.services.BurndownService;
 
 public class Burndown extends StackPane {
     private final BurndownService service;
@@ -20,9 +21,9 @@ public class Burndown extends StackPane {
     }
 
     private void init() {
-        Tab taskBurndownTab = createBurndownTab("Task", new Icon(BoxiconsRegular.CLIPBOARD), this.service.getTaskData());
-        Tab usBurndownTab = createBurndownTab("User Story", new Icon(BoxiconsRegular.USER), this.service.getUserStoryData());
-        Tab bvBurndownTab = createBurndownTab("Business Value", new Icon(BoxiconsRegular.BRIEFCASE), this.service.getBusinessValueData());
+        Tab taskBurndownTab = createBurndownTab("Task", "Fractional Story Points", new Icon(BoxiconsRegular.CLIPBOARD), this.service.getTaskData());
+        Tab usBurndownTab = createBurndownTab("User Story", "Full Story Points", new Icon(BoxiconsRegular.USER), this.service.getUserStoryData());
+        Tab bvBurndownTab = createBurndownTab("Business Value", "Business Value Points", new Icon(BoxiconsRegular.BRIEFCASE), this.service.getBusinessValueData());
 
         tabPane.getTabs().setAll(taskBurndownTab, usBurndownTab, bvBurndownTab);
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
@@ -31,7 +32,7 @@ public class Burndown extends StackPane {
         this.service.start();
     }
 
-    private Tab createBurndownTab(String name, Icon icon, BurndownService.Data data) {
+    private Tab createBurndownTab(String name, String valueUnits, Icon icon, BurndownService.Data data) {
         StackPane root = new StackPane();
 
         Tab tab = new Tab(name);
@@ -43,7 +44,7 @@ public class Burndown extends StackPane {
         CategoryAxis date = new CategoryAxis();
         date.setLabel("Date");
         NumberAxis value = new NumberAxis();
-        value.setLabel("Value");
+        value.setLabel(valueUnits);
 
         XYChart.Series<String, Number> ideal = new XYChart.Series<>(data.getIdeal());
         ideal.setName("Ideal");

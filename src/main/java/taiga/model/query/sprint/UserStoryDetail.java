@@ -4,7 +4,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 import java.util.List;
-import taiga.model.query.userstories.StatusExtraInfo;
+import taiga.model.query.common.Epic;
+import taiga.model.query.common.StatusExtraInfo;
 import taiga.model.query.userstories.UserStoryInterface;
 
 public class UserStoryDetail implements UserStoryInterface {
@@ -118,7 +119,7 @@ public class UserStoryDetail implements UserStoryInterface {
 
     @SerializedName("modified_date")
     @Expose
-    private String modifiedDate;
+    private Date modifiedDate;
 
     @SerializedName("origin_issue")
     @Expose
@@ -428,11 +429,11 @@ public class UserStoryDetail implements UserStoryInterface {
         this.milestoneSlug = milestoneSlug;
     }
 
-    public String getModifiedDate() {
+    public Date getModifiedDate() {
         return modifiedDate;
     }
 
-    public void setModifiedDate(String modifiedDate) {
+    public void setModifiedDate(Date modifiedDate) {
         this.modifiedDate = modifiedDate;
     }
 
