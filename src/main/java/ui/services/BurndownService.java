@@ -1,6 +1,7 @@
 package ui.services;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import javafx.application.Platform;
@@ -16,7 +17,7 @@ import ui.metrics.burndown.TaskBurndown;
 import ui.metrics.burndown.UserStoryBurndown;
 
 public class BurndownService extends Service<Object> {
-    private Sprint sprint;
+    private List<Sprint> sprints;
 
     private final TaskBurndown taskBurndown;
     private final UserStoryBurndown userStoryBurndown;
@@ -34,10 +35,11 @@ public class BurndownService extends Service<Object> {
         this.taskBurndownData = new Data();
         this.userStoryBurndownData = new Data();
         this.businessValueBurndownData = new Data();
+        sprints = new ArrayList<>();
     }
 
-    public void recalculate(Sprint sprint) {
-        this.sprint = sprint;
+    public void recalculate(List<Sprint> sprint) {
+        this.sprints = sprint;
         this.restart();
     }
 
@@ -67,19 +69,22 @@ public class BurndownService extends Service<Object> {
         return new Task<>() {
             @Override
             protected Object call() throws Exception {
-                if (sprint == null) {
+                if (sprints.isEmpty()) {
                     return null;
                 }
 
-                List<BurnDownEntry> taskXYData = taskBurndown.calculate(sprint);
-                List<BurnDownEntry> userStoryXYData = userStoryBurndown.calculate(sprint);
-                List<BurnDownEntry> businessValueXYData = businessValueBurndown.calculate(sprint);
+                for(Sprint sprint : sprints) {
+                    List<BurnDownEntry> taskXYData = taskBurndown.calculate(sprint);
+                    List<BurnDownEntry> userStoryXYData = userStoryBurndown.calculate(sprint);
+                    List<BurnDownEntry> businessValueXYData =
+                        businessValueBurndown.calculate(sprint);
 
-                Platform.runLater(() -> {
-                    updateBurndownData(taskBurndownData, taskXYData);
-                    updateBurndownData(userStoryBurndownData, userStoryXYData);
-                    updateBurndownData(businessValueBurndownData, businessValueXYData);
-                });
+                    Platform.runLater(() -> {
+                        updateBurndownData(taskBurndownData, taskXYData);
+                        updateBurndownData(userStoryBurndownData, userStoryXYData);
+                        updateBurndownData(businessValueBurndownData, businessValueXYData);
+                    });
+                }
 
                 return null;
             }
