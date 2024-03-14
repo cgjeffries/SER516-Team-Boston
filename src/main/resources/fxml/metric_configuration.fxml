@@ -65,6 +65,11 @@
                               <Font name="System Bold" size="21.0" />
                            </font>
                         </Label>
+                        <Label fx:id="sprint_label" text="[Sprint Name]">
+                           <font>
+                              <Font name="System Bold" size="19.0" />
+                           </font>
+                        </Label>
                         <VBox fx:id="visualization_root" VBox.vgrow="ALWAYS" />
                      </children>
                   </VBox>

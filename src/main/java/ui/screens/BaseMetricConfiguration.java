@@ -37,6 +37,9 @@ public abstract class BaseMetricConfiguration extends Screen {
     private Label project_name;
 
     @FXML
+    private Label sprint_name;
+
+    @FXML
     private VBox visualization_root;
 
     @FXML
