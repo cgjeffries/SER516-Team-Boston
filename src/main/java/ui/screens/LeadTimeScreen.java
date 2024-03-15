@@ -30,9 +30,11 @@ public class LeadTimeScreen extends BaseMetricConfiguration {
                 return;
             }
             this.leadTime.switchSprint(sprint);
+            sprint_name.textProperty().set(sprint_combobox.getValue().getName());
         });
         sprint_combobox.getSelectionModel().selectLast();
         this.leadTime.switchSprint(sprint_combobox.getValue());
+        sprint_name.textProperty().set(sprint_combobox.getValue().getName());
     }
 
     @Override
