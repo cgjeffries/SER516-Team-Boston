@@ -1,5 +1,8 @@
 package ui.metrics.burndown;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import javafx.scene.chart.*;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Tab;
@@ -32,7 +35,7 @@ public class Burndown extends StackPane {
         this.service.start();
     }
 
-    private Tab createBurndownTab(String name, String valueUnits, Icon icon, BurndownService.Data data) {
+    private Tab createBurndownTab(String name, String valueUnits, Icon icon, HashMap<Sprint, BurndownService.Data> dataMap) {
         StackPane root = new StackPane();
 
         Tab tab = new Tab(name);
@@ -46,14 +49,18 @@ public class Burndown extends StackPane {
         NumberAxis value = new NumberAxis();
         value.setLabel(valueUnits);
 
-        XYChart.Series<String, Number> ideal = new XYChart.Series<>(data.getIdeal());
-        ideal.setName("Ideal");
-        XYChart.Series<String, Number> current = new XYChart.Series<>(data.getCalculated());
-        current.setName("Current");
-
         AreaChart<String, Number> chart = new AreaChart<>(date, value);
 
-        chart.getData().addAll(ideal, current);
+        for(Sprint sprint : dataMap.keySet()) {
+            BurndownService.Data data = dataMap.get(sprint);
+
+            XYChart.Series<String, Number> ideal = new XYChart.Series<>(data.getIdeal());
+            ideal.setName("Ideal (" + sprint.getName() + ")");
+            XYChart.Series<String, Number> current = new XYChart.Series<>(data.getCalculated());
+            current.setName("Current (" + sprint.getName() + ")");
+
+            chart.getData().addAll(ideal, current);
+        }
 
         chart.setAnimated(false);
         chart.visibleProperty().bind(this.service.runningProperty().not());
@@ -67,7 +74,7 @@ public class Burndown extends StackPane {
     }
 
     public void switchSprint(Sprint sprint) {
-        this.service.recalculate(sprint);
+        this.service.recalculate(new ArrayList<>(Arrays.asList(sprint))); //TODO: actually pass multiple sprints
     }
 
     public void focusFirstTab() {

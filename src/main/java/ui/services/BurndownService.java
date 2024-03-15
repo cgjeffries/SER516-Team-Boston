@@ -2,6 +2,7 @@ package ui.services;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javafx.application.Platform;
@@ -23,18 +24,18 @@ public class BurndownService extends Service<Object> {
     private final UserStoryBurndown userStoryBurndown;
     private final BusinessValueBurndown businessValueBurndown;
 
-    private final BurndownService.Data taskBurndownData;
-    private final BurndownService.Data userStoryBurndownData;
-    private final BurndownService.Data businessValueBurndownData;
+    private final HashMap<Sprint, Data> taskBurndownData;
+    private final HashMap<Sprint, Data> userStoryBurndownData;
+    private final HashMap<Sprint, Data> businessValueBurndownData;
 
     public BurndownService() {
         this.taskBurndown = new TaskBurndown();
         this.userStoryBurndown = new UserStoryBurndown();
         this.businessValueBurndown = new BusinessValueBurndown();
 
-        this.taskBurndownData = new Data();
-        this.userStoryBurndownData = new Data();
-        this.businessValueBurndownData = new Data();
+        this.taskBurndownData = new HashMap<>();
+        this.userStoryBurndownData = new HashMap<>();
+        this.businessValueBurndownData = new HashMap<>();
         sprints = new ArrayList<>();
     }
 
@@ -43,15 +44,15 @@ public class BurndownService extends Service<Object> {
         this.restart();
     }
 
-    public Data getTaskData() {
+    public HashMap<Sprint, Data> getTaskData() {
         return this.taskBurndownData;
     }
 
-    public Data getUserStoryData() {
+    public HashMap<Sprint, Data> getUserStoryData() {
         return this.userStoryBurndownData;
     }
 
-    public Data getBusinessValueData() {
+    public HashMap<Sprint, Data> getBusinessValueData() {
         return this.businessValueBurndownData;
     }
 
@@ -80,9 +81,9 @@ public class BurndownService extends Service<Object> {
                         businessValueBurndown.calculate(sprint);
 
                     Platform.runLater(() -> {
-                        updateBurndownData(taskBurndownData, taskXYData);
-                        updateBurndownData(userStoryBurndownData, userStoryXYData);
-                        updateBurndownData(businessValueBurndownData, businessValueXYData);
+                        updateBurndownData(taskBurndownData, taskXYData, sprint);
+                        updateBurndownData(userStoryBurndownData, userStoryXYData, sprint);
+                        updateBurndownData(businessValueBurndownData, businessValueXYData, sprint);
                     });
                 }
 
@@ -91,10 +92,14 @@ public class BurndownService extends Service<Object> {
         };
     }
 
-    private void updateBurndownData(Data burndownData, List<BurnDownEntry> entries) {
+    private void updateBurndownData(HashMap<Sprint, Data> burndownDataMap, List<BurnDownEntry> entries, Sprint sprint) {
+        Data burndownData = new Data();
+
         SimpleDateFormat format = new SimpleDateFormat("MMM dd");
         burndownData.setIdeal(entries.stream().map(d -> new XYChart.Data<>(format.format(d.getDate()), (Number) d.getIdeal())).toList());
         burndownData.setCalculated(entries.stream().map(d -> new XYChart.Data<>(format.format(d.getDate()), (Number) d.getCurrent())).toList());
+
+        burndownDataMap.put(sprint, burndownData);
     }
 
     public static class Data {
