@@ -40,9 +40,12 @@ public class PBChangeScreen extends BaseMetricConfiguration {
                 return;
             }
             this.pbChange.switchSprint(sprint);
+            sprint_name.textProperty().set(sprint_combobox.getValue().getName());
+
         });
         sprint_combobox.getSelectionModel().selectLast();
         this.pbChange.switchSprint(sprint_combobox.getValue());
+        sprint_name.textProperty().set(sprint_combobox.getValue().getName());
     }
 
     @Override
