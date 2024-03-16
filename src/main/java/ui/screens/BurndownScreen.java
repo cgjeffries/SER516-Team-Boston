@@ -2,6 +2,7 @@ package ui.screens;
 
 import atlantafx.base.theme.Styles;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
@@ -54,10 +55,14 @@ public class BurndownScreen extends BaseMetricConfiguration {
     protected void afterVisualizationMount() {
         checkComboBox.getCheckModel().getCheckedItems().addListener(
             (ListChangeListener<? super Sprint>) (change) -> {
-                this.burndown.SelectSprints(checkComboBox.getCheckModel().getCheckedItems());
+                ArrayList<Sprint> list = new ArrayList<>(checkComboBox.getCheckModel().getCheckedItems());
+                Collections.reverse(list);
+                this.burndown.SelectSprints(list);
             });
 
-        this.burndown.SelectSprints(checkComboBox.getCheckModel().getCheckedItems());
+        ArrayList<Sprint> list = new ArrayList<>(checkComboBox.getCheckModel().getCheckedItems());
+        Collections.reverse(list);
+        this.burndown.SelectSprints(list);
     }
 
 

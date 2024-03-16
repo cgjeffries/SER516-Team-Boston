@@ -76,6 +76,14 @@ public class BurndownService extends Service<Object> {
                     return null;
                 }
 
+                Platform.runLater(() -> {
+                    taskBurndownData.clear();
+                    userStoryBurndownData.clear();
+                    businessValueBurndownData.clear();
+                });
+
+
+
                 for(Sprint sprint : sprints) {
                     List<BurnDownEntry> taskXYData = taskBurndown.calculate(sprint);
                     List<BurnDownEntry> userStoryXYData = userStoryBurndown.calculate(sprint);
