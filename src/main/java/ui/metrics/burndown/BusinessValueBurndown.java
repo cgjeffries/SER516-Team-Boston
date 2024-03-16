@@ -4,6 +4,7 @@ import taiga.api.UserStoryAPI;
 import taiga.model.query.sprint.Sprint;
 import taiga.model.query.sprint.UserStory;
 import taiga.model.query.sprint.UserStoryDetail;
+import taiga.model.query.userstories.UserStoryInterface;
 import taiga.util.UserStoryUtils;
 import ui.util.DateUtil;
 
@@ -25,16 +26,15 @@ public class BusinessValueBurndown implements BurndownCalculator {
 
     }
 
-    private double calculateTotalBusinessValue(Sprint sprint) {
+    private double calculateTotalBusinessValue(List<UserStoryDetail> userStories) {
         double tempTotal = 0;
-        List<UserStory> userStories = sprint.getUserStories();
         userStories
                 .parallelStream()
                 .forEach(story -> {
                     Double bv = UserStoryUtils.getBusinessValueForUserStory(story);
                     businessValues.put(story.getId(), bv);
                 });
-        for (UserStory userStory : userStories) {
+        for (UserStoryInterface userStory : userStories) {
             tempTotal += businessValues.get(userStory.getId());
         }
         return tempTotal;
@@ -42,15 +42,14 @@ public class BusinessValueBurndown implements BurndownCalculator {
 
     @Override
     public List<BurnDownEntry> calculate(Sprint sprint) {
-        double businessValueTotal = calculateTotalBusinessValue(sprint);
-
         AtomicReference<List<UserStoryDetail>> userStories = new AtomicReference<>();
 
-        CompletableFuture<Void> future = this.userStoryAPI.listMilestoneUserStories(sprint.getId(), result -> {
+        this.userStoryAPI.listMilestoneUserStories(sprint.getId(), result -> {
             userStories.set(List.of(result.getContent()));
-        });
+        }).join();
 
-        future.join(); // wait for the request to complete
+        double businessValueTotal = calculateTotalBusinessValue(userStories.get());
+
 
         List<BurnDownEntry> burndown = new ArrayList<>();
 

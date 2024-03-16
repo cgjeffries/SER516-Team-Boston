@@ -58,7 +58,7 @@ public class UserStoryUtils {
      * @param story The user story to extract business value from
      * @return The business value of the user story
      */
-    public static Double getBusinessValueForUserStory(UserStory story) {
+    public static Double getBusinessValueForUserStory(UserStoryInterface story) {
         if (!userStoryCustomAttributes.containsKey(story.getProject())) {
             try {
                 userStoryCustomAttributes.put(story.getProject(), loadBvAttribute(story.getProject()));

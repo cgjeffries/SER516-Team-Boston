@@ -85,7 +85,7 @@ public class Burndown extends StackPane {
         return tab;
     }
 
-    public void SslectSprints(List<Sprint> sprints) {
+    public void SelectSprints(List<Sprint> sprints) {
         this.service.recalculate(sprints);
     }
 

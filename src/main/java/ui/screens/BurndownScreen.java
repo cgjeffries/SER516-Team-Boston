@@ -1,13 +1,18 @@
 package ui.screens;
 
 import atlantafx.base.theme.Styles;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
+import org.controlsfx.control.CheckComboBox;
 import settings.Settings;
 import taiga.model.query.project.Project;
 import taiga.model.query.sprint.Sprint;
@@ -18,6 +23,8 @@ public class BurndownScreen extends BaseMetricConfiguration {
 
     private Burndown burndown;
     private ComboBox<Sprint> endSprint;
+
+    private CheckComboBox<Sprint> checkComboBox;
 
     /**
      * Create a screen instance
@@ -45,35 +52,41 @@ public class BurndownScreen extends BaseMetricConfiguration {
      */
     @Override
     protected void afterVisualizationMount() {
-        sprint_combobox.setOnAction((e) -> {
-            Sprint sprint = sprint_combobox.getValue();
-            if (sprint == null) {
-                return;
-            }
-            this.burndown.switchSprint(sprint);
-        });
-        sprint_combobox.getSelectionModel().selectLast();
-        this.burndown.switchSprint(sprint_combobox.getValue());
+        checkComboBox.getCheckModel().getCheckedItems().addListener(
+            (ListChangeListener<? super Sprint>) (change) -> {
+                this.burndown.SelectSprints(checkComboBox.getCheckModel().getCheckedItems());
+            });
+
+        this.burndown.SelectSprints(checkComboBox.getCheckModel().getCheckedItems());
     }
 
 
     @Override
     protected void beforeParameterMount() {
+        this.hideSprintParameter();
+
         SimpleObjectProperty<Project> currentProject = Settings.get().getAppModel().getCurrentProject();
-        endSprint = new ComboBox<>();
-        SprintComboboxCellFactory cellFactory = new SprintComboboxCellFactory();
-        endSprint.setButtonCell(cellFactory.call(null));
-        endSprint.setCellFactory(cellFactory);
-        endSprint.itemsProperty().bind(Bindings.createObjectBinding(
-                () -> FXCollections.observableList(currentProject.get().getSprints()), currentProject));
-        endSprint.setPrefWidth(150);
+
+        checkComboBox = new CheckComboBox<>(FXCollections.observableList(currentProject.get().getSprints()));
+        checkComboBox.getCheckModel().check(FXCollections.observableList(currentProject.get().getSprints()).size() - 1);
+
+        checkComboBox.setPrefWidth(150);
+
+
+//        endSprint = new ComboBox<>();
+//        SprintComboboxCellFactory cellFactory = new SprintComboboxCellFactory();
+//        endSprint.setButtonCell(cellFactory.call(null));
+//        endSprint.setCellFactory(cellFactory);
+//        endSprint.itemsProperty().bind(Bindings.createObjectBinding(
+//                () -> FXCollections.observableList(currentProject.get().getSprints()), currentProject));
+//        endSprint.setPrefWidth(150);
     }
 
     @Override
     protected VBox parameters() {
-        Label label = new Label("End Sprint");
+        Label label = new Label("Select Sprints");
         label.getStyleClass().add(Styles.TEXT_BOLD);
-        return new VBox(label, endSprint);
+        return new VBox(label, checkComboBox);
     }
 
     @Override
