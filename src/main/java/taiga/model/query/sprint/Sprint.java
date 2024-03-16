@@ -214,4 +214,9 @@ public class Sprint {
     public int hashCode() {
         return Objects.hash(slug, id);
     }
+
+    @Override
+    public String toString(){
+        return this.getName();
+    }
 }

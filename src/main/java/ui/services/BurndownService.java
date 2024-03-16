@@ -8,6 +8,7 @@ import java.util.List;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.chart.XYChart;
@@ -24,18 +25,19 @@ public class BurndownService extends Service<Object> {
     private final UserStoryBurndown userStoryBurndown;
     private final BusinessValueBurndown businessValueBurndown;
 
-    private final HashMap<Sprint, Data> taskBurndownData;
-    private final HashMap<Sprint, Data> userStoryBurndownData;
-    private final HashMap<Sprint, Data> businessValueBurndownData;
+    private final ObservableMap<Sprint, Data> taskBurndownData;
+    private final ObservableMap<Sprint, Data> userStoryBurndownData;
+    private final ObservableMap<Sprint, Data> businessValueBurndownData;
 
     public BurndownService() {
         this.taskBurndown = new TaskBurndown();
         this.userStoryBurndown = new UserStoryBurndown();
         this.businessValueBurndown = new BusinessValueBurndown();
 
-        this.taskBurndownData = new HashMap<>();
-        this.userStoryBurndownData = new HashMap<>();
-        this.businessValueBurndownData = new HashMap<>();
+        this.taskBurndownData = FXCollections.observableHashMap();
+
+        this.userStoryBurndownData = FXCollections.observableHashMap();
+        this.businessValueBurndownData = FXCollections.observableHashMap();
         sprints = new ArrayList<>();
     }
 
@@ -44,15 +46,15 @@ public class BurndownService extends Service<Object> {
         this.restart();
     }
 
-    public HashMap<Sprint, Data> getTaskData() {
+    public ObservableMap<Sprint, Data> getTaskData() {
         return this.taskBurndownData;
     }
 
-    public HashMap<Sprint, Data> getUserStoryData() {
+    public ObservableMap<Sprint, Data> getUserStoryData() {
         return this.userStoryBurndownData;
     }
 
-    public HashMap<Sprint, Data> getBusinessValueData() {
+    public ObservableMap<Sprint, Data> getBusinessValueData() {
         return this.businessValueBurndownData;
     }
 
@@ -92,7 +94,7 @@ public class BurndownService extends Service<Object> {
         };
     }
 
-    private void updateBurndownData(HashMap<Sprint, Data> burndownDataMap, List<BurnDownEntry> entries, Sprint sprint) {
+    private void updateBurndownData(ObservableMap<Sprint, Data> burndownDataMap, List<BurnDownEntry> entries, Sprint sprint) {
         Data burndownData = new Data();
 
         SimpleDateFormat format = new SimpleDateFormat("MMM dd");
