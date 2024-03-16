@@ -116,7 +116,7 @@ public abstract class BaseMetricConfiguration extends Screen {
         screenManager.switchScreen("project_selection");
     }
 
-    private static class SprintComboboxCellFactory implements Callback<ListView<Sprint>, ListCell<Sprint>> {
+    protected static class SprintComboboxCellFactory implements Callback<ListView<Sprint>, ListCell<Sprint>> {
         @Override
         public ListCell<Sprint> call(ListView<Sprint> sprintListView) {
             return new ListCell<>() {

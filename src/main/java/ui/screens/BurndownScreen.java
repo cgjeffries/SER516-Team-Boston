@@ -1,7 +1,15 @@
 package ui.screens;
 
+import atlantafx.base.theme.Styles;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import settings.Settings;
+import taiga.model.query.project.Project;
 import taiga.model.query.sprint.Sprint;
 import ui.components.screens.ScreenManager;
 import ui.metrics.burndown.Burndown;
@@ -9,6 +17,7 @@ import ui.metrics.burndown.Burndown;
 public class BurndownScreen extends BaseMetricConfiguration {
 
     private Burndown burndown;
+    private ComboBox<Sprint> endSprint;
 
     /**
      * Create a screen instance
@@ -47,9 +56,24 @@ public class BurndownScreen extends BaseMetricConfiguration {
         this.burndown.switchSprint(sprint_combobox.getValue());
     }
 
+
+    @Override
+    protected void beforeParameterMount() {
+        SimpleObjectProperty<Project> currentProject = Settings.get().getAppModel().getCurrentProject();
+        endSprint = new ComboBox<>();
+        SprintComboboxCellFactory cellFactory = new SprintComboboxCellFactory();
+        endSprint.setButtonCell(cellFactory.call(null));
+        endSprint.setCellFactory(cellFactory);
+        endSprint.itemsProperty().bind(Bindings.createObjectBinding(
+                () -> FXCollections.observableList(currentProject.get().getSprints()), currentProject));
+        endSprint.setPrefWidth(150);
+    }
+
     @Override
     protected VBox parameters() {
-        return null;
+        Label label = new Label("End Sprint");
+        label.getStyleClass().add(Styles.TEXT_BOLD);
+        return new VBox(label, endSprint);
     }
 
     @Override
