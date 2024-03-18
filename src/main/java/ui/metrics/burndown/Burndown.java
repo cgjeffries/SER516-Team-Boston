@@ -1,8 +1,5 @@
 package ui.metrics.burndown;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
@@ -85,8 +82,12 @@ public class Burndown extends StackPane {
         return tab;
     }
 
-    public void SelectSprints(List<Sprint> sprints) {
-        this.service.recalculate(sprints);
+    public void selectSprints(List<Sprint> sprints) {
+        this.selectSprints(sprints, false);
+    }
+
+    public void selectSprints(List<Sprint> sprints, boolean overlay) {
+        this.service.recalculate(sprints, overlay);
     }
 
     public void focusFirstTab() {

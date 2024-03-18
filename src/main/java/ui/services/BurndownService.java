@@ -29,6 +29,8 @@ public class BurndownService extends Service<Object> {
     private final ObservableMap<Sprint, Data> userStoryBurndownData;
     private final ObservableMap<Sprint, Data> businessValueBurndownData;
 
+    private boolean overlay = false;
+
     public BurndownService() {
         this.taskBurndown = new TaskBurndown();
         this.userStoryBurndown = new UserStoryBurndown();
@@ -41,8 +43,12 @@ public class BurndownService extends Service<Object> {
         sprints = new ArrayList<>();
     }
 
-    public void recalculate(List<Sprint> sprint) {
-        this.sprints = sprint;
+    public void recalculate(List<Sprint> sprints) {
+        this.recalculate(sprints, false);
+    }
+    public void recalculate(List<Sprint> sprints, boolean overlay) {
+        this.sprints = sprints;
+        this.overlay = overlay;
         this.restart();
     }
 
@@ -82,8 +88,6 @@ public class BurndownService extends Service<Object> {
                     businessValueBurndownData.clear();
                 });
 
-
-
                 for(Sprint sprint : sprints) {
                     List<BurnDownEntry> taskXYData = taskBurndown.calculate(sprint);
                     List<BurnDownEntry> userStoryXYData = userStoryBurndown.calculate(sprint);
@@ -106,8 +110,27 @@ public class BurndownService extends Service<Object> {
         Data burndownData = new Data();
 
         SimpleDateFormat format = new SimpleDateFormat("MMM dd");
-        burndownData.setIdeal(entries.stream().map(d -> new XYChart.Data<>(format.format(d.getDate()), (Number) d.getIdeal())).toList());
-        burndownData.setCalculated(entries.stream().map(d -> new XYChart.Data<>(format.format(d.getDate()), (Number) d.getCurrent())).toList());
+
+        if(overlay){
+            List<XYChart.Data<String, Number>> ideal = new ArrayList<>();
+            List<XYChart.Data<String, Number>> calculated = new ArrayList<>();
+            for(int i=0; i < entries.size(); i++){
+                BurnDownEntry entry = entries.get(i);
+                ideal.add(new XYChart.Data<>("Day " + (i+1), (Number) entry.getIdeal()));
+                calculated.add(new XYChart.Data<>("Day " + (i+1), (Number) entry.getCurrent()));
+            }
+
+            burndownData.setIdeal(ideal);
+            burndownData.setCalculated(calculated);
+        }
+        else {
+            burndownData.setIdeal(entries.stream()
+                .map(d -> new XYChart.Data<>(format.format(d.getDate()), (Number) d.getIdeal()))
+                .toList());
+            burndownData.setCalculated(entries.stream()
+                .map(d -> new XYChart.Data<>(format.format(d.getDate()), (Number) d.getCurrent()))
+                .toList());
+        }
 
         burndownDataMap.put(sprint, burndownData);
     }
