@@ -3,6 +3,8 @@ package ui.screens;
 import atlantafx.base.theme.Styles;
 import java.util.ArrayList;
 import java.util.Collections;
+
+import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -77,6 +79,7 @@ public class BurndownScreen extends BaseMetricConfiguration {
                     overlayLabel.setVisible(false);
                     updateDisplayedSprints(false);
                 }
+                Platform.runLater(() -> checkComboBox.hide());
             });
 
         overlayCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
