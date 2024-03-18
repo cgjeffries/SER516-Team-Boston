@@ -43,6 +43,7 @@ public class BurndownScreen extends BaseMetricConfiguration {
     @Override
     protected void beforeVisualizationMount() {
         this.burndown = new Burndown();
+        checkComboBox.disableProperty().bind(this.burndown.serviceRunning());
     }
 
     @Override
@@ -94,7 +95,6 @@ public class BurndownScreen extends BaseMetricConfiguration {
 
         checkComboBox = new CheckComboBox<>(FXCollections.observableList(currentProject.get().getSprints()));
         checkComboBox.getCheckModel().check(FXCollections.observableList(currentProject.get().getSprints()).size() - 1);
-
         checkComboBox.setPrefWidth(150);
 
         overlayLabel = new Label("Overlay Sprints");

@@ -49,7 +49,7 @@ public class BurndownService extends Service<Object> {
     public void recalculate(List<Sprint> sprints, boolean overlay) {
         this.sprints = sprints;
         this.overlay = overlay;
-        Platform.runLater(this::restart);
+        this.restart();
     }
 
     public ObservableMap<Sprint, Data> getTaskData() {

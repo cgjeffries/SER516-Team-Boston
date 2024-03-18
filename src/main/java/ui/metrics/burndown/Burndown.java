@@ -1,6 +1,7 @@
 package ui.metrics.burndown;
 
 import java.util.List;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.scene.chart.*;
@@ -102,6 +103,10 @@ public class Burndown extends StackPane {
 
     public void focusFirstTab() {
         tabPane.getSelectionModel().selectFirst();
+    }
+
+    public ReadOnlyBooleanProperty serviceRunning(){
+        return this.service.runningProperty();
     }
 
     public void cancel() {
