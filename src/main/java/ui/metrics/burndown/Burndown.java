@@ -82,10 +82,20 @@ public class Burndown extends StackPane {
         return tab;
     }
 
+    /**
+     * Choose which sprints will be displayed in the burndown graphs
+     * @param sprints the list of sprints to display the various burndown graphs for
+     */
     public void selectSprints(List<Sprint> sprints) {
         this.selectSprints(sprints, false);
     }
 
+    /**
+     * Choose which sprints will be displayed in the burndown graphs
+     * @param sprints the list of sprints to display the various burndown graphs for
+     * @param overlay Whether or not to make the burndown charts overlay one another. if false the
+     *                burndown charts will be displayed chronologically.
+     */
     public void selectSprints(List<Sprint> sprints, boolean overlay) {
         this.service.recalculate(sprints, overlay);
     }
