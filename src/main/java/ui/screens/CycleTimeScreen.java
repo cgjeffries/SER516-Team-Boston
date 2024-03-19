@@ -40,11 +40,9 @@ public class CycleTimeScreen extends BaseMetricConfiguration {
                 return;
             }
             this.cycleTime.switchSprint(sprint);
-            sprint_name.textProperty().set(sprint_combobox.getValue().getName());
         });
         sprint_combobox.getSelectionModel().selectLast();
         this.cycleTime.switchSprint(sprint_combobox.getValue());
-        sprint_name.textProperty().set(sprint_combobox.getValue().getName());
     }
 
     @Override

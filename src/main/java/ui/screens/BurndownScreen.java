@@ -42,12 +42,9 @@ public class BurndownScreen extends BaseMetricConfiguration {
                 return;
             }
             this.burndown.switchSprint(sprint);
-            sprint_name.textProperty().set(sprint_combobox.getValue().getName());
         });
         sprint_combobox.getSelectionModel().selectLast();
         this.burndown.switchSprint(sprint_combobox.getValue());
-        sprint_name.textProperty().set(sprint_combobox.getValue().getName());
-
     }
 
     @Override

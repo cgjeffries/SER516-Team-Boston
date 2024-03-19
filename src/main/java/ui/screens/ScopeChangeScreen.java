@@ -37,11 +37,9 @@ public class ScopeChangeScreen extends BaseMetricConfiguration {
                 return;
             }
             this.scopeChange.recalculate(sprint);
-            sprint_name.textProperty().set(sprint_combobox.getValue().getName());
         });
         sprint_combobox.getSelectionModel().selectLast();
         this.scopeChange.recalculate(sprint_combobox.getValue());
-        sprint_name.textProperty().set(sprint_combobox.getValue().getName());
     }
 
     @Override

@@ -90,6 +90,11 @@ public abstract class BaseMetricConfiguration extends Screen {
         back.setGraphic(new Icon(BoxiconsRegular.ARROW_BACK));
         back.getStyleClass().add(Styles.FLAT);
 
+        sprint_name.textProperty().bind(Bindings.createStringBinding(() -> {
+            Sprint sprint = sprint_combobox.getValue();
+            return sprint != null ? sprint.getName() : "(No Sprint Selected)";
+        }, sprint_combobox.valueProperty()));
+
         beforeParameterMount();
         Pane parametersBody = parameters();
         if (parametersBody != null) {
@@ -112,6 +117,8 @@ public abstract class BaseMetricConfiguration extends Screen {
         sprint_combobox_label.setManaged(false);
         sprint_parameter_box.setVisible(false);
         sprint_parameter_box.setManaged(false);
+        sprint_name.setVisible(false);
+        sprint_name.setManaged(false);
     }
 
     @FXML
