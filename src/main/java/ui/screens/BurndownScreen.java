@@ -1,14 +1,30 @@
 package ui.screens;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import atlantafx.base.theme.Styles;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import settings.Settings;
+import taiga.model.query.project.Project;
 import taiga.model.query.sprint.Sprint;
+import ui.components.Multiselect;
 import ui.components.screens.ScreenManager;
 import ui.metrics.burndown.Burndown;
 
 public class BurndownScreen extends BaseMetricConfiguration {
 
     private Burndown burndown;
+    private Multiselect<Sprint> sprintMultiselect;
+    private CheckBox overlayCheckBox;
 
     /**
      * Create a screen instance
@@ -24,6 +40,8 @@ public class BurndownScreen extends BaseMetricConfiguration {
     @Override
     protected void beforeVisualizationMount() {
         this.burndown = new Burndown();
+        sprintMultiselect.disableProperty().bind(this.burndown.serviceRunning());
+        overlayCheckBox.disableProperty().bind(this.burndown.serviceRunning());
     }
 
     @Override
@@ -31,25 +49,55 @@ public class BurndownScreen extends BaseMetricConfiguration {
         return this.burndown;
     }
 
+    protected void updateDisplayedSprints(boolean overlay) {
+        List<Sprint> list = new ArrayList<>(sprintMultiselect.getSelectionModel().getSelectedItems());
+        Collections.reverse(list);
+        this.burndown.selectSprints(list, overlay);
+    }
+
     /**
-     * Adds the switch sprint functionality to the sprint dropdown after the page is rendered.
+     * Adds the switch sprint functionality to the sprint dropdown after the page is
+     * rendered.
      */
     @Override
     protected void afterVisualizationMount() {
-        sprint_combobox.setOnAction((e) -> {
-            Sprint sprint = sprint_combobox.getValue();
-            if (sprint == null) {
-                return;
+        overlayCheckBox.visibleProperty().bind(Bindings.createBooleanBinding(() -> {
+            boolean shouldOverlay = sprintMultiselect.getSelectionModel().getSelectedItems().size() > 1;
+            if (shouldOverlay) {
+                updateDisplayedSprints(overlayCheckBox.isSelected());
+            } else {
+                updateDisplayedSprints(false);
             }
-            this.burndown.switchSprint(sprint);
+            return shouldOverlay;
+        }, sprintMultiselect.getSelectionModel().getSelectedItems()));
+
+        overlayCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            updateDisplayedSprints(overlayCheckBox.isSelected());
         });
-        sprint_combobox.getSelectionModel().selectLast();
-        this.burndown.switchSprint(sprint_combobox.getValue());
+
+        updateDisplayedSprints(overlayCheckBox.isSelected());
+    }
+
+    @Override
+    protected void beforeParameterMount() {
+        this.hideSprintParameter();
+
+        SimpleObjectProperty<Project> currentProject = Settings.get().getAppModel().getCurrentProject();
+
+        sprintMultiselect = new Multiselect<>();
+        sprintMultiselect.itemsProperty().bind(Bindings.createObjectBinding(
+                () -> FXCollections.observableList(currentProject.get().getSprints()), currentProject));
+
+        overlayCheckBox = new CheckBox("Overlay Sprints");
     }
 
     @Override
     protected VBox parameters() {
-        return null;
+        Label label = new Label("Select Sprints");
+        label.getStyleClass().add(Styles.TEXT_BOLD);
+        HBox hbox = new HBox(sprintMultiselect, overlayCheckBox);
+        hbox.setSpacing(5);
+        return new VBox(label, hbox);
     }
 
     @Override
@@ -57,7 +105,7 @@ public class BurndownScreen extends BaseMetricConfiguration {
         if (this.burndown == null) {
             return;
         }
-        sprint_combobox.getSelectionModel().selectLast();
+        sprintMultiselect.getSelectionModel().selectLast();
         this.burndown.focusFirstTab();
     }
 }
