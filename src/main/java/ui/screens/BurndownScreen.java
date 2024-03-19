@@ -1,34 +1,29 @@
 package ui.screens;
 
-import atlantafx.base.theme.Styles;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
-import javafx.application.Platform;
+import atlantafx.base.theme.Styles;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import org.controlsfx.control.CheckComboBox;
 import settings.Settings;
 import taiga.model.query.project.Project;
 import taiga.model.query.sprint.Sprint;
+import ui.components.Multiselect;
 import ui.components.screens.ScreenManager;
 import ui.metrics.burndown.Burndown;
 
 public class BurndownScreen extends BaseMetricConfiguration {
 
     private Burndown burndown;
-    private ComboBox<Sprint> endSprint;
-
-    private CheckComboBox<Sprint> checkComboBox;
-
-    private Label overlayLabel;
+    private Multiselect<Sprint> sprintMultiselect;
     private CheckBox overlayCheckBox;
 
     /**
@@ -45,7 +40,8 @@ public class BurndownScreen extends BaseMetricConfiguration {
     @Override
     protected void beforeVisualizationMount() {
         this.burndown = new Burndown();
-        checkComboBox.disableProperty().bind(this.burndown.serviceRunning());
+        sprintMultiselect.disableProperty().bind(this.burndown.serviceRunning());
+        overlayCheckBox.disableProperty().bind(this.burndown.serviceRunning());
     }
 
     @Override
@@ -53,34 +49,27 @@ public class BurndownScreen extends BaseMetricConfiguration {
         return this.burndown;
     }
 
-    protected void updateDisplayedSprints(boolean overlay){
-        ArrayList<Sprint> list = new ArrayList<>(checkComboBox.getCheckModel().getCheckedItems());
+    protected void updateDisplayedSprints(boolean overlay) {
+        List<Sprint> list = new ArrayList<>(sprintMultiselect.getSelectionModel().getSelectedItems());
         Collections.reverse(list);
         this.burndown.selectSprints(list, overlay);
     }
 
-
     /**
-     * Adds the switch sprint functionality to the sprint dropdown after the page is rendered.
+     * Adds the switch sprint functionality to the sprint dropdown after the page is
+     * rendered.
      */
     @Override
     protected void afterVisualizationMount() {
-        checkComboBox.getCheckModel().getCheckedItems().addListener(
-            (ListChangeListener<? super Sprint>) (change) -> {
-                if(checkComboBox.getCheckModel().getCheckedItems().size() > 1){
-                    overlayCheckBox.setVisible(true);
-                    overlayCheckBox.setDisable(false);
-                    overlayLabel.setVisible(true);
-                    updateDisplayedSprints(overlayCheckBox.isSelected());
-                }
-                else{
-                    overlayCheckBox.setVisible(false);
-                    overlayCheckBox.setDisable(true);
-                    overlayLabel.setVisible(false);
-                    updateDisplayedSprints(false);
-                }
-                Platform.runLater(() -> checkComboBox.hide());
-            });
+        overlayCheckBox.visibleProperty().bind(Bindings.createBooleanBinding(() -> {
+            boolean shouldOverlay = sprintMultiselect.getSelectionModel().getSelectedItems().size() > 1;
+            if (shouldOverlay) {
+                updateDisplayedSprints(overlayCheckBox.isSelected());
+            } else {
+                updateDisplayedSprints(false);
+            }
+            return shouldOverlay;
+        }, sprintMultiselect.getSelectionModel().getSelectedItems()));
 
         overlayCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
             updateDisplayedSprints(overlayCheckBox.isSelected());
@@ -89,29 +78,24 @@ public class BurndownScreen extends BaseMetricConfiguration {
         updateDisplayedSprints(overlayCheckBox.isSelected());
     }
 
-
     @Override
     protected void beforeParameterMount() {
         this.hideSprintParameter();
 
         SimpleObjectProperty<Project> currentProject = Settings.get().getAppModel().getCurrentProject();
 
-        checkComboBox = new CheckComboBox<>(FXCollections.observableList(currentProject.get().getSprints()));
-        checkComboBox.getCheckModel().check(FXCollections.observableList(currentProject.get().getSprints()).size() - 1);
-        checkComboBox.setPrefWidth(150);
+        sprintMultiselect = new Multiselect<>();
+        sprintMultiselect.itemsProperty().bind(Bindings.createObjectBinding(
+                () -> FXCollections.observableList(currentProject.get().getSprints()), currentProject));
 
-        overlayLabel = new Label("Overlay Sprints");
-        overlayLabel.setVisible(false);
-        overlayCheckBox = new CheckBox();
-        overlayCheckBox.setVisible(false);
-        overlayCheckBox.setDisable(true);
+        overlayCheckBox = new CheckBox("Overlay Sprints");
     }
 
     @Override
     protected VBox parameters() {
         Label label = new Label("Select Sprints");
         label.getStyleClass().add(Styles.TEXT_BOLD);
-        HBox hbox = new HBox(checkComboBox, overlayLabel, overlayCheckBox);
+        HBox hbox = new HBox(sprintMultiselect, overlayCheckBox);
         hbox.setSpacing(5);
         return new VBox(label, hbox);
     }
@@ -121,7 +105,7 @@ public class BurndownScreen extends BaseMetricConfiguration {
         if (this.burndown == null) {
             return;
         }
-        sprint_combobox.getSelectionModel().selectLast();
+        sprintMultiselect.getSelectionModel().selectLast();
         this.burndown.focusFirstTab();
     }
 }
