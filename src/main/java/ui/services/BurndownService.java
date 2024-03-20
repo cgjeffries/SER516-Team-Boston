@@ -1,11 +1,14 @@
 package ui.services;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.chart.XYChart;
@@ -16,40 +19,48 @@ import ui.metrics.burndown.TaskBurndown;
 import ui.metrics.burndown.UserStoryBurndown;
 
 public class BurndownService extends Service<Object> {
-    private Sprint sprint;
+    private List<Sprint> sprints;
 
     private final TaskBurndown taskBurndown;
     private final UserStoryBurndown userStoryBurndown;
     private final BusinessValueBurndown businessValueBurndown;
 
-    private final BurndownService.Data taskBurndownData;
-    private final BurndownService.Data userStoryBurndownData;
-    private final BurndownService.Data businessValueBurndownData;
+    private final ObservableMap<Sprint, Data> taskBurndownData;
+    private final ObservableMap<Sprint, Data> userStoryBurndownData;
+    private final ObservableMap<Sprint, Data> businessValueBurndownData;
+
+    private boolean overlay = false;
 
     public BurndownService() {
         this.taskBurndown = new TaskBurndown();
         this.userStoryBurndown = new UserStoryBurndown();
         this.businessValueBurndown = new BusinessValueBurndown();
 
-        this.taskBurndownData = new Data();
-        this.userStoryBurndownData = new Data();
-        this.businessValueBurndownData = new Data();
+        this.taskBurndownData = FXCollections.observableHashMap();
+
+        this.userStoryBurndownData = FXCollections.observableHashMap();
+        this.businessValueBurndownData = FXCollections.observableHashMap();
+        sprints = new ArrayList<>();
     }
 
-    public void recalculate(Sprint sprint) {
-        this.sprint = sprint;
+    public void recalculate(List<Sprint> sprints) {
+        this.recalculate(sprints, false);
+    }
+    public void recalculate(List<Sprint> sprints, boolean overlay) {
+        this.sprints = sprints;
+        this.overlay = overlay;
         this.restart();
     }
 
-    public Data getTaskData() {
+    public ObservableMap<Sprint, Data> getTaskData() {
         return this.taskBurndownData;
     }
 
-    public Data getUserStoryData() {
+    public ObservableMap<Sprint, Data> getUserStoryData() {
         return this.userStoryBurndownData;
     }
 
-    public Data getBusinessValueData() {
+    public ObservableMap<Sprint, Data> getBusinessValueData() {
         return this.businessValueBurndownData;
     }
 
@@ -67,29 +78,61 @@ public class BurndownService extends Service<Object> {
         return new Task<>() {
             @Override
             protected Object call() throws Exception {
-                if (sprint == null) {
+                if (sprints.isEmpty()) {
                     return null;
                 }
 
-                List<BurnDownEntry> taskXYData = taskBurndown.calculate(sprint);
-                List<BurnDownEntry> userStoryXYData = userStoryBurndown.calculate(sprint);
-                List<BurnDownEntry> businessValueXYData = businessValueBurndown.calculate(sprint);
-
                 Platform.runLater(() -> {
-                    updateBurndownData(taskBurndownData, taskXYData);
-                    updateBurndownData(userStoryBurndownData, userStoryXYData);
-                    updateBurndownData(businessValueBurndownData, businessValueXYData);
+                    taskBurndownData.clear();
+                    userStoryBurndownData.clear();
+                    businessValueBurndownData.clear();
                 });
+
+                for(Sprint sprint : sprints) {
+                    List<BurnDownEntry> taskXYData = taskBurndown.calculate(sprint);
+                    List<BurnDownEntry> userStoryXYData = userStoryBurndown.calculate(sprint);
+                    List<BurnDownEntry> businessValueXYData =
+                        businessValueBurndown.calculate(sprint);
+
+                    Platform.runLater(() -> {
+                        updateBurndownData(taskBurndownData, taskXYData, sprint);
+                        updateBurndownData(userStoryBurndownData, userStoryXYData, sprint);
+                        updateBurndownData(businessValueBurndownData, businessValueXYData, sprint);
+                    });
+                }
 
                 return null;
             }
         };
     }
 
-    private void updateBurndownData(Data burndownData, List<BurnDownEntry> entries) {
+    private void updateBurndownData(ObservableMap<Sprint, Data> burndownDataMap, List<BurnDownEntry> entries, Sprint sprint) {
+        Data burndownData = new Data();
+
         SimpleDateFormat format = new SimpleDateFormat("MMM dd");
-        burndownData.setIdeal(entries.stream().map(d -> new XYChart.Data<>(format.format(d.getDate()), (Number) d.getIdeal())).toList());
-        burndownData.setCalculated(entries.stream().map(d -> new XYChart.Data<>(format.format(d.getDate()), (Number) d.getCurrent())).toList());
+
+        if(overlay){
+            List<XYChart.Data<String, Number>> ideal = new ArrayList<>();
+            List<XYChart.Data<String, Number>> calculated = new ArrayList<>();
+            for(int i=0; i < entries.size(); i++){
+                BurnDownEntry entry = entries.get(i);
+                ideal.add(new XYChart.Data<>("Day " + (i+1), (Number) entry.getIdeal()));
+                calculated.add(new XYChart.Data<>("Day " + (i+1), (Number) entry.getCurrent()));
+            }
+
+            burndownData.setIdeal(ideal);
+            burndownData.setCalculated(calculated);
+        }
+        else {
+            burndownData.setIdeal(entries.stream()
+                .map(d -> new XYChart.Data<>(format.format(d.getDate()), (Number) d.getIdeal()))
+                .toList());
+            burndownData.setCalculated(entries.stream()
+                .map(d -> new XYChart.Data<>(format.format(d.getDate()), (Number) d.getCurrent()))
+                .toList());
+        }
+
+        burndownDataMap.put(sprint, burndownData);
     }
 
     public static class Data {

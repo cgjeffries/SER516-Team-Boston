@@ -1,5 +1,9 @@
 package ui.metrics.burndown;
 
+import java.util.List;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.collections.MapChangeListener;
+import javafx.collections.ObservableMap;
 import javafx.scene.chart.*;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Tab;
@@ -32,7 +36,7 @@ public class Burndown extends StackPane {
         this.service.start();
     }
 
-    private Tab createBurndownTab(String name, String valueUnits, Icon icon, BurndownService.Data data) {
+    private Tab createBurndownTab(String name, String valueUnits, Icon icon, ObservableMap<Sprint, BurndownService.Data> dataMap) {
         StackPane root = new StackPane();
 
         Tab tab = new Tab(name);
@@ -46,14 +50,27 @@ public class Burndown extends StackPane {
         NumberAxis value = new NumberAxis();
         value.setLabel(valueUnits);
 
-        XYChart.Series<String, Number> ideal = new XYChart.Series<>(data.getIdeal());
-        ideal.setName("Ideal");
-        XYChart.Series<String, Number> current = new XYChart.Series<>(data.getCalculated());
-        current.setName("Current");
-
         AreaChart<String, Number> chart = new AreaChart<>(date, value);
 
-        chart.getData().addAll(ideal, current);
+        dataMap.addListener((MapChangeListener.Change<? extends Sprint, ? extends BurndownService.Data> change) -> {
+            if(change.wasRemoved()){
+                chart.getData().removeIf(series -> {
+                    return series.getName().equals("Ideal (" + change.getKey().getName() + ")") || series.getName().equals("Current (" + change.getKey().getName() + ")");
+                });
+            }
+            if (change.wasAdded()) {
+                Sprint sprint = change.getKey();
+                BurndownService.Data data = change.getValueAdded();
+
+                XYChart.Series<String, Number> ideal = new XYChart.Series<>(data.getIdeal());
+                ideal.setName("Ideal (" + sprint.getName() + ")");
+                XYChart.Series<String, Number> current = new XYChart.Series<>(data.getCalculated());
+                current.setName("Current (" + sprint.getName() + ")");
+
+                chart.getData().addAll(ideal, current);
+            }
+        });
+
 
         chart.setAnimated(false);
         chart.visibleProperty().bind(this.service.runningProperty().not());
@@ -66,12 +83,30 @@ public class Burndown extends StackPane {
         return tab;
     }
 
-    public void switchSprint(Sprint sprint) {
-        this.service.recalculate(sprint);
+    /**
+     * Choose which sprints will be displayed in the burndown graphs
+     * @param sprints the list of sprints to display the various burndown graphs for
+     */
+    public void selectSprints(List<Sprint> sprints) {
+        this.selectSprints(sprints, false);
+    }
+
+    /**
+     * Choose which sprints will be displayed in the burndown graphs
+     * @param sprints the list of sprints to display the various burndown graphs for
+     * @param overlay Whether or not to make the burndown charts overlay one another. if false the
+     *                burndown charts will be displayed chronologically.
+     */
+    public void selectSprints(List<Sprint> sprints, boolean overlay) {
+        this.service.recalculate(sprints, overlay);
     }
 
     public void focusFirstTab() {
         tabPane.getSelectionModel().selectFirst();
+    }
+
+    public ReadOnlyBooleanProperty serviceRunning(){
+        return this.service.runningProperty();
     }
 
     public void cancel() {
