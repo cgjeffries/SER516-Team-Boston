@@ -75,13 +75,33 @@ public class BurndownScreen extends BaseMetricConfiguration {
             updateDisplayedSprints(overlayCheckBox.isSelected());
         });
 
+        sprint_name.textProperty().bind(Bindings.createStringBinding(() -> {
+            List<Sprint> sprints = sprintMultiselect.getSelectionModel().getSelectedItems();
+            String sprint = "";
+            if (sprints.size() == 0) {
+                sprint = "(No Sprint Selected)";
+            }
+            if (sprints.size() == 1) {
+                sprint = sprints.get(0).getName();
+            }
+            else if (sprints.size() > 1) {
+                sprint = "Showing ";
+                for(Sprint s : sprints) {
+                    sprint += (s.getName() + ", ");
+                }
+            }
+            return sprint;
+        }, sprintMultiselect.getSelectionModel().selectedItemProperty()));
+
         updateDisplayedSprints(overlayCheckBox.isSelected());
     }
 
     @Override
     protected void beforeParameterMount() {
         this.hideSprintParameter();
-
+        sprint_name.setVisible(true);
+        sprint_name.setManaged(true);
+        sprint_name.textProperty().unbind();
         SimpleObjectProperty<Project> currentProject = Settings.get().getAppModel().getCurrentProject();
 
         sprintMultiselect = new Multiselect<>();
