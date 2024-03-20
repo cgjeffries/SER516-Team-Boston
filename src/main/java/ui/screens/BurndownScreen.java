@@ -78,8 +78,7 @@ public class BurndownScreen extends BaseMetricConfiguration {
 
         sprint_name.textProperty().bind(Bindings.createStringBinding(() -> {
             List<Sprint> sprints = sprintMultiselect.getSelectionModel().getSelectedItems();
-            String sprint = "(No Sprint Selected)";
-            return sprint != null ? sprints.stream().map(Sprint::getName).collect(Collectors.joining(", ")) : sprint;
+            return sprints.isEmpty() ? "(No Sprint Selected)" : sprints.stream().map(Sprint::getName).collect(Collectors.joining(", "));
         }, sprintMultiselect.getSelectionModel().selectedItemProperty()));
 
         updateDisplayedSprints(overlayCheckBox.isSelected());
