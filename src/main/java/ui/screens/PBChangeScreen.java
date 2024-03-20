@@ -40,6 +40,7 @@ public class PBChangeScreen extends BaseMetricConfiguration {
                 return;
             }
             this.pbChange.switchSprint(sprint);
+
         });
         sprint_combobox.getSelectionModel().selectLast();
         this.pbChange.switchSprint(sprint_combobox.getValue());
