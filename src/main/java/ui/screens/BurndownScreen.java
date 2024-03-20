@@ -3,6 +3,7 @@ package ui.screens;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import atlantafx.base.theme.Styles;
 import javafx.beans.binding.Bindings;
@@ -77,20 +78,8 @@ public class BurndownScreen extends BaseMetricConfiguration {
 
         sprint_name.textProperty().bind(Bindings.createStringBinding(() -> {
             List<Sprint> sprints = sprintMultiselect.getSelectionModel().getSelectedItems();
-            String sprint = "";
-            if (sprints.size() == 0) {
-                sprint = "(No Sprint Selected)";
-            }
-            if (sprints.size() == 1) {
-                sprint = sprints.get(0).getName();
-            }
-            else if (sprints.size() > 1) {
-                sprint = "Showing ";
-                for(Sprint s : sprints) {
-                    sprint += (s.getName() + ", ");
-                }
-            }
-            return sprint;
+            String sprint = "(No Sprint Selected)";
+            return sprint != null ? sprints.stream().map(Sprint::getName).collect(Collectors.joining(", ")) : sprint;
         }, sprintMultiselect.getSelectionModel().selectedItemProperty()));
 
         updateDisplayedSprints(overlayCheckBox.isSelected());
