@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -11,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.chart.XYChart;
+import taiga.model.query.common.Project;
 import taiga.model.query.sprint.Sprint;
 import taiga.model.query.userstories.UserStoryInterface;
 import taiga.util.timeAnalysis.LeadTimeHelper;
@@ -18,7 +20,11 @@ import taiga.util.timeAnalysis.LeadTimeStats;
 import ui.util.DateUtil;
 
 public class LeadTimeService extends Service<Object> {
-    private Sprint sprint;
+//    private Sprint sprint;
+
+    private Integer projectId;
+    private Date startDate;
+    private Date endDate;
 
     private final ObservableList<XYChart.Data<String, Number>> notCreatedStories;
     private final ObservableList<XYChart.Data<String, Number>> inBacklogStories;
@@ -61,15 +67,21 @@ public class LeadTimeService extends Service<Object> {
     }
 
     public void recalculate(Sprint sprint){
-        this.sprint = sprint;
+        recalculate(sprint.getProject(), sprint.getEstimatedStart(), sprint.getEstimatedFinish());
+    }
+
+    public void recalculate(Integer projectId, Date startDate, Date endDate){
+        this.projectId = projectId;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.restart();
     }
 
     private List<LeadTimeStats> getAllLeadTimeStats(){
-        LeadTimeHelper leadTimeHelper = new LeadTimeHelper(this.sprint.getProject());
+        LeadTimeHelper leadTimeHelper = new LeadTimeHelper(projectId);
 
-        LocalDate start = DateUtil.toLocal(sprint.getEstimatedStart());
-        LocalDate end = DateUtil.toLocal(sprint.getEstimatedFinish());
+        LocalDate start = DateUtil.toLocal(startDate);
+        LocalDate end = DateUtil.toLocal(endDate);
         List<LocalDate> dates = start.datesUntil(end.plusDays(1)).toList();
 
         List<LeadTimeStats> leadTimeStats = new ArrayList<>();
@@ -99,7 +111,7 @@ public class LeadTimeService extends Service<Object> {
         return new Task<Object>() {
             @Override
             protected Object call() throws Exception {
-                if (sprint == null) {
+                if (projectId == null || startDate == null || endDate == null) {
                     return null;
                 }
 
