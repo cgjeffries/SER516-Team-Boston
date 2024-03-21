@@ -44,7 +44,7 @@ public class CycleTime extends StackPane {
         progress.visibleProperty().bind(this.service.runningProperty());
 
         CategoryAxis date = new CategoryAxis();
-        date.setLabel("Date");
+        date.setLabel("Start Date");
         NumberAxis value = new NumberAxis();
         value.setLabel("Cycle Time (Days)");
 

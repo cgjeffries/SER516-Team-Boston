@@ -76,8 +76,8 @@ public class CycleTimeService extends Service<Object> {
 
     private List<CycleTimeEntry> getAllTaskCycleTime(){
         List<CycleTimeEntry> cycleTimes = rawTasks.parallelStream().map(TaskUtils::getCycleTimeForTask).toList();
-        LocalDate start = DateUtil.toLocal(sprint.getEstimatedStart());
-        LocalDate end = DateUtil.toLocal(sprint.getEstimatedFinish());
+        LocalDate start = DateUtil.toLocal(startDate);
+        LocalDate end = DateUtil.toLocal(endDate);
         List<LocalDate> dates = start.datesUntil(end.plusDays(1)).toList();
         List<CycleTimeEntry> finalCycleTimes = new ArrayList<>(cycleTimes);
 

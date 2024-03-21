@@ -2,8 +2,13 @@ package ui.screens;
 
 import atlantafx.base.theme.Styles;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import settings.Settings;
@@ -57,16 +62,87 @@ public class CycleTimeScreen extends BaseMetricConfiguration {
 
             sprint_name.setText(format.format(DateUtil.toDate(startDate.getValue())) + " - " +
                 format.format(DateUtil.toDate(endDate.getValue())));
-            updateCycleTime();
+            updateCycleTimeDates();
         }
     }
 
     /**
-     * update the Lead Time based on the date range
+     * update the Cycle Time based on the date range
      */
-    private void updateCycleTime(){
+    private void updateCycleTimeDates(){
         cycleTime.switchDates(Settings.get().getAppModel().getCurrentProject().get().getId(),
             DateUtil.toDate(startDate.getValue()), DateUtil.toDate(endDate.getValue()));
+    }
+
+    /**
+     * update the Cycle Time based on the Sprint
+     */
+    private void updateCycleTimeSprint(){
+        cycleTime.switchSprint(sprint_combobox.getValue());
+    }
+
+    @Override
+    protected void beforeParameterMount() {
+        sprint_name.textProperty().unbind();
+
+        this.startDate = new DatePicker();
+        this.endDate = new DatePicker();
+
+        ChangeListener<LocalDate> startDateChangeListener = new ChangeListener<LocalDate>() {
+            @Override
+            public void changed(ObservableValue<? extends LocalDate> observableValue,
+                                LocalDate localDate, LocalDate t1) {
+                if (cycleTime != null) {
+                    calendarUpdate();
+                }
+
+                //disable all days in the EndDate picker before the start date
+                endDate.setDayCellFactory(picker -> new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate date, boolean empty) {
+                        super.updateItem(date, empty);
+                        setDisable(empty || date.isBefore(startDate.getValue().plusDays(1)));
+                    }
+                });
+            }
+        };
+        this.startDate.valueProperty().addListener(startDateChangeListener);
+
+        ChangeListener<LocalDate> endDateChangeListener = new ChangeListener<LocalDate>() {
+            @Override
+            public void changed(ObservableValue<? extends LocalDate> observableValue,
+                                LocalDate localDate, LocalDate t1) {
+                if (cycleTime != null) {
+                    calendarUpdate();
+                }
+
+                //disable all days in the StartDate picker after the end date
+                startDate.setDayCellFactory(picker -> new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate date, boolean empty) {
+                        super.updateItem(date, empty);
+                        setDisable(empty || date.isAfter(endDate.getValue()));
+                    }
+                });
+            }
+        };
+        this.endDate.valueProperty().addListener(endDateChangeListener);
+
+        sprint_combobox.setOnAction((e) -> {
+            Sprint sprint = sprint_combobox.getValue();
+            if (sprint == null) {
+                return;
+            }
+            CycleTime temp = cycleTime;
+            cycleTime = null; //prevent calendars from updating the actual service
+
+            this.startDate.setValue(DateUtil.toLocal(sprint.getEstimatedStart()));
+            this.endDate.setValue(DateUtil.toLocal(sprint.getEstimatedFinish()));
+
+            cycleTime = temp;
+            sprint_name.setText(sprint.getName());
+            updateCycleTimeSprint();
+        });
     }
 
     /**
@@ -74,20 +150,29 @@ public class CycleTimeScreen extends BaseMetricConfiguration {
      */
     @Override
     protected void afterVisualizationMount() {
-        sprint_combobox.setOnAction((e) -> {
-            Sprint sprint = sprint_combobox.getValue();
-            if (sprint == null) {
-                return;
-            }
-            this.cycleTime.switchSprint(sprint);
-        });
+
         sprint_combobox.getSelectionModel().selectLast();
-        this.cycleTime.switchSprint(sprint_combobox.getValue());
+
+        Sprint sprint = sprint_combobox.getValue();
+
+        CycleTime temp = cycleTime;
+        cycleTime = null; //prevent calendars from updating the actual service
+        this.startDate.setValue(DateUtil.toLocal(sprint.getEstimatedStart()));
+        this.endDate.setValue(DateUtil.toLocal(sprint.getEstimatedFinish()));
+        cycleTime = temp;
+
+        sprint_name.setText(sprint.getName());
+        updateCycleTimeSprint();
     }
 
     @Override
     protected Pane parameters() {
-        return null;
+        HBox container = new HBox(
+            createDatePickerBox("Start Date: ", startDate),
+            createDatePickerBox("End Date: ", endDate)
+        );
+        container.setSpacing(5);
+        return container;
     }
 
     @Override
