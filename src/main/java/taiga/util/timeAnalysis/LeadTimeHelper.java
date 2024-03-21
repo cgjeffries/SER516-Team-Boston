@@ -65,7 +65,13 @@ public class LeadTimeHelper {
     public List<LeadTimeStoryEntry> getAllStoryLeadTimes() {
         return leadTimeEntryList
                 .stream()
-                .map(entry -> new LeadTimeStoryEntry(entry.getUserStory()))
+                .map(entry -> {
+                    UserStoryInterface story = entry.getUserStory();
+                    if (story.getFinishDate() != null) {
+                        return new LeadTimeStoryEntry(story, story.getCreatedDate(), story.getFinishDate());
+                    }
+                    return new LeadTimeStoryEntry(story, story.getCreatedDate(), null, false);
+                })
                 .toList();
     }
 }
