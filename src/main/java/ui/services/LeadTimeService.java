@@ -67,7 +67,7 @@ public class LeadTimeService extends Service<Object> {
     }
 
     public void recalculate(Sprint sprint){
-        recalculate(sprint.getId(), sprint.getEstimatedStart(), sprint.getEstimatedFinish());
+        recalculate(sprint.getProject(), sprint.getEstimatedStart(), sprint.getEstimatedFinish());
     }
 
     public void recalculate(Integer projectId, Date startDate, Date endDate){
