@@ -75,6 +75,8 @@ public class LeadTimeScreen extends BaseMetricConfiguration {
             if (leadTime != null) {
                 calendarUpdate();
             }
+
+            //disable all days in the EndDate picker before the start date
             endDate.setDayCellFactory(picker -> new DateCell() {
                 @Override
                 public void updateItem(LocalDate date, boolean empty) {
@@ -87,6 +89,15 @@ public class LeadTimeScreen extends BaseMetricConfiguration {
             if (leadTime != null) {
                 calendarUpdate();
             }
+
+            //disable all days in the StartDate picker after the end date
+            startDate.setDayCellFactory(picker -> new DateCell() {
+                @Override
+                public void updateItem(LocalDate date, boolean empty) {
+                    super.updateItem(date, empty);
+                    setDisable(empty || date.isAfter(endDate.getValue()));
+                }
+            });
         });
     }
 
