@@ -1,12 +1,24 @@
 package ui.screens;
 
+import atlantafx.base.theme.Styles;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import javafx.scene.control.DateCell;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import settings.Settings;
 import taiga.model.query.sprint.Sprint;
 import ui.components.screens.ScreenManager;
 import ui.metrics.leadtime.LeadTime;
+import ui.util.DateUtil;
 
 public class LeadTimeScreen extends BaseMetricConfiguration {
     private LeadTime leadTime;
+    private DatePicker startDate;
+    private DatePicker endDate;
 
     public LeadTimeScreen(ScreenManager screenManager, String id, String fxmlName) {
         super(screenManager, id, fxmlName);
@@ -17,9 +29,76 @@ public class LeadTimeScreen extends BaseMetricConfiguration {
         this.leadTime = new LeadTime();
     }
 
+    /**
+     * helper function for creating datePicker boxes in the parameters box
+     */
+    private VBox createDatePickerBox(String name, DatePicker datePicker) {
+        Label text = new Label(name);
+        text.getStyleClass().add(Styles.TEXT_BOLD);
+        return new VBox(text, datePicker);
+    }
+
     @Override
     protected Pane visualization() {
         return this.leadTime;
+    }
+
+    /**
+     * update the value of the calendars with the values from the sprint in the sprint combobox
+     */
+    private void calendarUpdate(){
+        if(startDate.getValue() != null && endDate.getValue() != null) {
+            SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yyyy");
+
+            sprint_name.setText(format.format(DateUtil.toDate(startDate.getValue())) + " - " +
+                format.format(DateUtil.toDate(endDate.getValue())));
+            updateLeadTime();
+        }
+    }
+
+    /**
+     * update the Lead Time based on the date range
+     */
+    private void updateLeadTime(){
+        leadTime.switchDates(Settings.get().getAppModel().getCurrentProject().get().getId(),
+            DateUtil.toDate(startDate.getValue()), DateUtil.toDate(endDate.getValue()));
+    }
+
+    @Override
+    protected void beforeParameterMount() {
+        sprint_name.textProperty().unbind();
+        sprint_name.setText("asdlfjhkjalshhfdkljsagf");
+
+        this.startDate = new DatePicker();
+        this.endDate = new DatePicker();
+        this.startDate.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (leadTime != null) {
+                calendarUpdate();
+            }
+
+            //disable all days in the EndDate picker before the start date
+            endDate.setDayCellFactory(picker -> new DateCell() {
+                @Override
+                public void updateItem(LocalDate date, boolean empty) {
+                    super.updateItem(date, empty);
+                    setDisable(empty || date.isBefore(startDate.getValue().plusDays(1)));
+                }
+            });
+        });
+        this.endDate.valueProperty().addListener((obs, oldValue, newValue) -> {
+            if (leadTime != null) {
+                calendarUpdate();
+            }
+
+            //disable all days in the StartDate picker after the end date
+            startDate.setDayCellFactory(picker -> new DateCell() {
+                @Override
+                public void updateItem(LocalDate date, boolean empty) {
+                    super.updateItem(date, empty);
+                    setDisable(empty || date.isAfter(endDate.getValue()));
+                }
+            });
+        });
     }
 
     @Override
@@ -29,15 +108,29 @@ public class LeadTimeScreen extends BaseMetricConfiguration {
             if (sprint == null) {
                 return;
             }
-            this.leadTime.switchSprint(sprint);
+            this.startDate.setValue(DateUtil.toLocal(sprint.getEstimatedStart()));
+            this.endDate.setValue(DateUtil.toLocal(sprint.getEstimatedFinish()));
+
+            sprint_name.setText(sprint.getName());
+            updateLeadTime();
         });
         sprint_combobox.getSelectionModel().selectLast();
-        this.leadTime.switchSprint(sprint_combobox.getValue());
+
+        Sprint sprint = sprint_combobox.getValue();
+        this.startDate.setValue(DateUtil.toLocal(sprint.getEstimatedStart()));
+        this.endDate.setValue(DateUtil.toLocal(sprint.getEstimatedFinish()));
+        sprint_name.setText(sprint.getName());
+        updateLeadTime();
     }
 
     @Override
     protected Pane parameters() {
-        return null;
+        HBox container = new HBox(
+            createDatePickerBox("Start Date: ", startDate),
+            createDatePickerBox("End Date: ", endDate)
+        );
+        container.setSpacing(5);
+        return container;
     }
 
     @Override

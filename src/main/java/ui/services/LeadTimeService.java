@@ -15,6 +15,7 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Tooltip;
+import taiga.model.query.common.Project;
 import taiga.model.query.sprint.Sprint;
 import taiga.model.query.sprint.UserStoryDetail;
 import taiga.model.query.userstories.UserStoryInterface;
@@ -25,7 +26,11 @@ import taiga.util.timeAnalysis.LeadTimeStoryEntry;
 import ui.util.DateUtil;
 
 public class LeadTimeService extends Service<Object> {
-    private Sprint sprint;
+//    private Sprint sprint;
+
+    private Integer projectId;
+    private Date startDate;
+    private Date endDate;
 
     private final ObservableList<XYChart.Data<String, Number>> storyLeadTimes;
     private final ObservableList<XYChart.Data<String, Number>> notCreatedStories;
@@ -73,16 +78,22 @@ public class LeadTimeService extends Service<Object> {
         return doneStories;
     }
 
-    public void recalculate(Sprint sprint) {
-        this.sprint = sprint;
+    public void recalculate(Sprint sprint){
+        recalculate(sprint.getProject(), sprint.getEstimatedStart(), sprint.getEstimatedFinish());
+    }
+
+    public void recalculate(Integer projectId, Date startDate, Date endDate){
+        this.projectId = projectId;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.restart();
     }
 
-    private List<LeadTimeStats> getAllLeadTimeStats() {
-        LeadTimeHelper leadTimeHelper = new LeadTimeHelper(this.sprint.getProject());
+    private List<LeadTimeStats> getAllLeadTimeStats(){
+        LeadTimeHelper leadTimeHelper = new LeadTimeHelper(projectId);
 
-        LocalDate start = DateUtil.toLocal(sprint.getEstimatedStart());
-        LocalDate end = DateUtil.toLocal(sprint.getEstimatedFinish());
+        LocalDate start = DateUtil.toLocal(startDate);
+        LocalDate end = DateUtil.toLocal(endDate);
         List<LocalDate> dates = start.datesUntil(end.plusDays(1)).toList();
 
         List<LeadTimeStats> leadTimeStats = new ArrayList<>();
@@ -103,13 +114,13 @@ public class LeadTimeService extends Service<Object> {
     }
 
     private List<LeadTimeStoryEntry> getAllStoryLeadTimes() {
-        LeadTimeHelper leadTimeHelper = new LeadTimeHelper(this.sprint.getProject());
-        LocalDate start = DateUtil.toLocal(sprint.getEstimatedStart());
-        LocalDate end = DateUtil.toLocal(sprint.getEstimatedFinish());
+        LeadTimeHelper leadTimeHelper = new LeadTimeHelper(projectId);
+        LocalDate start = DateUtil.toLocal(startDate);
+        LocalDate end = DateUtil.toLocal(endDate);
         List<LocalDate> dates = start.datesUntil(end.plusDays(1)).toList();
         List<LeadTimeStoryEntry> applicableStories = leadTimeHelper.getAllStoryLeadTimes()
                 .stream()
-                .filter(story -> story.getEndDate() != null && story.getEndDate().before(DateUtil.toDate(end.plusDays(1))) && story.getEndDate().after(sprint.getEstimatedStart()))
+                .filter(story -> story.getEndDate() != null && story.getEndDate().before(DateUtil.toDate(end.plusDays(1))) && story.getEndDate().after(startDate))
                 .toList();
         List<LeadTimeStoryEntry> finalStoryLeadTimes = new ArrayList<>(applicableStories);
         for (LocalDate date : dates) {
@@ -169,7 +180,7 @@ public class LeadTimeService extends Service<Object> {
         return new Task<Object>() {
             @Override
             protected Object call() throws Exception {
-                if (sprint == null) {
+                if (projectId == null || startDate == null || endDate == null) {
                     return null;
                 }
 

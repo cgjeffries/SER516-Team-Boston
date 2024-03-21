@@ -1,5 +1,6 @@
 package ui.metrics.leadtime;
 
+import java.util.Date;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.*;
 import javafx.scene.control.ProgressIndicator;
@@ -120,6 +121,10 @@ public class LeadTime extends StackPane {
 
     public void switchSprint(Sprint sprint) {
         this.service.recalculate(sprint);
+    }
+
+    public void switchDates(Integer projectId, Date startDate, Date endDate){
+        this.service.recalculate(projectId, startDate, endDate);
     }
 
     public void focusFirstTab() {
