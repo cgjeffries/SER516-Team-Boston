@@ -1,6 +1,7 @@
 package ui.screens;
 
 import atlantafx.base.theme.Styles;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
@@ -28,6 +29,9 @@ public class LeadTimeScreen extends BaseMetricConfiguration {
         this.leadTime = new LeadTime();
     }
 
+    /**
+     * helper function for creating datePicker boxes in the parameters box
+     */
     private VBox createDatePickerBox(String name, DatePicker datePicker) {
         Label text = new Label(name);
         text.getStyleClass().add(Styles.TEXT_BOLD);
@@ -39,14 +43,37 @@ public class LeadTimeScreen extends BaseMetricConfiguration {
         return this.leadTime;
     }
 
+    /**
+     * update the value of the calendars with the values from the sprint in the sprint combobox
+     */
+    private void calendarUpdate(){
+        if(startDate.getValue() != null && endDate.getValue() != null) {
+            SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yyyy");
+
+            sprint_name.setText(format.format(DateUtil.toDate(startDate.getValue())) + " - " +
+                format.format(DateUtil.toDate(endDate.getValue())));
+            updateLeadTime();
+        }
+    }
+
+    /**
+     * update the Lead Time based on the date range
+     */
+    private void updateLeadTime(){
+        leadTime.switchDates(Settings.get().getAppModel().getCurrentProject().get().getId(),
+            DateUtil.toDate(startDate.getValue()), DateUtil.toDate(endDate.getValue()));
+    }
+
     @Override
     protected void beforeParameterMount() {
+        sprint_name.textProperty().unbind();
+        sprint_name.setText("asdlfjhkjalshhfdkljsagf");
+
         this.startDate = new DatePicker();
         this.endDate = new DatePicker();
         this.startDate.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (leadTime != null) {
-                leadTime.switchDates(Settings.get().getAppModel().getCurrentProject().get().getId(),
-                    DateUtil.toDate(newValue), DateUtil.toDate(endDate.getValue()));
+                calendarUpdate();
             }
             endDate.setDayCellFactory(picker -> new DateCell() {
                 @Override
@@ -58,14 +85,9 @@ public class LeadTimeScreen extends BaseMetricConfiguration {
         });
         this.endDate.valueProperty().addListener((obs, oldValue, newValue) -> {
             if (leadTime != null) {
-                leadTime.switchDates(Settings.get().getAppModel().getCurrentProject().get().getId(),
-                    DateUtil.toDate(newValue), DateUtil.toDate(endDate.getValue()));
+                calendarUpdate();
             }
         });
-        sprint_combobox.getSelectionModel().selectLast();
-        Sprint selectedSprint = sprint_combobox.getValue();
-        this.startDate.setValue(DateUtil.toLocal(selectedSprint.getEstimatedStart()));
-        this.endDate.setValue(DateUtil.toLocal(selectedSprint.getEstimatedFinish()));
     }
 
     @Override
@@ -75,10 +97,19 @@ public class LeadTimeScreen extends BaseMetricConfiguration {
             if (sprint == null) {
                 return;
             }
-            this.leadTime.switchSprint(sprint);
+            this.startDate.setValue(DateUtil.toLocal(sprint.getEstimatedStart()));
+            this.endDate.setValue(DateUtil.toLocal(sprint.getEstimatedFinish()));
+
+            sprint_name.setText(sprint.getName());
+            updateLeadTime();
         });
         sprint_combobox.getSelectionModel().selectLast();
-        this.leadTime.switchSprint(sprint_combobox.getValue());
+
+        Sprint sprint = sprint_combobox.getValue();
+        this.startDate.setValue(DateUtil.toLocal(sprint.getEstimatedStart()));
+        this.endDate.setValue(DateUtil.toLocal(sprint.getEstimatedFinish()));
+        sprint_name.setText(sprint.getName());
+        updateLeadTime();
     }
 
     @Override
