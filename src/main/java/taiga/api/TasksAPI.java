@@ -37,6 +37,19 @@ public class TasksAPI extends APIWrapperBase {
     }
 
     /**
+     * Get a list of {@link Task}s from a project asynchronously.
+     *
+     * @param project The project id to get tasks from
+     * @param callback Consumer function to execute upon receiving query result.
+     * @return void future which can be joined to wait for call to complete.
+     */
+    public CompletableFuture<Void> listTasksByProject(
+        int project, Consumer<APIResponse<Task[]>> callback) {
+        return queryAsync("?project=" + project, Task[].class)
+            .thenAccept(callback);
+    }
+
+    /**
      * Get a list of closed {@link Task}s from a project asynchronously.
      *
      * @param milestone The milestone id to get tasks from
