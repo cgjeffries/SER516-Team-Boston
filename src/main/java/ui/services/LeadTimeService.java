@@ -15,11 +15,13 @@ import taiga.model.query.sprint.Sprint;
 import taiga.model.query.userstories.UserStoryInterface;
 import taiga.util.timeAnalysis.LeadTimeHelper;
 import taiga.util.timeAnalysis.LeadTimeStats;
+import taiga.util.timeAnalysis.LeadTimeStoryEntry;
 import ui.util.DateUtil;
 
 public class LeadTimeService extends Service<Object> {
     private Sprint sprint;
 
+    private final ObservableList<XYChart.Data<String, Number>> storyLeadTimes;
     private final ObservableList<XYChart.Data<String, Number>> notCreatedStories;
     private final ObservableList<XYChart.Data<String, Number>> inBacklogStories;
     private final ObservableList<XYChart.Data<String, Number>> inSprintStories;
@@ -28,12 +30,17 @@ public class LeadTimeService extends Service<Object> {
     private final ObservableList<XYChart.Data<String, Number>> doneStories;
 
     public LeadTimeService() {
+        this.storyLeadTimes = FXCollections.observableArrayList();
         this.notCreatedStories = FXCollections.observableArrayList();
         this.inBacklogStories = FXCollections.observableArrayList();
         this.inSprintStories = FXCollections.observableArrayList();
         this.inProgressStories = FXCollections.observableArrayList();
         this.readyForTestStories = FXCollections.observableArrayList();
         this.doneStories = FXCollections.observableArrayList();
+    }
+
+    public ObservableList<XYChart.Data<String, Number>> getStoryLeadTimes() {
+        return storyLeadTimes;
     }
 
     public ObservableList<XYChart.Data<String, Number>> getNotCreatedStories() {
@@ -80,6 +87,14 @@ public class LeadTimeService extends Service<Object> {
         return leadTimeStats;
     }
 
+    private List<LeadTimeStoryEntry> getAllStoryLeadTimes() {
+        LeadTimeHelper leadTimeHelper = new LeadTimeHelper(this.sprint.getProject());
+        return leadTimeHelper.getAllStoryLeadTimes();
+    }
+
+    private void updateStoryLeadTimes(ObservableList<XYChart.Data<String, Number>> data, List<LeadTimeStoryEntry> entries) {
+
+    }
     private void updateLeadTimes(ObservableList<XYChart.Data<String, Number>> data, List<LeadTimeStats> entries, LeadTimeCallback callback){
         SimpleDateFormat format = new SimpleDateFormat("MMM dd");
 
@@ -104,8 +119,10 @@ public class LeadTimeService extends Service<Object> {
                 }
 
                 List<LeadTimeStats> stats = getAllLeadTimeStats();
+                List<LeadTimeStoryEntry> allStoryLeadTimes = getAllStoryLeadTimes();
 
                 Platform.runLater(() -> {
+                    updateStoryLeadTimes(storyLeadTimes, allStoryLeadTimes);
                     updateLeadTimes(notCreatedStories, stats, LeadTimeStats::getNotCreated);
                     updateLeadTimes(inBacklogStories, stats, LeadTimeStats::getInBacklog);
                     updateLeadTimes(inSprintStories, stats, LeadTimeStats::getInSprint);
