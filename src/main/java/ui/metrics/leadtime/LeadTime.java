@@ -2,10 +2,7 @@ package ui.metrics.leadtime;
 
 import java.util.Date;
 import javafx.collections.ObservableList;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.StackedAreaChart;
-import javafx.scene.chart.XYChart;
+import javafx.scene.chart.*;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -20,23 +17,24 @@ public class LeadTime extends StackPane {
 
     private final TabPane tabPane;
 
-    public LeadTime(){
+    public LeadTime() {
         this.service = new LeadTimeService();
         this.tabPane = new TabPane();
         this.init();
     }
 
-    private void init(){
+    private void init() {
         Tab usLeadTimeTab = createLeadTimeTab(
-            "User Story",
-            new Icon(BoxiconsRegular.USER),
-            this.service.getInBacklogStories(),
-            this.service.getInSprintStories(),
-            this.service.getInProgressStories(),
-            this.service.getReadyForTestStories(),
-            this.service.getDoneStories());
+                "CFD",
+                new Icon(BoxiconsRegular.LINE_CHART),
+                this.service.getInBacklogStories(),
+                this.service.getInSprintStories(),
+                this.service.getInProgressStories(),
+                this.service.getReadyForTestStories(),
+                this.service.getDoneStories());
+        Tab usCycleTimeTab = createStoryLeadTimeTab("Scatter Plot", new Icon(BoxiconsRegular.CHART), this.service.getStoryLeadTimes());
 
-        tabPane.getTabs().setAll(usLeadTimeTab);
+        tabPane.getTabs().setAll(usLeadTimeTab, usCycleTimeTab);
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
         getChildren().add(tabPane);
@@ -44,12 +42,12 @@ public class LeadTime extends StackPane {
     }
 
     private Tab createLeadTimeTab(
-        String name, Icon icon,
-        ObservableList<XYChart.Data<String, Number>> inBacklog,
-        ObservableList<XYChart.Data<String, Number>> inSprint,
-        ObservableList<XYChart.Data<String, Number>> inProgress,
-        ObservableList<XYChart.Data<String, Number>> readyForTest,
-        ObservableList<XYChart.Data<String, Number>> done){
+            String name, Icon icon,
+            ObservableList<XYChart.Data<String, Number>> inBacklog,
+            ObservableList<XYChart.Data<String, Number>> inSprint,
+            ObservableList<XYChart.Data<String, Number>> inProgress,
+            ObservableList<XYChart.Data<String, Number>> readyForTest,
+            ObservableList<XYChart.Data<String, Number>> done) {
         StackPane root = new StackPane();
 
         Tab tab = new Tab(name);
@@ -78,6 +76,37 @@ public class LeadTime extends StackPane {
 
         chart.getData().addAll(doneSeries, readyForTestSeries, inProgressSeries, inSprintSeries, inBacklogSeries);
 
+
+        chart.setAnimated(false);
+        chart.visibleProperty().bind(this.service.runningProperty().not());
+
+        root.getChildren().add(chart);
+        root.getChildren().add(progress);
+
+        tab.setContent(root);
+
+        return tab;
+    }
+
+    private Tab createStoryLeadTimeTab(String name, Icon icon, ObservableList<XYChart.Data<String, Number>> data) {
+        StackPane root = new StackPane();
+
+        Tab tab = new Tab(name);
+        tab.setGraphic(icon);
+
+        ProgressIndicator progress = new ProgressIndicator(-1d);
+        progress.visibleProperty().bind(this.service.runningProperty());
+
+        CategoryAxis date = new CategoryAxis();
+        date.setLabel("End Date");
+        NumberAxis value = new NumberAxis();
+        value.setLabel("Lead Time (Days)");
+
+        XYChart.Series<String, Number> points = new XYChart.Series<>(data);
+
+        ScatterChart<String, Number> chart = new ScatterChart<>(date, value);
+
+        chart.getData().addAll(points);
 
         chart.setAnimated(false);
         chart.visibleProperty().bind(this.service.runningProperty().not());
