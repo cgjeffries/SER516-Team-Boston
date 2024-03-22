@@ -62,6 +62,11 @@ public class LeadTimeHelper {
         return stats;
     }
 
+    /**
+     * Get all lead times for the User Stories in the Project
+     *
+     * @return a List of LeadTimeStoryEntry's
+     */
     public List<LeadTimeStoryEntry> getAllStoryLeadTimes() {
         return leadTimeEntryList
                 .stream()
