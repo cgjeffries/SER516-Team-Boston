@@ -183,4 +183,17 @@ public class CycleTimeService extends Service<Object> {
             }
         };
     }
+
+    //For Testing
+    public Integer getProjectId() {
+        return projectId;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
 }
