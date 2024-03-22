@@ -26,3 +26,7 @@
 - [ ] US acceptance criteria are met
 - [ ] Static analysis checks pass
 ```
+
+## Releases
+* A Release Tag shall be created for the state of the Main branch after each pull request
+* The Release Tag shall follow the naming scheme `#.#.#`
