@@ -28,5 +28,5 @@
 ```
 
 ## Releases
-* A Release Tag shall be created for the state of the Main branch after each pull request
+* A Release Tag shall be created for the state of the Main branch after each merged pull request
 * The Release Tag shall follow the naming scheme `#.#.#`
