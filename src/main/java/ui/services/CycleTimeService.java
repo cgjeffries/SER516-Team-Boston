@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Tooltip;
 import taiga.api.TasksAPI;
 import taiga.api.UserStoryAPI;
 import taiga.model.query.project.Project;
@@ -18,6 +19,7 @@ import taiga.model.query.userstories.UserStoryInterface;
 import taiga.util.TaskUtils;
 import taiga.util.UserStoryUtils;
 import taiga.util.timeAnalysis.CycleTimeEntry;
+import taiga.util.timeAnalysis.LeadTimeStoryEntry;
 import ui.util.DateUtil;
 
 import java.text.SimpleDateFormat;
@@ -74,41 +76,43 @@ public class CycleTimeService extends Service<Object> {
         this.restart();
     }
 
-    private List<CycleTimeEntry> getAllTaskCycleTime(){
-        List<CycleTimeEntry> cycleTimes = rawTasks.parallelStream().map(TaskUtils::getCycleTimeForTask).toList();
+    private List<CycleTimeEntry<taiga.model.query.tasks.Task>> getAllTaskCycleTime(){
+        List<CycleTimeEntry<taiga.model.query.tasks.Task>> cycleTimes = rawTasks.parallelStream().map(TaskUtils::getCycleTimeForTask).toList();
         LocalDate start = DateUtil.toLocal(startDate);
         LocalDate end = DateUtil.toLocal(endDate);
         List<LocalDate> dates = start.datesUntil(end.plusDays(1)).toList();
-        List<CycleTimeEntry> finalCycleTimes = new ArrayList<>(cycleTimes);
+        List<CycleTimeEntry<taiga.model.query.tasks.Task>> finalCycleTimes = new ArrayList<>(cycleTimes);
 
         for (LocalDate date : dates) {
-            finalCycleTimes.add(new CycleTimeEntry(DateUtil.toDate(date), null, false));
+            finalCycleTimes.add(new CycleTimeEntry<>(null, DateUtil.toDate(date), null, false));
         }
 
         return finalCycleTimes;
     }
 
-    private List<CycleTimeEntry> getAllUserStoryCycleTime() {
-        List<CycleTimeEntry> cycleTimes = rawUserStories.parallelStream().map(UserStoryUtils::getCycleTimeForUserStory).toList();
+    private List<CycleTimeEntry<UserStoryInterface>> getAllUserStoryCycleTime() {
+        List<CycleTimeEntry<UserStoryInterface>> cycleTimes = rawUserStories.parallelStream().map(UserStoryUtils::getCycleTimeForUserStory).toList();
         LocalDate start = DateUtil.toLocal(startDate);
         LocalDate end = DateUtil.toLocal(endDate);
         List<LocalDate> dates = start.datesUntil(end.plusDays(1)).toList();
-        List<CycleTimeEntry> finalCycleTimes = new ArrayList<>(cycleTimes);
+        List<CycleTimeEntry<UserStoryInterface>> finalCycleTimes = new ArrayList<>(cycleTimes);
 
         for (LocalDate date : dates) {
-            finalCycleTimes.add(new CycleTimeEntry(DateUtil.toDate(date), null, false));
+            finalCycleTimes.add(new CycleTimeEntry<>(null, DateUtil.toDate(date), null, false));
         }
 
         return finalCycleTimes;
     }
 
-    private void updateCycleTimes(ObservableList<XYChart.Data<String, Number>> data, List<CycleTimeEntry> entries) {
+    private <T> void updateCycleTimes(ObservableList<XYChart.Data<String, Number>> data, List<CycleTimeEntry<T>> entries) {
         SimpleDateFormat format = new SimpleDateFormat("MMM dd");
+        List<CycleTimeEntry<T>> sortedEntries = entries.stream()
+                .filter(t -> t.getStartDate() != null)
+                .filter(t -> t.getStartDate().after(startDate) && t.getStartDate().before(endDate))
+                .sorted(Comparator.comparing(CycleTimeEntry::getStartDate))
+                .toList();
         data.setAll(
-                entries.stream()
-                        .filter(t -> t.getStartDate() != null)
-                        .filter(t -> t.getStartDate().after(startDate) && t.getStartDate().before(endDate))
-                        .sorted(Comparator.comparing(CycleTimeEntry::getStartDate))
+                sortedEntries.stream()
                         .map(t -> {
                             if (t.isValid()) {
                                 return new XYChart.Data<>(format.format(t.getStartDate()), (Number) TimeUnit.MILLISECONDS.toDays(t.getTimeTaken()));
@@ -122,6 +126,29 @@ public class CycleTimeService extends Service<Object> {
                 d.getNode().setVisible(false);
             }
         });
+
+        for (int i = 0; i < data.size(); i++) {
+            XYChart.Data<String, Number> d = data.get(i);
+            CycleTimeEntry<T> story = sortedEntries.get(i);
+            if (!story.isValid()) {
+                d.getNode().setVisible(false);
+            } else {
+                if (story.get() instanceof taiga.model.query.tasks.Task) {
+
+                Tooltip.install(d.getNode(), new Tooltip(
+                        ((taiga.model.query.tasks.Task) story.get()).getSubject() + " (#" + ((taiga.model.query.tasks.Task) story.get()).getRef() + ")"
+                                + "\nStarted on: " + story.getStartDate()
+                                + "\nCompleted on: " + story.getEndDate()
+                                + "\nCycle Time: " + story.getDaysTaken()));
+                } else if (story.get() instanceof UserStoryInterface) {
+                    Tooltip.install(d.getNode(), new Tooltip(
+                            ((UserStory) story.get()).getSubject() + " (#" + ((UserStory) story.get()).getRef() + ")"
+                                    + "\nStarted on: " + story.getStartDate()
+                                    + "\nCompleted on: " + story.getEndDate()
+                                    + "\nCycle Time: " + story.getDaysTaken()));
+                }
+            }
+        }
     }
 
     @Override
@@ -171,8 +198,8 @@ public class CycleTimeService extends Service<Object> {
                     futureUserStories.join();
                 }
 
-                List<CycleTimeEntry> taskCycleTime = getAllTaskCycleTime();
-                List<CycleTimeEntry> userStoryCycleTime = getAllUserStoryCycleTime();
+                List<CycleTimeEntry<taiga.model.query.tasks.Task>> taskCycleTime = getAllTaskCycleTime();
+                List<CycleTimeEntry<UserStoryInterface>> userStoryCycleTime = getAllUserStoryCycleTime();
 
                 Platform.runLater(() -> {
                     updateCycleTimes(tasks, taskCycleTime);
