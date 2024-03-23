@@ -12,6 +12,7 @@ import settings.Settings;
 import taiga.model.auth.RefreshResponse;
 import taiga.model.auth.Tokens;
 import taiga.util.AuthTokenSingleton;
+import java.util.concurrent.TimeUnit;
 import taiga.util.HTTPClientSingleton;
 import taiga.util.TokenStore;
 
@@ -158,6 +159,9 @@ public abstract class APIWrapperBase {
 
                         if (retry && apiResponse.get().getStatus() == 401) {
                             refreshAuthToken(query, responseType, apiResponse, retry, enable_pagination);
+                        } else if (apiResponse.get().getStatus() == 429) {
+                            // Retry the request after a delay if encountering too many concurrent streams error
+                            retryAfterDelay(query, responseType, apiResponse, retry, enable_pagination);
                         }
                         return apiResponse.get();
                     });
@@ -214,6 +218,29 @@ public abstract class APIWrapperBase {
             completableFutureQuery.thenAccept(apiResponse::set);
             completableFutureQuery.join();
         }
+    }
+
+    /**
+     * Retry the request after a delay if encountering too many concurrent streams error.
+     *
+     * @param query The query string to be appended to the base API endpoint configured.
+     * @param responseType The class of expected response object.
+     * @param apiResponse The reference to the APIResponse object.
+     * @param retry Indicates whether to retry the query if encountering errors.
+     * @param enable_pagination Indicates whether pagination should be enabled.
+     * @param <T> The type of expected response object.
+     */
+    private <T> void retryAfterDelay(String query, Class<T> responseType,
+                                    AtomicReference<APIResponse<T>> apiResponse,
+                                    boolean retry, boolean enable_pagination) {
+        // Retry the request after a delay
+        CompletableFuture.delayedExecutor(1, TimeUnit.SECONDS).execute(() -> {
+            CompletableFuture<APIResponse<T>> completableFutureQuery =
+                    queryAsync(query, responseType, false, enable_pagination);
+
+            completableFutureQuery.thenAccept(apiResponse::set);
+            completableFutureQuery.join();
+        });
     }
 
     /**
