@@ -2,12 +2,15 @@ package taiga.api;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.Semaphore;
 import settings.Settings;
 import taiga.model.auth.RefreshResponse;
 import taiga.model.auth.Tokens;
@@ -15,11 +18,14 @@ import taiga.util.AuthTokenSingleton;
 import java.util.concurrent.TimeUnit;
 import taiga.util.HTTPClientSingleton;
 import taiga.util.TokenStore;
+import java.util.Map;
 
 public abstract class APIWrapperBase {
 
     private String apiBaseURL;
     private final String apiEndpoint;
+    private Map<String, Semaphore> semaphores = new ConcurrentHashMap<>();
+    private static final int MAX_CONCURRENT_REQUESTS_NUMBER = 1000;
 
     public APIWrapperBase(String endpoint) {
         this.apiEndpoint = endpoint;
@@ -147,29 +153,52 @@ public abstract class APIWrapperBase {
                 request.header("Authorization", "Bearer " + authToken);
             }
 
-            return HTTPClientSingleton.getInstance()
-                    .sendAsync(request.GET().build(), HttpResponse.BodyHandlers.ofString())
+            Semaphore semaphore = semaphores.computeIfAbsent(getRequestKey(request.build()), k -> new Semaphore(MAX_CONCURRENT_REQUESTS_NUMBER));
+
+            // Acquire a permit from the semaphore
+            semaphore.acquireUninterruptibly();
+    
+            return CompletableFuture.supplyAsync(() -> {
+                        try {
+                            return HTTPClientSingleton.getInstance()
+                                    .sendAsync(request.GET().build(), HttpResponse.BodyHandlers.ofString())
+                                    .thenApply(response -> {
+                                        AtomicReference<APIResponse<T>> apiResponse =
+                                                new AtomicReference<>(createResponse(response, responseType));
+    
+                                        if (retry && apiResponse.get().getStatus() == 401) {
+                                            refreshAuthToken(query, responseType, apiResponse, retry, enable_pagination);
+                                        } else if (apiResponse.get().getStatus() == 429) {
+                                            // Retry the request after a delay if encountering too many concurrent streams error
+                                            retryAfterDelay(query, responseType, apiResponse, retry, enable_pagination);
+                                        }
+                                        return apiResponse.get();
+                                    })
+                                    .join();
+                        } finally {
+                            // Always release the semaphore, even if an exception occurs
+                            semaphore.release();
+                        }
+                    })
                     .exceptionally(error -> {
                         error.printStackTrace();
                         return null;
-                    })
-                    .thenApply(response -> {
-                        AtomicReference<APIResponse<T>> apiResponse =
-                                new AtomicReference<>(createResponse(response, responseType));
-
-                        if (retry && apiResponse.get().getStatus() == 401) {
-                            refreshAuthToken(query, responseType, apiResponse, retry, enable_pagination);
-                        } else if (apiResponse.get().getStatus() == 429) {
-                            // Retry the request after a delay if encountering too many concurrent streams error
-                            retryAfterDelay(query, responseType, apiResponse, retry, enable_pagination);
-                        }
-                        return apiResponse.get();
                     });
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-
+    
         return null;
+    }
+
+    /**
+     * Generate a unique key for the given HTTP request.
+     *
+     * @param request the HTTP request
+     * @return a unique key for the request
+     */
+    private String getRequestKey(HttpRequest request) {
+        return request.uri().toString();
     }
 
     /**
