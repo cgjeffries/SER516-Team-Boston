@@ -25,7 +25,7 @@ public abstract class APIWrapperBase {
     private String apiBaseURL;
     private final String apiEndpoint;
     private Map<String, Semaphore> semaphores = new ConcurrentHashMap<>();
-    private static final int MAX_CONCURRENT_REQUESTS_NUMBER = 1000;
+    private static final int MAX_CONCURRENT_REQUESTS_NUMBER = 100;
 
     public APIWrapperBase(String endpoint) {
         this.apiEndpoint = endpoint;
