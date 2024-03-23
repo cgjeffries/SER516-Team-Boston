@@ -29,4 +29,4 @@
 
 ## Releases
 * A Release Tag shall be created for the state of the Main branch after each merged pull request
-* The Release Tag shall follow the naming scheme `#.#.#`
+* The Release Tag shall follow the naming scheme `#.#.#` Where the last number is for user stories and second number is for period releases
