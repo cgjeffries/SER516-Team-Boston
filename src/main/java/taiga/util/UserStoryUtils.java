@@ -19,6 +19,7 @@ import taiga.model.query.taskhistory.ItemHistoryValuesDiff;
 import taiga.model.query.userstories.UserStoryInterface;
 import taiga.util.timeAnalysis.CycleTimeEntry;
 import taiga.util.timeAnalysis.LeadTimeEntry;
+import ui.tooltips.CycleTimeUserStoryTooltip;
 
 /**
  * Utility class for User Stories current functionality: extract BV, .
@@ -130,7 +131,9 @@ public class UserStoryUtils {
         }
 
         if(startDate == null){
-            return new CycleTimeEntry(null, null, null);
+            CycleTimeEntry<UserStoryInterface> entry = new CycleTimeEntry<>(null, null, null);
+            entry.setTooltipCallback(new CycleTimeUserStoryTooltip());
+            return entry;
         }
 
         //get last time moved to "Done"
@@ -149,74 +152,15 @@ public class UserStoryUtils {
         }
 
         if(endDate == null || !story.getIsClosed()){
-            return new CycleTimeEntry(null, startDate, null);
+            CycleTimeEntry<UserStoryInterface> entry = new CycleTimeEntry<>(null, startDate, null);
+            entry.setTooltipCallback(new CycleTimeUserStoryTooltip());
+            return entry;
         }
 
-        return new CycleTimeEntry(story, startDate, endDate);
+        CycleTimeEntry<UserStoryInterface> entry =  new CycleTimeEntry<>(story, startDate, endDate);
+        entry.setTooltipCallback(new CycleTimeUserStoryTooltip());
+        return entry;
     }
-
-    /**
-     * Gets the cycle time for the specified UserStory
-     * @param storyId the numeric Id of the story
-     * @param isClosed whether or not the specified UserStory is *currently* closed
-     * @return a CycleTimeEntry for the specified UserStory
-     */
-//    private static CycleTimeEntry getCycleTimeForUserStory(int storyId, boolean isClosed){
-//        AtomicReference<List<ItemHistory>> historyListReference = new AtomicReference<>();
-//        userStoryHistoryAPI.getUserStoryHistory(storyId, result ->{
-//            historyListReference.set(new ArrayList<>(List.of(result.getContent())));
-//        }).join();
-//
-//        List<ItemHistory> historyList = historyListReference.get();
-//        Collections.sort(historyList);
-//
-//        /*
-//        Note here that we take the *first* time the story is moved to in progress and the *last*
-//        time that it is moved to Done. This is intentional because regardless of the Scrum Rules,
-//        people may move a task to In progress and back to New multiple times, and they may also move
-//        the task out of done after placing it there. Therefore we choose to take the time between
-//        the first move to In Progress and the last time the Story was moved to Done.
-//         */
-//
-//        //get first time moved to "In Progress"
-//        Date startDate = null;
-//        for(ItemHistory history : historyList){
-//            ItemHistoryValuesDiff valuesDiff = history.getValuesDiff();
-//            if(valuesDiff.getStatus() == null){
-//                continue;
-//            }
-//
-//            if(valuesDiff.getStatus()[1].equalsIgnoreCase("In progress")){
-//                startDate = history.getCreatedAt();
-//                break;
-//            }
-//        }
-//
-//        if(startDate == null){
-//            return new CycleTimeEntry(null, null, null);
-//        }
-//
-//        //get last time moved to "Done"
-//        Collections.reverse(historyList);
-//        Date endDate = null;
-//        for(ItemHistory history : historyList){
-//            ItemHistoryValuesDiff valuesDiff = history.getValuesDiff();
-//            if(valuesDiff.getStatus() == null){
-//                continue;
-//            }
-//
-//            if(valuesDiff.getStatus()[1].equalsIgnoreCase("Done")){
-//                endDate = history.getCreatedAt();
-//                break;
-//            }
-//        }
-//
-//        if(endDate == null || !isClosed){
-//            return new CycleTimeEntry(null, startDate, null);
-//        }
-//
-//        return new CycleTimeEntry(startDate, endDate);
-//    }
 
     /**
      * Gets a LeadTimeEntry for the specified UserStory. Usually this is not called directly,

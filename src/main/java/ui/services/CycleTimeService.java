@@ -2,6 +2,7 @@ package ui.services;
 
 import java.util.Date;
 import java.util.concurrent.CompletableFuture;
+
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,15 +12,13 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Tooltip;
 import taiga.api.TasksAPI;
 import taiga.api.UserStoryAPI;
-import taiga.model.query.project.Project;
 import taiga.model.query.sprint.Sprint;
-import taiga.model.query.sprint.UserStory;
-import taiga.model.query.sprint.UserStoryDetail;
 import taiga.model.query.userstories.UserStoryInterface;
 import taiga.util.TaskUtils;
 import taiga.util.UserStoryUtils;
 import taiga.util.timeAnalysis.CycleTimeEntry;
-import taiga.util.timeAnalysis.LeadTimeStoryEntry;
+import ui.tooltips.CycleTimeTaskTooltip;
+import ui.tooltips.CycleTimeUserStoryTooltip;
 import ui.util.DateUtil;
 
 import java.text.SimpleDateFormat;
@@ -35,8 +34,8 @@ public class CycleTimeService extends Service<Object> {
     private Date startDate;
     private Date endDate;
 
-    private List<taiga.model.query.tasks.Task> rawTasks;
-    private List<UserStoryInterface> rawUserStories;
+    private final List<taiga.model.query.tasks.Task> rawTasks;
+    private final List<UserStoryInterface> rawUserStories;
 
     private final TasksAPI tasksAPI;
     private final UserStoryAPI userStoryAPI;
@@ -76,7 +75,7 @@ public class CycleTimeService extends Service<Object> {
         this.restart();
     }
 
-    private List<CycleTimeEntry<taiga.model.query.tasks.Task>> getAllTaskCycleTime(){
+    private List<CycleTimeEntry<taiga.model.query.tasks.Task>> getAllTaskCycleTime() {
         List<CycleTimeEntry<taiga.model.query.tasks.Task>> cycleTimes = rawTasks.parallelStream().map(TaskUtils::getCycleTimeForTask).toList();
         LocalDate start = DateUtil.toLocal(startDate);
         LocalDate end = DateUtil.toLocal(endDate);
@@ -84,7 +83,9 @@ public class CycleTimeService extends Service<Object> {
         List<CycleTimeEntry<taiga.model.query.tasks.Task>> finalCycleTimes = new ArrayList<>(cycleTimes);
 
         for (LocalDate date : dates) {
-            finalCycleTimes.add(new CycleTimeEntry<>(null, DateUtil.toDate(date), null, false));
+            CycleTimeEntry<taiga.model.query.tasks.Task> entry = new CycleTimeEntry<>(null, DateUtil.toDate(date), null, false);
+            entry.setTooltipCallback(new CycleTimeTaskTooltip());
+            finalCycleTimes.add(entry);
         }
 
         return finalCycleTimes;
@@ -98,7 +99,9 @@ public class CycleTimeService extends Service<Object> {
         List<CycleTimeEntry<UserStoryInterface>> finalCycleTimes = new ArrayList<>(cycleTimes);
 
         for (LocalDate date : dates) {
-            finalCycleTimes.add(new CycleTimeEntry<>(null, DateUtil.toDate(date), null, false));
+            CycleTimeEntry<UserStoryInterface> entry = new CycleTimeEntry<>(null, DateUtil.toDate(date), null, false);
+            entry.setTooltipCallback(new CycleTimeUserStoryTooltip());
+            finalCycleTimes.add(entry);
         }
 
         return finalCycleTimes;
@@ -121,11 +124,6 @@ public class CycleTimeService extends Service<Object> {
                         })
                         .toList()
         );
-        data.forEach(d -> {
-            if (d.getYValue().equals(0)) {
-                d.getNode().setVisible(false);
-            }
-        });
 
         for (int i = 0; i < data.size(); i++) {
             XYChart.Data<String, Number> d = data.get(i);
@@ -133,20 +131,7 @@ public class CycleTimeService extends Service<Object> {
             if (!story.isValid()) {
                 d.getNode().setVisible(false);
             } else {
-                if (story.get() instanceof taiga.model.query.tasks.Task) {
-
-                Tooltip.install(d.getNode(), new Tooltip(
-                        ((taiga.model.query.tasks.Task) story.get()).getSubject() + " (#" + ((taiga.model.query.tasks.Task) story.get()).getRef() + ")"
-                                + "\nStarted on: " + story.getStartDate()
-                                + "\nCompleted on: " + story.getEndDate()
-                                + "\nCycle Time: " + story.getDaysTaken()));
-                } else if (story.get() instanceof UserStoryInterface) {
-                    Tooltip.install(d.getNode(), new Tooltip(
-                            ((UserStory) story.get()).getSubject() + " (#" + ((UserStory) story.get()).getRef() + ")"
-                                    + "\nStarted on: " + story.getStartDate()
-                                    + "\nCompleted on: " + story.getEndDate()
-                                    + "\nCycle Time: " + story.getDaysTaken()));
-                }
+                Tooltip.install(d.getNode(), new Tooltip(story.applyTooltipCallback(story)));
             }
         }
     }
@@ -165,12 +150,12 @@ public class CycleTimeService extends Service<Object> {
         return new Task<>() {
             @Override
             protected Object call() throws Exception {
-                if(startDate == null || endDate == null){
+                if (startDate == null || endDate == null) {
                     return null;
                 }
 
 
-                if(sprint != null) {
+                if (sprint != null) {
                     tasksAPI.listTasksByMilestone(sprint.getId(), result -> {
                         if (result.getStatus() != 200) {
                             return;
@@ -179,8 +164,7 @@ public class CycleTimeService extends Service<Object> {
                     }).join();
 
                     rawUserStories.addAll(sprint.getUserStories());
-                }
-                else{
+                } else {
                     CompletableFuture<Void> futureTasks = tasksAPI.listTasksByProject(projectId, result -> {
                         if (result.getStatus() != 200) {
                             return;

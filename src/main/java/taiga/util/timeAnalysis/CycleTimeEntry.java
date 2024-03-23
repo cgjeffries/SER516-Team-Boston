@@ -1,25 +1,25 @@
 package taiga.util.timeAnalysis;
 
-import taiga.model.query.userstories.UserStoryInterface;
+import ui.tooltips.TooltipPoint;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-public class CycleTimeEntry<T> {
-    private final T story;
+public class CycleTimeEntry<T> extends TooltipPoint<CycleTimeEntry<T>> {
+    private final T item;
     private final Date startDate;
     private final Date endDate;
     private final boolean valid;
 
-    public CycleTimeEntry(T story, Date start, Date end, boolean valid){
-        this.story = story;
+    public CycleTimeEntry(T item, Date start, Date end, boolean valid){
+        this.item = item;
         this.startDate = start;
         this.endDate = end;
         this.valid = valid;
     }
 
-    public CycleTimeEntry(T story, Date start, Date end) {
-        this(story, start, end, true);
+    public CycleTimeEntry(T item, Date start, Date end) {
+        this(item, start, end, true);
     }
 
     public Date getStartDate() {
@@ -38,7 +38,7 @@ public class CycleTimeEntry<T> {
     }
 
     public T get() {
-        return story;
+        return item;
     }
 
     public Long getDaysTaken() {
