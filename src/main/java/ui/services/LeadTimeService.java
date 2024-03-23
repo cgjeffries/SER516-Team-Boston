@@ -166,6 +166,7 @@ public class LeadTimeService extends Service<Object> {
         }
     }
 
+
     @Override
     protected Task<Object> createTask() {
         return new Task<Object>() {
@@ -176,6 +177,7 @@ public class LeadTimeService extends Service<Object> {
                 }
 
                 List<LeadTimeStats> stats = getAllLeadTimeStats();
+                List<LeadTimeStoryEntry> allStoryLeadTimes = getAllStoryLeadTimes();
                 List<LeadTimeStoryEntry> allStoryLeadTimes = getAllStoryLeadTimes();
                 System.out.println(allStoryLeadTimes.stream().filter(LeadTimeStoryEntry::isValid).map(LeadTimeStoryEntry::toString).collect(Collectors.joining("\n")));
                 System.out.println();
@@ -194,6 +196,15 @@ public class LeadTimeService extends Service<Object> {
                 return null;
             }
         };
+    }
+
+    @Override
+    protected void failed() {
+        super.failed();
+        Throwable exception = getException();
+        if (exception != null) {
+            exception.printStackTrace();
+        }
     }
 
     interface LeadTimeCallback {
