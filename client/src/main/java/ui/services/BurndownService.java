@@ -28,6 +28,9 @@ public class BurndownService extends Service<Object> {
     private final ObservableMap<Sprint, Data> userStoryBurndownData;
     private final ObservableMap<Sprint, Data> businessValueBurndownData;
 
+    private final ObservableMap<Sprint, Data> combinedBurndownData;
+
+
     private boolean overlay = false;
 
     public BurndownService() {
@@ -39,6 +42,9 @@ public class BurndownService extends Service<Object> {
 
         this.userStoryBurndownData = FXCollections.observableHashMap();
         this.businessValueBurndownData = FXCollections.observableHashMap();
+        
+        this.combinedBurndownData = FXCollections.observableHashMap();
+
         sprints = new ArrayList<>();
     }
 
@@ -63,6 +69,10 @@ public class BurndownService extends Service<Object> {
     public ObservableMap<Sprint, Data> getBusinessValueData() {
         return this.businessValueBurndownData;
     }
+
+    public ObservableMap<Sprint, Data> getCombinedData() {
+        return this.combinedBurndownData;
+    }   
 
     @Override
     protected void failed() {
@@ -98,6 +108,7 @@ public class BurndownService extends Service<Object> {
                         updateBurndownData(taskBurndownData, taskXYData, sprint);
                         updateBurndownData(userStoryBurndownData, userStoryXYData, sprint);
                         updateBurndownData(businessValueBurndownData, businessValueXYData, sprint);
+                        updateBurndownData(combinedBurndownData, taskXYData, sprint);
                     });
                 }
 

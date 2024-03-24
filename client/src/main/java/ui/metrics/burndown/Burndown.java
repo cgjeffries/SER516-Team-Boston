@@ -32,10 +32,10 @@ public class Burndown extends StackPane {
         Tab taskBurndownTab = createBurndownTab("Task", "Fractional Story Points", new Icon(BoxiconsRegular.CLIPBOARD), this.service.getTaskData());
         Tab usBurndownTab = createBurndownTab("User Story", "Full Story Points", new Icon(BoxiconsRegular.USER), this.service.getUserStoryData());
         Tab bvBurndownTab = createBurndownTab("Business Value", "Business Value Points", new Icon(BoxiconsRegular.BRIEFCASE), this.service.getBusinessValueData());
-        Tab combinedBurndownTab = createBurndownTab("Combined", "Work", new Icon(BoxiconsRegular.CLIPBOARD), this.service.getTaskData());
+        Tab combinedBurndownTab = createBurndownTab("Combined", "Combined Metrics", new Icon(BoxiconsRegular.CHART), this.service.getCombinedData());
         
 
-        tabPane.getTabs().setAll(taskBurndownTab, usBurndownTab, bvBurndownTab);
+        tabPane.getTabs().setAll(taskBurndownTab, usBurndownTab, bvBurndownTab, combinedBurndownTab);
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
         getChildren().add(tabPane);
