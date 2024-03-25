@@ -10,6 +10,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 import taiga.models.sprint.Sprint;
@@ -32,8 +33,7 @@ public class Burndown extends StackPane {
         Tab taskBurndownTab = createBurndownTab("Task", "Fractional Story Points", new Icon(BoxiconsRegular.CLIPBOARD), this.service.getTaskData());
         Tab usBurndownTab = createBurndownTab("User Story", "Full Story Points", new Icon(BoxiconsRegular.USER), this.service.getUserStoryData());
         Tab bvBurndownTab = createBurndownTab("Business Value", "Business Value Points", new Icon(BoxiconsRegular.BRIEFCASE), this.service.getBusinessValueData());
-        Tab combinedBurndownTab = createBurndownTab("Combined", "Combined Metrics", new Icon(BoxiconsRegular.CHART), this.service.getCombinedData());
-        
+        Tab combinedBurndownTab = createCombinedBurndownTab("Combined", this.service.getTaskData(), this.service.getUserStoryData(), this.service.getBusinessValueData());
 
         tabPane.getTabs().setAll(taskBurndownTab, usBurndownTab, bvBurndownTab, combinedBurndownTab);
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
@@ -88,6 +88,49 @@ public class Burndown extends StackPane {
 
         return tab;
     }
+
+     // hbox to show side by sid
+    private Tab createCombinedBurndownTab(String name, ObservableMap<Sprint, BurndownService.Data> taskData, ObservableMap<Sprint, BurndownService.Data> userStoryData, ObservableMap<Sprint, BurndownService.Data> businessValueData) {
+        HBox hbox = new HBox(10);
+    
+        hbox.getChildren().add(createSingleAreaChart("Task Burndown", "Fractional Story Points", taskData));
+        hbox.getChildren().add(createSingleAreaChart("User Story Burndown", "Full Story Points", userStoryData));
+        hbox.getChildren().add(createSingleAreaChart("Business Value Burndown", "Business Value Points", businessValueData));
+    
+        Tab tab = new Tab(name, hbox);
+        tab.setGraphic(new Icon(BoxiconsRegular.CHART));
+    
+        return tab;
+    }
+    
+    private AreaChart<String, Number> createSingleAreaChart(String title, String valueUnits, ObservableMap<Sprint, BurndownService.Data> dataMap) {
+        CategoryAxis xAxis = new CategoryAxis();
+        xAxis.setLabel("Date");
+    
+        NumberAxis yAxis = new NumberAxis();
+        yAxis.setLabel(valueUnits);
+    
+        AreaChart<String, Number> chart = new AreaChart<>(xAxis, yAxis);
+        chart.setTitle(title);
+    
+        dataMap.addListener((MapChangeListener.Change<? extends Sprint, ? extends BurndownService.Data> change) -> {
+            if (change.wasAdded()) {
+                Sprint sprint = change.getKey();
+                BurndownService.Data data = change.getValueAdded();
+    
+                XYChart.Series<String, Number> idealSeries = new XYChart.Series<>(data.getIdeal());
+                idealSeries.setName("Ideal (" + sprint.getName() + ")");
+                XYChart.Series<String, Number> currentSeries = new XYChart.Series<>(data.getCalculated());
+                currentSeries.setName("Current (" + sprint.getName() + ")");
+    
+                chart.getData().addAll(idealSeries, currentSeries);
+            }
+        });
+    
+        chart.setAnimated(false);
+        return chart;
+    }
+    
 
     /**
      * Choose which sprints will be displayed in the burndown graphs
