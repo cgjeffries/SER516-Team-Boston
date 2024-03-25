@@ -153,6 +153,8 @@ public class CycleTimeService extends Service<Object> {
                 if (startDate == null || endDate == null) {
                     return null;
                 }
+                rawTasks.clear();
+                rawUserStories.clear();
 
 
                 if (sprint != null) {

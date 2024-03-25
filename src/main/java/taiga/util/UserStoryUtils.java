@@ -152,7 +152,7 @@ public class UserStoryUtils {
         }
 
         if(endDate == null || !story.getIsClosed()){
-            CycleTimeEntry<UserStoryInterface> entry = new CycleTimeEntry<>(null, startDate, null);
+            CycleTimeEntry<UserStoryInterface> entry = new CycleTimeEntry<>(null, startDate, null, false);
             entry.setTooltipCallback(new CycleTimeUserStoryTooltip());
             return entry;
         }
