@@ -60,6 +60,7 @@ public class LeadTimeStoryEntry {
                 "startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", valid=" + valid +
+                ", daysTaken=" + getDaysTaken() +
                 '}';
     }
 }

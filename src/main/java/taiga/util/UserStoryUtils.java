@@ -19,6 +19,7 @@ import taiga.model.query.taskhistory.ItemHistoryValuesDiff;
 import taiga.model.query.userstories.UserStoryInterface;
 import taiga.util.timeAnalysis.CycleTimeEntry;
 import taiga.util.timeAnalysis.LeadTimeEntry;
+import ui.tooltips.CycleTimeUserStoryTooltip;
 
 /**
  * Utility class for User Stories current functionality: extract BV, .
@@ -98,19 +99,9 @@ public class UserStoryUtils {
      * @param story any UserStory object, including UserStoryDetail etc.
      * @return a CycleTimeEntry for the specified UserStory
      */
-    public static CycleTimeEntry getCycleTimeForUserStory(UserStoryInterface story){
-        return getCycleTimeForUserStory(story.getId(), story.getIsClosed());
-    }
-
-    /**
-     * Gets the cycle time for the specified UserStory
-     * @param storyId the numeric Id of the story
-     * @param isClosed whether or not the specified UserStory is *currently* closed
-     * @return a CycleTimeEntry for the specified UserStory
-     */
-    private static CycleTimeEntry getCycleTimeForUserStory(int storyId, boolean isClosed){
+    public static CycleTimeEntry<UserStoryInterface> getCycleTimeForUserStory(UserStoryInterface story){
         AtomicReference<List<ItemHistory>> historyListReference = new AtomicReference<>();
-        userStoryHistoryAPI.getUserStoryHistory(storyId, result ->{
+        userStoryHistoryAPI.getUserStoryHistory(story.getId(), result ->{
             historyListReference.set(new ArrayList<>(List.of(result.getContent())));
         }).join();
 
@@ -140,7 +131,9 @@ public class UserStoryUtils {
         }
 
         if(startDate == null){
-            return new CycleTimeEntry(null, null);
+            CycleTimeEntry<UserStoryInterface> entry = new CycleTimeEntry<>(null, null, null);
+            entry.setTooltipCallback(new CycleTimeUserStoryTooltip());
+            return entry;
         }
 
         //get last time moved to "Done"
@@ -158,11 +151,15 @@ public class UserStoryUtils {
             }
         }
 
-        if(endDate == null || !isClosed){
-            return new CycleTimeEntry(startDate, null);
+        if(endDate == null || !story.getIsClosed()){
+            CycleTimeEntry<UserStoryInterface> entry = new CycleTimeEntry<>(null, startDate, null, false);
+            entry.setTooltipCallback(new CycleTimeUserStoryTooltip());
+            return entry;
         }
 
-        return new CycleTimeEntry(startDate, endDate);
+        CycleTimeEntry<UserStoryInterface> entry =  new CycleTimeEntry<>(story, startDate, endDate);
+        entry.setTooltipCallback(new CycleTimeUserStoryTooltip());
+        return entry;
     }
 
     /**

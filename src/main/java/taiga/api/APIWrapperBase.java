@@ -2,23 +2,35 @@ package taiga.api;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.Semaphore;
 import settings.Settings;
 import taiga.model.auth.RefreshResponse;
 import taiga.model.auth.Tokens;
 import taiga.util.AuthTokenSingleton;
+import java.util.concurrent.TimeUnit;
 import taiga.util.HTTPClientSingleton;
 import taiga.util.TokenStore;
+import java.util.Map;
 
 public abstract class APIWrapperBase {
 
     private String apiBaseURL;
+    
     private final String apiEndpoint;
+
+    private Map<String, Semaphore> semaphores = new ConcurrentHashMap<>();
+
+    private static final int MAX_CONCURRENT_REQUESTS_NUMBER = 100;
+    private static final int MAX_RETRY_ATTEMPTS = 5;
+    private static final long INITIAL_RETRY_DELAY_MS = 1000;
 
     public APIWrapperBase(String endpoint) {
         this.apiEndpoint = endpoint;
@@ -146,26 +158,52 @@ public abstract class APIWrapperBase {
                 request.header("Authorization", "Bearer " + authToken);
             }
 
-            return HTTPClientSingleton.getInstance()
-                    .sendAsync(request.GET().build(), HttpResponse.BodyHandlers.ofString())
+            Semaphore semaphore = semaphores.computeIfAbsent(getRequestKey(request.build()), k -> new Semaphore(MAX_CONCURRENT_REQUESTS_NUMBER));
+
+            // Acquire a permit from the semaphore
+            semaphore.acquireUninterruptibly();
+    
+            return CompletableFuture.supplyAsync(() -> {
+                        try {
+                            return HTTPClientSingleton.getInstance()
+                                    .sendAsync(request.GET().build(), HttpResponse.BodyHandlers.ofString())
+                                    .thenApply(response -> {
+                                        AtomicReference<APIResponse<T>> apiResponse =
+                                                new AtomicReference<>(createResponse(response, responseType));
+    
+                                        if (retry && apiResponse.get().getStatus() == 401) {
+                                            refreshAuthToken(query, responseType, apiResponse, retry, enable_pagination);
+                                        } else if (apiResponse.get().getStatus() == 429) {
+                                            // Retry the request after a delay if encountering too many concurrent streams error
+                                            retryWithBackoff(query, responseType, apiResponse, retry, enable_pagination, 1);
+                                        }
+                                        return apiResponse.get();
+                                    })
+                                    .join();
+                        } finally {
+                            // Always release the semaphore, even if an exception occurs
+                            semaphore.release();
+                        }
+                    })
                     .exceptionally(error -> {
                         error.printStackTrace();
                         return null;
-                    })
-                    .thenApply(response -> {
-                        AtomicReference<APIResponse<T>> apiResponse =
-                                new AtomicReference<>(createResponse(response, responseType));
-
-                        if (retry && apiResponse.get().getStatus() == 401) {
-                            refreshAuthToken(query, responseType, apiResponse, retry, enable_pagination);
-                        }
-                        return apiResponse.get();
                     });
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-
+    
         return null;
+    }
+
+    /**
+     * Generate a unique key for the given HTTP request.
+     *
+     * @param request the HTTP request
+     * @return a unique key for the request
+     */
+    private String getRequestKey(HttpRequest request) {
+        return request.uri().toString();
     }
 
     /**
@@ -214,6 +252,36 @@ public abstract class APIWrapperBase {
             completableFutureQuery.thenAccept(apiResponse::set);
             completableFutureQuery.join();
         }
+    }
+
+    private <T> void retryWithBackoff(String query, Class<T> responseType,
+                                  AtomicReference<APIResponse<T>> apiResponse,
+                                  boolean retry, boolean enable_pagination,
+                                  int retryAttempt) {
+        if (retryAttempt > MAX_RETRY_ATTEMPTS) {
+            // Max retry attempts reached, log an error and return
+            System.out.println("Max retry attempts reached. Unable to process request.");
+            return;
+        }
+
+        // Exponential backoff
+        long delayMs = INITIAL_RETRY_DELAY_MS * (1 << (retryAttempt - 1));
+
+        // Retry the request after the calculated delay
+        CompletableFuture.delayedExecutor(delayMs, TimeUnit.MILLISECONDS).execute(() -> {
+            CompletableFuture<APIResponse<T>> completableFutureQuery =
+                    queryAsync(query, responseType, false, enable_pagination);
+
+            completableFutureQuery.thenAccept(result -> {
+                if (result != null) {
+                    // Request succeeded, set the API response and return
+                    apiResponse.set(result);
+                } else {
+                    // Request failed, retry with backoff
+                    retryWithBackoff(query, responseType, apiResponse, retry, enable_pagination, retryAttempt + 1);
+                }
+            });
+        });
     }
 
     /**

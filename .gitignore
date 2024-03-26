@@ -28,3 +28,6 @@ target/
 **.iml
 
 .boston
+
+# Test Trash
+.openjfx/
