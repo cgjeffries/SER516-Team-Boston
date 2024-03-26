@@ -85,7 +85,6 @@ public class Burndown extends StackPane {
         return tab;
     }
 
-     // hbox to show side by sid
     private Tab createCombinedBurndownTab(String name, ObservableMap<Sprint, BurndownService.Data> taskData, ObservableMap<Sprint, BurndownService.Data> userStoryData, ObservableMap<Sprint, BurndownService.Data> businessValueData) {
         HBox hbox = new HBox(10);
     
@@ -126,7 +125,7 @@ public class Burndown extends StackPane {
         chart.setAnimated(false);
         return chart;
     }
-    
+
 
     /**
      * Choose which sprints will be displayed in the burndown graphs
