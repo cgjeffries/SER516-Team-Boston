@@ -70,7 +70,8 @@ public class CycleTimeService extends Service<Object> {
         this.restart();
     }
 
-    private List<CycleTimeEntry<taiga.model.query.tasks.Task>> getAllTaskCycleTime(List<taiga.model.query.tasks.Task> rawTasks) {
+    private List<CycleTimeEntry<taiga.model.query.tasks.Task>> getAllTaskCycleTime() {
+        List<taiga.model.query.tasks.Task> rawTasks = fetchTasks();
         LocalDate start = DateUtil.toLocal(startDate);
         LocalDate end = DateUtil.toLocal(endDate);
         List<LocalDate> dates = start.datesUntil(end.plusDays(1)).toList();
@@ -93,7 +94,8 @@ public class CycleTimeService extends Service<Object> {
         return finalCycleTimes;
     }
 
-    private List<CycleTimeEntry<UserStoryInterface>> getAllUserStoryCycleTime(List<UserStoryInterface> rawUserStories) {
+    private List<CycleTimeEntry<UserStoryInterface>> getAllUserStoryCycleTime() {
+        List<UserStoryInterface> rawUserStories = fetchStories();
         LocalDate start = DateUtil.toLocal(startDate);
         LocalDate end = DateUtil.toLocal(endDate);
         List<LocalDate> dates = start.datesUntil(end.plusDays(1)).toList();
@@ -116,7 +118,7 @@ public class CycleTimeService extends Service<Object> {
     }
 
     private <T> void updateCycleTimes(ObservableList<XYChart.Data<String, Number>> data,
-            List<CycleTimeEntry<T>> entries) {
+                                      List<CycleTimeEntry<T>> entries) {
         SimpleDateFormat format = new SimpleDateFormat("MMM dd");
         List<CycleTimeEntry<T>> sortedEntries = entries.stream()
                 .sorted(Comparator.comparing(CycleTimeEntry::getStartDate))
@@ -152,48 +154,52 @@ public class CycleTimeService extends Service<Object> {
         }
     }
 
+    public List<taiga.model.query.tasks.Task> fetchTasks() {
+        List<taiga.model.query.tasks.Task> tasks = new ArrayList<>();
+        if (sprint != null) {
+            tasksAPI.listTasksByMilestone(sprint.getId(), result -> {
+                if (result.getStatus() != 200) {
+                    return;
+                }
+                tasks.addAll(List.of(result.getContent()));
+            }).join();
+            return tasks;
+        }
+        tasksAPI.listTasksByProject(projectId, result -> {
+            if (result.getStatus() != 200) {
+                return;
+            }
+            tasks.addAll(List.of(result.getContent()));
+        }).join();
+        return tasks;
+    }
+
+    public List<UserStoryInterface> fetchStories() {
+        List<UserStoryInterface> stories = new ArrayList<>();
+        if (sprint != null) {
+            stories.addAll(sprint.getUserStories());
+            return stories;
+        }
+        userStoryAPI.listProjectUserStories(projectId, result -> {
+            if (result.getStatus() != 200) {
+                return;
+            }
+            stories.addAll(List.of(result.getContent()));
+        }).join();
+        return stories;
+    }
+
     @Override
     protected Task<Object> createTask() {
         return new Task<>() {
             @Override
             protected Object call() throws Exception {
-                List<taiga.model.query.tasks.Task> rawTasks = new ArrayList<>();
-                List<UserStoryInterface> rawUserStories = new ArrayList<>();
-
                 if (startDate == null || endDate == null) {
                     return null;
                 }
 
-                if (sprint != null) {
-                    tasksAPI.listTasksByMilestone(sprint.getId(), result -> {
-                        if (result.getStatus() != 200) {
-                            return;
-                        }
-                        rawTasks.addAll(List.of(result.getContent()));
-                    }).join();
-
-                    rawUserStories.addAll(sprint.getUserStories());
-                } else {
-                    CompletableFuture<Void> futureTasks = tasksAPI.listTasksByProject(projectId, result -> {
-                        if (result.getStatus() != 200) {
-                            return;
-                        }
-                        rawTasks.addAll(List.of(result.getContent()));
-                    });
-
-                    CompletableFuture<Void> futureUserStories = userStoryAPI.listProjectUserStories(projectId,
-                            result -> {
-                                if (result.getStatus() != 200) {
-                                    return;
-                                }
-                                rawUserStories.addAll(List.of(result.getContent()));
-                            });
-                    futureTasks.join();
-                    futureUserStories.join();
-                }
-
-                List<CycleTimeEntry<taiga.model.query.tasks.Task>> taskCycleTime = getAllTaskCycleTime(rawTasks);
-                List<CycleTimeEntry<UserStoryInterface>> userStoryCycleTime = getAllUserStoryCycleTime(rawUserStories);
+                List<CycleTimeEntry<taiga.model.query.tasks.Task>> taskCycleTime = getAllTaskCycleTime();
+                List<CycleTimeEntry<UserStoryInterface>> userStoryCycleTime = getAllUserStoryCycleTime();
 
                 Platform.runLater(() -> {
                     updateCycleTimes(tasks, taskCycleTime);
