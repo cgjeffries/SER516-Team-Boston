@@ -7,7 +7,7 @@ import taiga.util.timeAnalysis.CycleTimeEntry;
 public class CycleTimeUserStoryTooltip implements TooltipPoint.TooltipTextCallback<CycleTimeEntry<UserStoryInterface>> {
     @Override
     public String getText(CycleTimeEntry<UserStoryInterface> item) {
-        UserStory story = (UserStory) item.get();
+        UserStoryInterface story = item.get();
         return story.getSubject() + " (#" + story.getRef() + ")"
                 + "\nStarted on: " + item.getStartDate()
                 + "\nCompleted on: " + item.getEndDate()
