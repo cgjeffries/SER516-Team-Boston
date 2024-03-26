@@ -34,9 +34,6 @@ public class CycleTimeService extends Service<Object> {
     private Date startDate;
     private Date endDate;
 
-    private final List<taiga.model.query.tasks.Task> rawTasks;
-    private final List<UserStoryInterface> rawUserStories;
-
     private final TasksAPI tasksAPI;
     private final UserStoryAPI userStoryAPI;
     private final ObservableList<XYChart.Data<String, Number>> tasks;
@@ -47,8 +44,6 @@ public class CycleTimeService extends Service<Object> {
         this.userStoryAPI = new UserStoryAPI();
         this.tasks = FXCollections.observableArrayList();
         this.stories = FXCollections.observableArrayList();
-        this.rawTasks = new ArrayList<>();
-        this.rawUserStories = new ArrayList<>();
     }
 
     public ObservableList<XYChart.Data<String, Number>> getTasks() {
@@ -75,7 +70,7 @@ public class CycleTimeService extends Service<Object> {
         this.restart();
     }
 
-    private List<CycleTimeEntry<taiga.model.query.tasks.Task>> getAllTaskCycleTime() {
+    private List<CycleTimeEntry<taiga.model.query.tasks.Task>> getAllTaskCycleTime(List<taiga.model.query.tasks.Task> rawTasks) {
         List<CycleTimeEntry<taiga.model.query.tasks.Task>> cycleTimes = rawTasks.parallelStream().map(TaskUtils::getCycleTimeForTask).toList();
         LocalDate start = DateUtil.toLocal(startDate);
         LocalDate end = DateUtil.toLocal(endDate);
@@ -91,7 +86,7 @@ public class CycleTimeService extends Service<Object> {
         return finalCycleTimes;
     }
 
-    private List<CycleTimeEntry<UserStoryInterface>> getAllUserStoryCycleTime() {
+    private List<CycleTimeEntry<UserStoryInterface>> getAllUserStoryCycleTime(List<UserStoryInterface> rawUserStories) {
         List<CycleTimeEntry<UserStoryInterface>> cycleTimes = rawUserStories.parallelStream().map(UserStoryUtils::getCycleTimeForUserStory).toList();
         LocalDate start = DateUtil.toLocal(startDate);
         LocalDate end = DateUtil.toLocal(endDate);
@@ -150,10 +145,12 @@ public class CycleTimeService extends Service<Object> {
         return new Task<>() {
             @Override
             protected Object call() throws Exception {
+                List<taiga.model.query.tasks.Task> rawTasks = new ArrayList<>();
+                List<UserStoryInterface> rawUserStories = new ArrayList<>();
+
                 if (startDate == null || endDate == null) {
                     return null;
                 }
-
 
                 if (sprint != null) {
                     tasksAPI.listTasksByMilestone(sprint.getId(), result -> {
@@ -182,8 +179,8 @@ public class CycleTimeService extends Service<Object> {
                     futureUserStories.join();
                 }
 
-                List<CycleTimeEntry<taiga.model.query.tasks.Task>> taskCycleTime = getAllTaskCycleTime();
-                List<CycleTimeEntry<UserStoryInterface>> userStoryCycleTime = getAllUserStoryCycleTime();
+                List<CycleTimeEntry<taiga.model.query.tasks.Task>> taskCycleTime = getAllTaskCycleTime(rawTasks);
+                List<CycleTimeEntry<UserStoryInterface>> userStoryCycleTime = getAllUserStoryCycleTime(rawUserStories);
 
                 Platform.runLater(() -> {
                     updateCycleTimes(tasks, taskCycleTime);
