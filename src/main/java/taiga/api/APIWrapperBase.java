@@ -23,9 +23,14 @@ import java.util.Map;
 public abstract class APIWrapperBase {
 
     private String apiBaseURL;
+    
     private final String apiEndpoint;
+
     private Map<String, Semaphore> semaphores = new ConcurrentHashMap<>();
+
     private static final int MAX_CONCURRENT_REQUESTS_NUMBER = 100;
+    private static final int MAX_RETRY_ATTEMPTS = 5;
+    private static final long INITIAL_RETRY_DELAY_MS = 1000;
 
     public APIWrapperBase(String endpoint) {
         this.apiEndpoint = endpoint;
@@ -170,7 +175,7 @@ public abstract class APIWrapperBase {
                                             refreshAuthToken(query, responseType, apiResponse, retry, enable_pagination);
                                         } else if (apiResponse.get().getStatus() == 429) {
                                             // Retry the request after a delay if encountering too many concurrent streams error
-                                            retryAfterDelay(query, responseType, apiResponse, retry, enable_pagination);
+                                            retryWithBackoff(query, responseType, apiResponse, retry, enable_pagination, 1);
                                         }
                                         return apiResponse.get();
                                     })
@@ -249,26 +254,33 @@ public abstract class APIWrapperBase {
         }
     }
 
-    /**
-     * Retry the request after a delay if encountering too many concurrent streams error.
-     *
-     * @param query The query string to be appended to the base API endpoint configured.
-     * @param responseType The class of expected response object.
-     * @param apiResponse The reference to the APIResponse object.
-     * @param retry Indicates whether to retry the query if encountering errors.
-     * @param enable_pagination Indicates whether pagination should be enabled.
-     * @param <T> The type of expected response object.
-     */
-    private <T> void retryAfterDelay(String query, Class<T> responseType,
-                                    AtomicReference<APIResponse<T>> apiResponse,
-                                    boolean retry, boolean enable_pagination) {
-        // Retry the request after a delay
-        CompletableFuture.delayedExecutor(1, TimeUnit.SECONDS).execute(() -> {
+    private <T> void retryWithBackoff(String query, Class<T> responseType,
+                                  AtomicReference<APIResponse<T>> apiResponse,
+                                  boolean retry, boolean enable_pagination,
+                                  int retryAttempt) {
+        if (retryAttempt > MAX_RETRY_ATTEMPTS) {
+            // Max retry attempts reached, log an error and return
+            System.out.println("Max retry attempts reached. Unable to process request.");
+            return;
+        }
+
+        // Exponential backoff
+        long delayMs = INITIAL_RETRY_DELAY_MS * (1 << (retryAttempt - 1));
+
+        // Retry the request after the calculated delay
+        CompletableFuture.delayedExecutor(delayMs, TimeUnit.MILLISECONDS).execute(() -> {
             CompletableFuture<APIResponse<T>> completableFutureQuery =
                     queryAsync(query, responseType, false, enable_pagination);
 
-            completableFutureQuery.thenAccept(apiResponse::set);
-            completableFutureQuery.join();
+            completableFutureQuery.thenAccept(result -> {
+                if (result != null) {
+                    // Request succeeded, set the API response and return
+                    apiResponse.set(result);
+                } else {
+                    // Request failed, retry with backoff
+                    retryWithBackoff(query, responseType, apiResponse, retry, enable_pagination, retryAttempt + 1);
+                }
+            });
         });
     }
 
