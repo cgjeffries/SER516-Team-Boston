@@ -76,14 +76,21 @@ public class CycleTimeService extends Service<Object> {
     }
 
     private List<CycleTimeEntry<taiga.model.query.tasks.Task>> getAllTaskCycleTime() {
-        List<CycleTimeEntry<taiga.model.query.tasks.Task>> cycleTimes = rawTasks.parallelStream().map(TaskUtils::getCycleTimeForTask).toList();
         LocalDate start = DateUtil.toLocal(startDate);
         LocalDate end = DateUtil.toLocal(endDate);
         List<LocalDate> dates = start.datesUntil(end.plusDays(1)).toList();
+        List<CycleTimeEntry<taiga.model.query.tasks.Task>> cycleTimes = rawTasks
+                .parallelStream()
+                .map(TaskUtils::getCycleTimeForTask)
+                .filter(task -> task.getStartDate() != null
+                        && task.getStartDate().before(DateUtil.toDate(end.plusDays(1)))
+                        && task.getStartDate().after(startDate))
+                .toList();
         List<CycleTimeEntry<taiga.model.query.tasks.Task>> finalCycleTimes = new ArrayList<>(cycleTimes);
 
         for (LocalDate date : dates) {
-            CycleTimeEntry<taiga.model.query.tasks.Task> entry = new CycleTimeEntry<>(null, DateUtil.toDate(date), null, false);
+            CycleTimeEntry<taiga.model.query.tasks.Task> entry = new CycleTimeEntry<>(null, DateUtil.toDate(date), null,
+                    false);
             entry.setTooltipCallback(new CycleTimeTaskTooltip());
             finalCycleTimes.add(entry);
         }
@@ -92,10 +99,16 @@ public class CycleTimeService extends Service<Object> {
     }
 
     private List<CycleTimeEntry<UserStoryInterface>> getAllUserStoryCycleTime() {
-        List<CycleTimeEntry<UserStoryInterface>> cycleTimes = rawUserStories.parallelStream().map(UserStoryUtils::getCycleTimeForUserStory).toList();
         LocalDate start = DateUtil.toLocal(startDate);
         LocalDate end = DateUtil.toLocal(endDate);
         List<LocalDate> dates = start.datesUntil(end.plusDays(1)).toList();
+        List<CycleTimeEntry<UserStoryInterface>> cycleTimes = rawUserStories
+                .parallelStream()
+                .map(UserStoryUtils::getCycleTimeForUserStory)
+                .filter(story -> story.getStartDate() != null
+                        && story.getStartDate().before(DateUtil.toDate(end.plusDays(1)))
+                        && story.getStartDate().after(startDate))
+                .toList();
         List<CycleTimeEntry<UserStoryInterface>> finalCycleTimes = new ArrayList<>(cycleTimes);
 
         for (LocalDate date : dates) {
@@ -107,23 +120,22 @@ public class CycleTimeService extends Service<Object> {
         return finalCycleTimes;
     }
 
-    private <T> void updateCycleTimes(ObservableList<XYChart.Data<String, Number>> data, List<CycleTimeEntry<T>> entries) {
+    private <T> void updateCycleTimes(ObservableList<XYChart.Data<String, Number>> data,
+            List<CycleTimeEntry<T>> entries) {
         SimpleDateFormat format = new SimpleDateFormat("MMM dd");
         List<CycleTimeEntry<T>> sortedEntries = entries.stream()
-                .filter(t -> t.getStartDate() != null)
-                .filter(t -> t.getStartDate().after(startDate) && t.getStartDate().before(endDate))
                 .sorted(Comparator.comparing(CycleTimeEntry::getStartDate))
                 .toList();
         data.setAll(
                 sortedEntries.stream()
                         .map(t -> {
                             if (t.isValid()) {
-                                return new XYChart.Data<>(format.format(t.getStartDate()), (Number) TimeUnit.MILLISECONDS.toDays(t.getTimeTaken()));
+                                return new XYChart.Data<>(format.format(t.getStartDate()),
+                                        (Number) TimeUnit.MILLISECONDS.toDays(t.getTimeTaken()));
                             }
                             return new XYChart.Data<>(format.format(t.getStartDate()), (Number) 0);
                         })
-                        .toList()
-        );
+                        .toList());
 
         for (int i = 0; i < data.size(); i++) {
             XYChart.Data<String, Number> d = data.get(i);
@@ -156,7 +168,6 @@ public class CycleTimeService extends Service<Object> {
                 rawTasks.clear();
                 rawUserStories.clear();
 
-
                 if (sprint != null) {
                     tasksAPI.listTasksByMilestone(sprint.getId(), result -> {
                         if (result.getStatus() != 200) {
@@ -174,12 +185,13 @@ public class CycleTimeService extends Service<Object> {
                         rawTasks.addAll(List.of(result.getContent()));
                     });
 
-                    CompletableFuture<Void> futureUserStories = userStoryAPI.listProjectUserStories(projectId, result -> {
-                        if (result.getStatus() != 200) {
-                            return;
-                        }
-                        rawUserStories.addAll(List.of(result.getContent()));
-                    });
+                    CompletableFuture<Void> futureUserStories = userStoryAPI.listProjectUserStories(projectId,
+                            result -> {
+                                if (result.getStatus() != 200) {
+                                    return;
+                                }
+                                rawUserStories.addAll(List.of(result.getContent()));
+                            });
                     futureTasks.join();
                     futureUserStories.join();
                 }
@@ -197,7 +209,7 @@ public class CycleTimeService extends Service<Object> {
         };
     }
 
-    //For Testing
+    // For Testing
     public Integer getProjectId() {
         return projectId;
     }
