@@ -178,8 +178,6 @@ public class LeadTimeService extends Service<Object> {
 
                 List<LeadTimeStats> stats = getAllLeadTimeStats();
                 List<LeadTimeStoryEntry> allStoryLeadTimes = getAllStoryLeadTimes();
-                System.out.println(allStoryLeadTimes.stream().filter(LeadTimeStoryEntry::isValid).map(LeadTimeStoryEntry::toString).collect(Collectors.joining("\n")));
-                System.out.println();
 
                 Platform.runLater(() -> {
                     updateStoryLeadTimes(storyLeadTimes, allStoryLeadTimes);
