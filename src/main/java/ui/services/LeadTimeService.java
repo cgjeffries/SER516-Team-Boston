@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -104,13 +105,17 @@ public class LeadTimeService extends Service<Object> {
         return leadTimeStats;
     }
 
-    @Override
-    protected void failed() {
-        super.failed();
-        Throwable exception = getException();
-        if (exception != null) {
-            exception.printStackTrace();
-        }
+    private void updateLeadTimes(ObservableList<XYChart.Data<String, Number>> data, List<LeadTimeStats> entries, LeadTimeCallback callback){
+        SimpleDateFormat format = new SimpleDateFormat("MMM dd");
+
+        data.setAll(
+                entries.stream()
+                        .sorted(Comparator.comparing(LeadTimeStats::getDate))
+                        .map(e -> {
+                            return new XYChart.Data<>(format.format(e.getDate()), (Number) callback.getStories(e).size());
+                        })
+                        .toList()
+        );
     }
 
     private List<LeadTimeStoryEntry> getAllStoryLeadTimes() {
@@ -161,19 +166,6 @@ public class LeadTimeService extends Service<Object> {
         }
     }
 
-    private void updateLeadTimes(ObservableList<XYChart.Data<String, Number>> data, List<LeadTimeStats> entries, LeadTimeCallback callback) {
-        SimpleDateFormat format = new SimpleDateFormat("MMM dd");
-
-        data.setAll(
-                entries.stream()
-                        .sorted(Comparator.comparing(LeadTimeStats::getDate))
-                        .map(e -> {
-                            return new XYChart.Data<>(format.format(e.getDate()), (Number) callback.getStories(e).size());
-                        })
-                        .toList()
-        );
-    }
-
 
     @Override
     protected Task<Object> createTask() {
@@ -201,6 +193,15 @@ public class LeadTimeService extends Service<Object> {
                 return null;
             }
         };
+    }
+
+    @Override
+    protected void failed() {
+        super.failed();
+        Throwable exception = getException();
+        if (exception != null) {
+            exception.printStackTrace();
+        }
     }
 
     interface LeadTimeCallback {

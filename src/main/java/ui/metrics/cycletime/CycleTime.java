@@ -1,5 +1,6 @@
 package ui.metrics.cycletime;
 
+import java.util.Date;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.*;
 import javafx.scene.control.ProgressIndicator;
@@ -43,7 +44,7 @@ public class CycleTime extends StackPane {
         progress.visibleProperty().bind(this.service.runningProperty());
 
         CategoryAxis date = new CategoryAxis();
-        date.setLabel("Date");
+        date.setLabel("Start Date");
         NumberAxis value = new NumberAxis();
         value.setLabel("Cycle Time (Days)");
 
@@ -66,6 +67,9 @@ public class CycleTime extends StackPane {
 
     public void switchSprint(Sprint sprint) {
         this.service.recalculate(sprint);
+    }
+    public void switchDates(Integer projectId, Date startDate, Date endDate) {
+        this.service.recalculate(projectId, startDate, endDate);
     }
 
     public void focusFirstTab() {

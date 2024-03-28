@@ -20,6 +20,13 @@ public class LeadTimeScreen extends BaseMetricConfiguration {
     private DatePicker startDate;
     private DatePicker endDate;
 
+    /**
+     * Create a screen instance
+     *
+     * @param screenManager a ScreenManager instance
+     * @param id            A unique id for the scene.
+     * @param fxmlName  The fxml file to load for this screen.
+     */
     public LeadTimeScreen(ScreenManager screenManager, String id, String fxmlName) {
         super(screenManager, id, fxmlName);
     }
@@ -67,7 +74,6 @@ public class LeadTimeScreen extends BaseMetricConfiguration {
     @Override
     protected void beforeParameterMount() {
         sprint_name.textProperty().unbind();
-        sprint_name.setText("asdlfjhkjalshhfdkljsagf");
 
         this.startDate = new DatePicker();
         this.endDate = new DatePicker();
