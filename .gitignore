@@ -31,3 +31,5 @@ target/
 
 # Test Trash
 .openjfx/
+
+.vscode
