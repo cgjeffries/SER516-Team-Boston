@@ -3,6 +3,8 @@ package ui.services;
 import javafx.application.Platform;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariables;
 import taiga.models.sprint.Sprint;
 import ui.util.DateUtil;
 
@@ -13,6 +15,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
+@DisabledIfEnvironmentVariables(
+        @DisabledIfEnvironmentVariable(named = "CI", matches = "true", disabledReason = "Cannot run in Github Actions")
+)
 public class CycleTimeServiceTest {
 
     @BeforeAll
