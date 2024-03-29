@@ -42,7 +42,6 @@ public class LoginService extends Service<Boolean> {
             protected Boolean call() throws Exception {
                 AtomicBoolean success = new AtomicBoolean(true);
                 TaigaClient.getAuthAPI().authenticate(username, password, response -> {
-                    System.out.println(response.getStatus());
                     if (response.getStatus() != 200) {
                         success.set(false);
                         return;
