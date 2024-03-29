@@ -31,6 +31,8 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
+      - name: Build with Maven (clean install)
+        run: mvn clean install
       - name: Build with Maven (Spotbugs)
         run: mvn -B verify spotbugs:spotbugs || true
       - name: Push SpotBugs report
