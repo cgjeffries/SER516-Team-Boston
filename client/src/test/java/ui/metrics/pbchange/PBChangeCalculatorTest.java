@@ -39,7 +39,6 @@ class PBChangeCalculatorTest {
         TokenStore.setTokenRetriever(() -> Settings.get().getAppModel().getTokens());
         TokenStore.setTokenSaver(tokens -> Settings.get().getAppModel().setTokens(tokens));
         List<PBChangeItem> pbChangeItems = pbChangeCalculator.calculate(mockProject, mockSprint);
-        System.out.println(pbChangeItems);
         assertNotNull(pbChangeItems);
     }
 

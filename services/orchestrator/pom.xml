@@ -11,5 +11,14 @@
     <packaging>jar</packaging>
 
     <artifactId>orchestrator</artifactId>
-
+    <dependencies>
+        <dependency>
+            <groupId>org.boston</groupId>
+            <artifactId>taiga</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sparkjava</groupId>
+            <artifactId>spark-core</artifactId>
+        </dependency>
+    </dependencies>
 </project>

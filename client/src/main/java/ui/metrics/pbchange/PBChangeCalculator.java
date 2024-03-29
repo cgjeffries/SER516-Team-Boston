@@ -49,8 +49,6 @@ public class PBChangeCalculator {
 
     private List<UserStoryDetail> getUserStories(int projectId) {
         TaigaClient.getUserStoryAPI().listProjectUserStories(projectId, result -> {
-            System.out.println(projectId);
-            System.out.println(result.getStatus());
             userStories = new ArrayList<>(List.of(result.getContent()));
         }).join();
         return userStories;
