@@ -5,10 +5,16 @@ import spark.Response;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import orchestrator.Env;
+
 /**
  * Base class for defining a route for a microservice.
  */
 public abstract class Route {
+    private static final Logger logger = LoggerFactory.getLogger(Route.class);
     /**
      * Get the name of the microservice.
      *
@@ -31,15 +37,25 @@ public abstract class Route {
      */
     public abstract String getProductionHost();
 
+    /**
+     * A default handler to use when no suitable {@link RouteQueryHandler}s are found
+     * 
+     * @return the handler response data
+     */
     public abstract Object getDefaultHandler();
 
     /**
-     * Get a list of query handlers associated with this route. See {@link QueryHandler} for more details.
+     * Get a list of query handlers associated with this route. See
+     * {@link RouteQueryHandler} for more details.
      *
      * @return A list of query handlers.
      */
-    public abstract List<QueryHandler<Object>> getQueryHandlers();
+    public abstract List<RouteQueryHandler<Object>> getRouteQueryHandlers();
 
+
+    public String getHost() {
+        return Env.isDevEnv() ? getDevelopmentHost() : getProductionHost();
+    }
     /**
      * Handle an incoming request to this route. This method will look for a
      * query handler that matches on the incoming request. If found, the handler
@@ -50,14 +66,17 @@ public abstract class Route {
      * @return The return value of the query handler
      */
     public Object handleServiceRequest(Request request, Response response) {
-        List<QueryHandler<Object>> matchingHandlers = getQueryHandlers().stream().filter(queryHandler -> queryHandler.matches(request)).toList();
+        List<RouteQueryHandler<Object>> matchingHandlers = getRouteQueryHandlers().stream()
+                .filter(queryHandler -> queryHandler.matches(request)).toList();
         if (matchingHandlers.isEmpty()) {
+            logger.info("No matching query handlers found, running default handler.");
             return getDefaultHandler();
         }
         if (matchingHandlers.size() != 1) {
-            System.err.println("Warning: " + matchingHandlers.size() + " handlers found for request to " + request.url() + ", selecting first handler.");
+            logger.warn("Warning: " + matchingHandlers.size() + " handlers found for request to " + request.url()
+                    + ", selecting first handler.");
         }
-        QueryHandler<Object> handler = matchingHandlers.get(0);
+        RouteQueryHandler<Object> handler = matchingHandlers.get(0);
         return handler.handle(request, response);
     }
 }

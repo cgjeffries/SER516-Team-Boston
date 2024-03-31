@@ -11,10 +11,9 @@ public class RouteAPI extends APIWrapperBase {
      * Create an API wrapper for a given microservice. Given a service name and the service url, this
      * class will direct API requests to {serviceUrl}/{serviceName}
      *
-     * @param serviceName The service name
-     * @param serviceUrl  The url of the service
+     * @param route the route for this api
      */
-    public RouteAPI(String serviceName, String serviceUrl) {
-        super(serviceName, new APIWrapperBehaviors().withBaseApiUrlResolver(() -> serviceUrl));
+    public RouteAPI(Route route) {
+        super(route.getName(), new APIWrapperBehaviors().withBaseApiUrlResolver(() -> route.getHost()));
     }
 }

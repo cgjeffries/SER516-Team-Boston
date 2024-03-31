@@ -1,28 +1,27 @@
-package routes.burndown;
+package routes.groomrate;
 
-import routes.QueryHandler;
+import routes.RouteQueryHandler;
 import spark.Request;
 import spark.Response;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-class BurndownQueryHandler extends QueryHandler<Object> {
-    private final BurndownAPI api;
+class GroomRateQueryHandler extends RouteQueryHandler<Object> {
+    private final GroomRateAPI api;
 
-    public BurndownQueryHandler(BurndownAPI api) {
+    public GroomRateQueryHandler(GroomRateAPI api) {
         this.api = api;
     }
 
     @Override
     public boolean matches(Request request) {
-        return request.queryParams().contains("sprint")
-                || (request.queryParams().contains("start_date") && request.queryParams().contains("end_date"));
+        return request.queryParams().contains("start_date") && request.queryParams().contains("end_date");
     }
 
     @Override
     public Object handle(Request request, Response response) {
         AtomicReference<Object> apiResult = new AtomicReference<>();
-        api.getBurndown(request.queryParams("sprint"), request.queryParams("start_date"), request.queryParams("end_date"), result -> {
+        api.getGroomRate(request.queryParams("start_date"), request.queryParams("end_date"), result -> {
             if (result == null) {
                 response.status(500);
             } else {
