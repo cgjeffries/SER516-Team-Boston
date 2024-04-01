@@ -1,10 +1,11 @@
 # US:
 
 ### Description of Changes:
+
 Description here.
 
-
 ### PR Submitter Checklist:
+
 - [ ] Taiga updated
 - [ ] Code Compiles
 - [ ] Tests Pass
@@ -12,8 +13,8 @@ Description here.
 - [ ] US acceptance criteria are met
 - [ ] Static analysis checks pass
 
-
 ### Reviewer Checklist (Copy into your review):
+
 ```markdown
 # Review comments
 
