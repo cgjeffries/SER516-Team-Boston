@@ -1,7 +1,7 @@
 FROM eclipse-temurin:17-jdk-jammy AS build
 WORKDIR /opt/app
 COPY . /opt/app/
-RUN --mount=type=cache,target=/root/.m2 ./mvnw clean install -DskipTests
+RUN --mount=type=cache,id=s/orchestrator-/root/.m2,target=/root/.m2 ./mvnw clean install -DskipTests
 
 FROM eclipse-temurin:17-jre-jammy
 ARG PORT
