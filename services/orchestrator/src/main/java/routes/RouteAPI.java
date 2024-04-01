@@ -14,6 +14,6 @@ public class RouteAPI extends APIWrapperBase {
      * @param route the route for this api
      */
     public RouteAPI(Route route) {
-        super(route.getName(), new APIWrapperBehaviors().withBaseApiUrlResolver(() -> route.getHost()));
+        super(route.getName(), new APIWrapperBehaviors().withBaseApiUrlResolver(route::getHost));
     }
 }
