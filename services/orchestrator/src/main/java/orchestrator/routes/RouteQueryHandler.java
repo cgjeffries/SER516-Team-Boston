@@ -1,4 +1,4 @@
-package routes;
+package orchestrator.routes;
 
 import spark.Request;
 import spark.Response;
@@ -14,13 +14,13 @@ import spark.Response;
  * <p>
  * Normally, this should be used for query parameter filtering. For example, if
  * you needed to define the following routes:
- * 
+ *
  * <pre>
  * https://server.com/route1
  *https://server.com/route1?foo=bar
  * </pre>
- * 
- * 
+ *
+ *
  * you would define two query handlers for route1 - one whose `matches` call
  * would directly return true,
  * and another that checks if "foo" exists on the request's query parameters.

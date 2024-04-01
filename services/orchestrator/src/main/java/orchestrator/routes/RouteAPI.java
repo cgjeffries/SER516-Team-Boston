@@ -1,4 +1,4 @@
-package routes;
+package orchestrator.routes;
 
 import bostonhttp.api.APIWrapperBase;
 import bostonhttp.api.APIWrapperBehaviors;

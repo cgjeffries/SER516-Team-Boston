@@ -1,7 +1,7 @@
-package routes.groomrate;
+package orchestrator.routes.groomrate;
 
-import routes.RouteQueryHandler;
-import routes.Route;
+import orchestrator.routes.RouteQueryHandler;
+import orchestrator.routes.Route;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class GroomRateRoute extends Route {
 
     @Override
     public String getName() {
-        return "burndown";
+        return "groomrate";
     }
 
     @Override

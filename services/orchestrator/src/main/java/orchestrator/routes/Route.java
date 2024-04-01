@@ -1,4 +1,4 @@
-package routes;
+package orchestrator.routes;
 
 import spark.Request;
 import spark.Response;

@@ -1,8 +1,8 @@
-package routes.groomrate;
+package orchestrator.routes.groomrate;
 
 import bostonhttp.api.APIResponse;
-import routes.Route;
-import routes.RouteAPI;
+import orchestrator.routes.Route;
+import orchestrator.routes.RouteAPI;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;

@@ -8,4 +8,8 @@ public class Env {
     public static boolean isDevEnv() {
         return System.getenv("BOSTON_ENV") == null || System.getenv("BOSTON_ENV").equals("development");
     }
+
+    public static int getPort() {
+        return System.getenv("PORT") == null ? 4567 : Integer.parseInt(System.getenv("PORT"));
+    }
 }
