@@ -1,0 +1,7 @@
+services:
+  orchestrator:
+    build: 
+      dockerfile: ./services/orchestrator/Dockerfile
+      context: ./
+    ports:
+      - "8000:8000"
