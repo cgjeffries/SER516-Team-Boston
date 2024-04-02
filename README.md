@@ -72,7 +72,7 @@ ensuring sprint goals remain achievable despite any alterations to the initially
 To compile go to the project root and do:
 
 ```bash
-   mvn compile
+   mvn clean install
    ```
 
 To run go to the project root and do:
