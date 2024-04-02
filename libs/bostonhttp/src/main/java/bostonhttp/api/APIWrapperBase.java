@@ -174,9 +174,9 @@ public abstract class APIWrapperBase {
                 request.header("x-disable-pagination", "true");
             }
 
-            String authToken = token.getAuth();
 
-            if (authToken != null) {
+            if (token != null) {
+                String authToken = token.getAuth();
                 request.header("Authorization", "Bearer " + authToken);
             }
 
