@@ -33,7 +33,7 @@ public class Burndown extends StackPane {
         Tab taskBurndownTab = createBurndownTab("Task", "Fractional Story Points", new Icon(BoxiconsRegular.CLIPBOARD), this.service.getTaskData());
         Tab usBurndownTab = createBurndownTab("User Story", "Full Story Points", new Icon(BoxiconsRegular.USER), this.service.getUserStoryData());
         Tab bvBurndownTab = createBurndownTab("Business Value", "Business Value Points", new Icon(BoxiconsRegular.BRIEFCASE), this.service.getBusinessValueData());
-        Tab combinedBurndownTab = createCombinedBurndownTab("Combined", this.service.getTaskData(), this.service.getUserStoryData(), this.service.getBusinessValueData());
+        Tab combinedBurndownTab = createCombinedBurndownTab(this.service.getTaskData(), this.service.getUserStoryData(), this.service.getBusinessValueData());
 
         tabPane.getTabs().setAll(taskBurndownTab, usBurndownTab, bvBurndownTab, combinedBurndownTab);
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
@@ -88,48 +88,7 @@ public class Burndown extends StackPane {
 
         return tab;
     }
-
-    private Tab createCombinedBurndownTab(String name, ObservableMap<Sprint, BurndownService.Data> taskData, ObservableMap<Sprint, BurndownService.Data> userStoryData, ObservableMap<Sprint, BurndownService.Data> businessValueData) {
-        HBox hbox = new HBox(10);
-    
-        hbox.getChildren().add(createSingleAreaChart("Task Burndown", "Fractional Story Points", taskData));
-        hbox.getChildren().add(createSingleAreaChart("User Story Burndown", "Full Story Points", userStoryData));
-        hbox.getChildren().add(createSingleAreaChart("Business Value Burndown", "Business Value Points", businessValueData));
-    
-        Tab tab = new Tab(name, hbox);
-        tab.setGraphic(new Icon(BoxiconsRegular.CHART));
-    
-        return tab;
-    }
-    
-    private AreaChart<String, Number> createSingleAreaChart(String title, String valueUnits, ObservableMap<Sprint, BurndownService.Data> dataMap) {
-        CategoryAxis xAxis = new CategoryAxis();
-        xAxis.setLabel("Date");
-    
-        NumberAxis yAxis = new NumberAxis();
-        yAxis.setLabel(valueUnits);
-    
-        AreaChart<String, Number> chart = new AreaChart<>(xAxis, yAxis);
-        chart.setTitle(title);
-    
-        dataMap.addListener((MapChangeListener.Change<? extends Sprint, ? extends BurndownService.Data> change) -> {
-            if (change.wasAdded()) {
-                Sprint sprint = change.getKey();
-                BurndownService.Data data = change.getValueAdded();
-    
-                XYChart.Series<String, Number> idealSeries = new XYChart.Series<>(data.getIdeal());
-                idealSeries.setName("Ideal (" + sprint.getName() + ")");
-                XYChart.Series<String, Number> currentSeries = new XYChart.Series<>(data.getCalculated());
-                currentSeries.setName("Current (" + sprint.getName() + ")");
-    
-                chart.getData().addAll(idealSeries, currentSeries);
-            }
-        });
-    
-        chart.setAnimated(false);
-        return chart;
-    }
-
+  
 
     /**
      * Choose which sprints will be displayed in the burndown graphs
@@ -150,6 +109,58 @@ public class Burndown extends StackPane {
     public void selectSprints(List<Sprint> sprints, boolean overlay) {
         this.service.recalculate(sprints, overlay);
     }
+
+
+    private Tab createCombinedBurndownTab(
+        ObservableMap<Sprint, BurndownService.Data> taskData,
+        ObservableMap<Sprint, BurndownService.Data> userStoryData,
+        ObservableMap<Sprint, BurndownService.Data> businessValueData) {
+        
+        Tab tab = new Tab("Combined");
+        tab.setGraphic(new Icon(BoxiconsRegular.CHART));
+    
+        ProgressIndicator progress = new ProgressIndicator(-1d);
+        progress.visibleProperty().bind(this.service.runningProperty());
+
+        CategoryAxis date = new CategoryAxis();
+        date.setLabel("Date");
+        NumberAxis value = new NumberAxis();
+        value.setLabel("Points");
+
+        AreaChart<String, Number> chart = new AreaChart<>(date, value);
+
+        addSeriesToChart(chart, "Tasks", taskData);
+        addSeriesToChart(chart, "User Stories", userStoryData);
+        addSeriesToChart(chart, "Business Values", businessValueData);
+    
+        StackPane root = new StackPane(chart);
+        tab.setContent(root);
+    
+        return tab;
+    }
+        
+    private void addSeriesToChart(AreaChart<String, Number> chart, String seriesName, 
+        ObservableMap<Sprint, BurndownService.Data> dataMap) {
+        
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName(seriesName);
+
+        // assuming the first sprint's dates as the reference for all series
+        if (!dataMap.isEmpty()) {
+            Sprint firstSprint = dataMap.keySet().iterator().next();
+            BurndownService.Data firstData = dataMap.get(firstSprint);
+
+            for (int i = 0; i < firstData.getCalculated().size(); i++) {
+                String dateLabel = "Day " + (i + 1);
+                double value = firstData.getCalculated().get(i).getYValue().doubleValue();
+                series.getData().add(new XYChart.Data<>(dateLabel, value));
+            }
+        }
+
+        chart.getData().add(series);
+    }
+
+
 
     public void focusFirstTab() {
         tabPane.getSelectionModel().selectFirst();
