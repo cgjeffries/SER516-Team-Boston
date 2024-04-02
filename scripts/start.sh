@@ -1,4 +1,4 @@
 #!/bin/bash
 
 docker-compose up -d
-./run_client
+./scripts/run_client.sh
