@@ -1,5 +1,6 @@
 package ui.services;
 
+import bostonhttp.models.AuthToken;
 import bostonhttp.models.LoginResponse;
 import bostonhttp.models.Tokens;
 import bostonhttp.util.AuthTokenSingleton;
@@ -49,6 +50,7 @@ public class LoginService extends Service<Boolean> {
                     LoginResponse loginResponse = response.getContent();
                     Tokens tokens = new Tokens(loginResponse.getAuthToken(), loginResponse.getRefresh());
                     TokenStore.saveTokens(tokens);
+                    TaigaClient.setDefaultAPIBehaviors(TaigaClient.getBehaviors().withAuthToken(new AuthToken(tokens.getAuth())));
                     AuthTokenSingleton.getInstance().setTokens(tokens);
                     Platform.runLater(() -> Settings.get().getAppModel().loadUser());
                 }).join();

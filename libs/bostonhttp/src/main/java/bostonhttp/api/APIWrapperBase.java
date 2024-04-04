@@ -36,6 +36,7 @@ public abstract class APIWrapperBase {
 
     public APIWrapperBase(String endpoint) {
         this.apiEndpoint = endpoint;
+        this.behaviors = new APIWrapperBehaviors();
     }
 
     public APIWrapperBase(String endpoint, APIWrapperBehaviors behaviors) {
@@ -62,7 +63,7 @@ public abstract class APIWrapperBase {
         if (this.apiBaseURL != null) {
             return this.apiBaseURL;
         }
-        if (this.behaviors != null) {
+        if (this.behaviors != null && this.behaviors.getBaseApiUrlResolver() != null) {
             return this.behaviors.getBaseApiUrlResolver().resolve();
         }
         return DEFAULT_BASE_API_URL;
@@ -178,6 +179,9 @@ public abstract class APIWrapperBase {
             if (token != null) {
                 String authToken = token.getAuth();
                 request.header("Authorization", "Bearer " + authToken);
+            }
+            else if(behaviors.getAuthToken() != null){
+                request.header("Authorization", "Bearer " + behaviors.getAuthToken().getAuth());
             }
 
             Semaphore semaphore = semaphores.computeIfAbsent(getRequestKey(request.build()), k -> new Semaphore(MAX_CONCURRENT_REQUESTS_NUMBER));
