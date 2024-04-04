@@ -3,13 +3,25 @@ package bostonclient;
 import bostonclient.apis.PBHealthAPI;
 
 public class BostonClient {
-    private static PBHealthAPI pbHealthAPI;
+    private PBHealthAPI pbHealthAPI;
+    private static BostonClient client = null;
 
-    public static void buildClient(BostonClientOptions options) {
+    private BostonClient() {
+
+    }
+
+    public void build(BostonClientOptions options) {
         pbHealthAPI = new PBHealthAPI(options.getRouterUrl());
     }
 
-    public static PBHealthAPI getPBChangeAPI() {
+    public PBHealthAPI getPBChangeAPI() {
         return pbHealthAPI;
+    }
+
+    public static BostonClient get() {
+        if (client == null) {
+            client = new BostonClient();
+        }
+        return client;
     }
 }
