@@ -1,16 +1,15 @@
 package bostonclient;
 
-import bostonclient.apis.GroomRateAPI;
+import bostonclient.apis.PBHealthAPI;
 
 public class BostonClient {
-    private final GroomRateAPI groomRateAPI;
+    private static PBHealthAPI pbHealthAPI;
 
-    public BostonClient(BostonClientOptions options) {
-        this.groomRateAPI = new GroomRateAPI(options.getRouterUrl());
-        // TODO: add the rest of the service apis
+    public void buildClient(BostonClientOptions options) {
+        pbHealthAPI = new PBHealthAPI(options.getRouterUrl());
     }
 
-    public GroomRateAPI getGroomRateAPI() {
-        return groomRateAPI;
+    public static PBHealthAPI getPBChangeAPI() {
+        return pbHealthAPI;
     }
 }
