@@ -42,7 +42,7 @@ public abstract class Route {
      * 
      * @return the handler response data
      */
-    public abstract Object getDefaultHandler();
+    public abstract Object getDefaultHandler(Request request, Response response);
 
     /**
      * Get a list of query handlers associated with this route. See
@@ -70,7 +70,7 @@ public abstract class Route {
                 .filter(queryHandler -> queryHandler.matches(request)).toList();
         if (matchingHandlers.isEmpty()) {
             logger.info("No matching query handlers found, running default handler.");
-            return getDefaultHandler();
+            return getDefaultHandler(request, response);
         }
         if (matchingHandlers.size() != 1) {
             logger.warn("Warning: " + matchingHandlers.size() + " handlers found for request to " + request.url()

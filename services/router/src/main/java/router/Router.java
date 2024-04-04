@@ -12,7 +12,7 @@ import static spark.Spark.port;
 public class Router {
     private final static Logger logger = LoggerFactory.getLogger(Router.class);
     public static void start() {
-        port(Env.getPort()); // TODO: figure out how to make railway listen to this port (or how to get railway's port here)
+        port(Env.getPort());
         logger.info("Starting server");
         Routes.getAll().forEach(route -> {
             logger.trace("Adding " + route.getName() + " to api.");

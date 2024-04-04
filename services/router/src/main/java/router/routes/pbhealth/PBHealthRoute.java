@@ -1,20 +1,22 @@
-package router.routes.groomrate;
-
-import router.routes.RouteQueryHandler;
-import router.routes.Route;
+package router.routes.pbhealth;
 
 import java.util.List;
 
-public class GroomRateRoute extends Route {
-    private final GroomRateAPI api;
+import router.routes.Route;
+import router.routes.RouteQueryHandler;
+import spark.Request;
+import spark.Response;
 
-    public GroomRateRoute() {
-        this.api = new GroomRateAPI(this);
+public class PBHealthRoute extends Route {
+    private final PBHealthAPI api;
+
+    public PBHealthRoute() {
+        this.api = new PBHealthAPI(this);
     }
 
     @Override
     public String getName() {
-        return "groomrate";
+        return "pbhealth";
     }
 
     @Override
@@ -30,14 +32,14 @@ public class GroomRateRoute extends Route {
     }
 
     @Override
-    public Object getDefaultHandler() {
+    public Object getDefaultHandler(Request request, Response response) {
         return "america ya! :D";
     }
 
     @Override
     public List<RouteQueryHandler<Object>> getRouteQueryHandlers() {
         return List.of(
-                new GroomRateQueryHandler(api)
+                new PBHealthQueryHandler(api)
         );
     }
 }
