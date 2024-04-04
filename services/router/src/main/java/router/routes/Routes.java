@@ -1,8 +1,8 @@
-package orchestrator.routes;
+package router.routes;
 
 import java.util.List;
 
-import orchestrator.routes.groomrate.GroomRateRoute;
+import router.routes.groomrate.GroomRateRoute;
 
 public class Routes {
     public static List<Route> getAll() {

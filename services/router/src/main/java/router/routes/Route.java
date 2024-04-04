@@ -1,4 +1,4 @@
-package orchestrator.routes;
+package router.routes;
 
 import spark.Request;
 import spark.Response;
@@ -8,7 +8,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import orchestrator.Env;
+import router.Env;
 
 /**
  * Base class for defining a route for a microservice.
