@@ -1,6 +1,6 @@
 # router
 
-A service for orchstrating metric microservices.
+A service for routing metric microservices.
 
 ## Build
 
