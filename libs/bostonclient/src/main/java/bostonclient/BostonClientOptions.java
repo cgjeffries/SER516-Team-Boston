@@ -1,13 +1,13 @@
 package bostonclient;
 
 public class BostonClientOptions {
-    private String orchestratorUrl;
+    private String routerUrl;
 
-    public void withOrchestratorUrl(String orchestratorUrl) {
-        this.orchestratorUrl = orchestratorUrl;
+    public void withRouter(String routerUrl) {
+        this.routerUrl = routerUrl;
     }
 
-    public String getOrchestratorUrl() {
-        return orchestratorUrl;
+    public String getRouterUrl() {
+        return routerUrl;
     }
 }
