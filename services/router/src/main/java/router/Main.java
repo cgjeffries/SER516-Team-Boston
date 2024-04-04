@@ -1,7 +1,7 @@
-package orchestrator;
+package router;
 
 public class Main {
     public static void main(String[] args) {
-        Orchestrator.start();
+        Router.start();
     }
 }

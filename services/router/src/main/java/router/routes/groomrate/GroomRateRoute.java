@@ -1,7 +1,7 @@
-package orchestrator.routes.groomrate;
+package router.routes.groomrate;
 
-import orchestrator.routes.RouteQueryHandler;
-import orchestrator.routes.Route;
+import router.routes.RouteQueryHandler;
+import router.routes.Route;
 
 import java.util.List;
 

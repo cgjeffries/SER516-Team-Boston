@@ -1,6 +1,6 @@
-package orchestrator.routes.groomrate;
+package router.routes.groomrate;
 
-import orchestrator.routes.RouteQueryHandler;
+import router.routes.RouteQueryHandler;
 import spark.Request;
 import spark.Response;
 
