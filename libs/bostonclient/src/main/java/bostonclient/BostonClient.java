@@ -5,7 +5,7 @@ import bostonclient.apis.PBHealthAPI;
 public class BostonClient {
     private static PBHealthAPI pbHealthAPI;
 
-    public void buildClient(BostonClientOptions options) {
+    public static void buildClient(BostonClientOptions options) {
         pbHealthAPI = new PBHealthAPI(options.getRouterUrl());
     }
 
