@@ -1,12 +1,5 @@
 package ui.services;
 
-import javafx.application.Platform;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 import taiga.models.sprint.UserStoryDetail;
 import ui.metrics.pbHealth.PBHealthHelper;
 
@@ -25,19 +18,17 @@ public class PBHealthService extends Service<Object> {
     }
 
     /**
-     * Gets an observable object containing the ratio of groomed to total PB user stories.
-     *
-     * @return a SimpleObjectProperty<Double> containing the ratio of groomed to total PB user stories.
+     * was old javafx
      */
-    public DoubleProperty getPbHealthRatio() {
+    public double getPbHealthRatio() {
         return pbHealthRatio;
     }
 
-    public IntegerProperty getGroomedStoryCount() {
+    public int getGroomedStoryCount() {
         return groomedStoryCount;
     }
 
-    public IntegerProperty getTotalStoryCount() {
+    public int getTotalStoryCount() {
         return totalStoryCount;
     }
 
