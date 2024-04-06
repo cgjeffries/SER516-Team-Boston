@@ -5,65 +5,52 @@ import ui.metrics.pbHealth.PBHealthHelper;
 
 import java.util.List;
 
-public class PBHealthService extends Service<Object> {
+public class PBHealthService {
     private int projectId;
-    private final DoubleProperty pbHealthRatio;
-    private final IntegerProperty groomedStoryCount;
-    private final IntegerProperty totalStoryCount;
 
     public PBHealthService() {
-        this.pbHealthRatio = new SimpleDoubleProperty();
-        this.groomedStoryCount = new SimpleIntegerProperty();
-        this.totalStoryCount = new SimpleIntegerProperty();
+
     }
 
-    /**
-     * was old javafx
-     */
-    public double getPbHealthRatio() {
-        return pbHealthRatio;
-    }
-
-    public int getGroomedStoryCount() {
-        return groomedStoryCount;
-    }
-
-    public int getTotalStoryCount() {
-        return totalStoryCount;
-    }
-
-    @Override
-    protected Task<Object> createTask() {
-        return new Task<>() {
-            @Override
-            protected Object call() {
-
-                PBHealthHelper pbHealthHelper = new PBHealthHelper(projectId);
-                List<UserStoryDetail> groomedUserStories = pbHealthHelper.getGroomedPB();
-                List<UserStoryDetail> notGroomedUserStories = pbHealthHelper.getNotGroomedPB();
-
-                int totalUserStoryCount = groomedUserStories.size() + notGroomedUserStories.size();
-                double ratio;
-                if (totalUserStoryCount > 0) {
-                    ratio = (double) groomedUserStories.size() / totalUserStoryCount;
-                } else {
-                    ratio = 0;
-                }
-
-                Platform.runLater(() -> {
-                    pbHealthRatio.set(ratio);
-                    groomedStoryCount.set(groomedUserStories.size());
-                    totalStoryCount.set(totalUserStoryCount);
-                });
-
-                return null;
-            }
-        };
-    }
-
-    public void recalculate(int projectId) {
+    // calculate PB health
+    public PBHealthMetrics calculatePBHealth(int projectId) {
         this.projectId = projectId;
-        this.restart();
+        PBHealthHelper pbHealthHelper = new PBHealthHelper(projectId);
+        List<UserStoryDetail> groomedUserStories = pbHealthHelper.getGroomedPB();
+        List<UserStoryDetail> notGroomedUserStories = pbHealthHelper.getNotGroomedPB();
+
+        int totalUserStoryCount = groomedUserStories.size() + notGroomedUserStories.size();
+        double ratio = 0;
+        if (totalUserStoryCount > 0) {
+            ratio = (double) groomedUserStories.size() / totalUserStoryCount;
+        }
+
+        return new PBHealthMetrics(ratio, groomedUserStories.size(), totalUserStoryCount);
+    }
+
+    public static class PBHealthMetrics {
+        private final double pbHealthRatio;
+        private final int groomedStoryCount;
+        private final int totalStoryCount;
+
+        public PBHealthMetrics(double pbHealthRatio, int groomedStoryCount, int totalStoryCount) {
+            this.pbHealthRatio = pbHealthRatio;
+            this.groomedStoryCount = groomedStoryCount;
+            this.totalStoryCount = totalStoryCount;
+        }
+
+        // Getters
+        public double getPbHealthRatio() {
+            return pbHealthRatio;
+        }
+
+        public int getGroomedStoryCount() {
+            return groomedStoryCount;
+        }
+
+        public int getTotalStoryCount() {
+            return totalStoryCount;
+        }
     }
 
 }
