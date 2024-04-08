@@ -1,5 +1,6 @@
 package bostonhttp.api;
 
+import bostonhttp.models.AuthToken;
 import bostonhttp.models.RefreshResponse;
 import bostonhttp.models.Tokens;
 import bostonhttp.util.AuthTokenSingleton;
@@ -35,6 +36,7 @@ public abstract class APIWrapperBase {
 
     public APIWrapperBase(String endpoint) {
         this.apiEndpoint = endpoint;
+        this.behaviors = new APIWrapperBehaviors();
     }
 
     public APIWrapperBase(String endpoint, APIWrapperBehaviors behaviors) {
@@ -61,7 +63,7 @@ public abstract class APIWrapperBase {
         if (this.apiBaseURL != null) {
             return this.apiBaseURL;
         }
-        if (this.behaviors != null) {
+        if (this.behaviors != null && this.behaviors.getBaseApiUrlResolver() != null) {
             return this.behaviors.getBaseApiUrlResolver().resolve();
         }
         return DEFAULT_BASE_API_URL;
@@ -126,6 +128,16 @@ public abstract class APIWrapperBase {
         return queryAsync(query, responseType, true, false);
     }
 
+    protected <T> CompletableFuture<APIResponse<T>> queryAsync(
+        String query, Class<T> responseType, AuthToken token) {
+        return queryAsync(query, responseType, token, true, false);
+    }
+
+    protected <T> CompletableFuture<APIResponse<T>> queryAsync(
+        String query, Class<T> responseType, boolean retry, boolean enable_pagination) {
+        return queryAsync(query, responseType, null, retry, enable_pagination);
+    }
+
     /**
      * Send an asynchronous GET request with the specified query to the configured API endpoint.
      * Unlike the synchronous version of this method, this method will handle converting the raw
@@ -152,7 +164,7 @@ public abstract class APIWrapperBase {
      * @return future with result object.
      */
     protected <T> CompletableFuture<APIResponse<T>> queryAsync(
-            String query, Class<T> responseType, boolean retry, boolean enable_pagination) {
+        String query, Class<T> responseType, AuthToken token, boolean retry, boolean enable_pagination) {
         try {
             HttpRequest.Builder request =
                     HttpRequest.newBuilder()
@@ -163,10 +175,13 @@ public abstract class APIWrapperBase {
                 request.header("x-disable-pagination", "true");
             }
 
-            String authToken = getAuthToken();
 
-            if (authToken != null) {
+            if (token != null) {
+                String authToken = token.getAuth();
                 request.header("Authorization", "Bearer " + authToken);
+            }
+            else if(behaviors.getAuthToken() != null){
+                request.header("Authorization", "Bearer " + behaviors.getAuthToken().getAuth());
             }
 
             Semaphore semaphore = semaphores.computeIfAbsent(getRequestKey(request.build()), k -> new Semaphore(MAX_CONCURRENT_REQUESTS_NUMBER));
@@ -182,9 +197,11 @@ public abstract class APIWrapperBase {
                                         AtomicReference<APIResponse<T>> apiResponse =
                                                 new AtomicReference<>(createResponse(response, responseType));
 
-                                        if (retry && apiResponse.get().getStatus() == 401) {
-                                            refreshAuthToken(query, responseType, apiResponse, retry, enable_pagination);
-                                        } else if (apiResponse.get().getStatus() == 429) {
+                                          //temporarily disabled while microservices are moved
+//                                        if (retry && apiResponse.get().getStatus() == 401) {
+//                                            refreshAuthToken(query, responseType, apiResponse, retry, enable_pagination);
+//                                        } else
+                                            if (apiResponse.get().getStatus() == 429) {
                                             // Retry the request after a delay if encountering too many concurrent streams error
                                             retryWithBackoff(query, responseType, apiResponse, retry, enable_pagination, 1);
                                         }

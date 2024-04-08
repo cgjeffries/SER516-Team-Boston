@@ -1,0 +1,9 @@
+services:
+  boston-router:
+    build: 
+      dockerfile: ./services/router/Dockerfile
+      context: ./
+      args:
+        - PORT=8000
+    ports:
+      - "8000:8000"
