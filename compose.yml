@@ -19,6 +19,16 @@ services:
       - "9000:9000"
     networks:
       - boston
+  boston-scopechange:
+    build:
+      dockerfile: ./services/scopechange/Dockerfile
+      context: ./
+      args:
+        - PORT=9001
+    ports:
+      - "9001:9001"
+    networks:
+      - boston
 networks:
   boston:
     driver: bridge
