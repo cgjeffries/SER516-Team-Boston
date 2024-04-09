@@ -52,13 +52,13 @@ public class ScopeChangeCalculator {
      * @param sprint The Sprint to analyze for scope change
      * @return A list of ScopeChangeItems which contain the added UserStories
      */
-    public List<ScopeChangeItem> calculate(Sprint sprint) {
+    public List<ScopeChangeItem> calculate(int sprintId) {
         List<UserStory> stories = sprint.getUserStories();
 
         List<ScopeChangeItem> addedAfterStart = stories
                 .parallelStream()
                 .map(s -> {
-                    Date addedDate = ScopeChangeCalculator.getAddedAfterStartDate(s, sprint);
+                    Date addedDate = ScopeChangeCalculator.getAddedAfterStartDate(s, sp);
                     if (addedDate == null) {
                         return null;
                     }
