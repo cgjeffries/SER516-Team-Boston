@@ -58,7 +58,9 @@ ensuring sprint goals remain achievable despite any alterations to the initially
 
 - Java 17 or higher
 - Maven for dependency management and running the project
-- Maven will include JavaFX in its dependencies
+  - Maven will include JavaFX in its dependencies
+- Docker
+  - You will need [BuildKit](https://docs.docker.com/build/buildkit/#overview) installed. If you have Docker Desktop installed, you should already have it.
 
 ### Clone the repository
 
@@ -67,19 +69,46 @@ ensuring sprint goals remain achievable despite any alterations to the initially
    cd SER516-Team-Boston
    ```
 
-### Compile and Run the application
+### Building
 
-To compile go to the project root and do:
+At the root of the project, run:
 
 ```bash
-   mvn clean install
-   ```
+# Build the Microservices
+docker-compose build
+# Build the client
+mvn -pl client -am -DskipTests clean install
+```
+
+Or using the convenience script under `scripts/`:
+
+```bash
+./scripts/build.sh
+```
+
+### Running
 
 To run go to the project root and do:
 
 ```bash
-   mvn -pl client javafx:run
-   ```
+# Run in detached mode
+docker-compose up -d
+mvn -pl client javafx:run
+```
+
+Or using the convenience script under `scripts/`:
+
+```bash
+./scripts/start.sh
+```
+
+### Stopping
+
+At the root of the project, run:
+
+```bash
+docker-compose down
+```
 
 ### Testing the application
 

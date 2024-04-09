@@ -41,6 +41,8 @@ public class TaigaClient {
     }
 
     public static void setDefaultAPIBehaviors(APIWrapperBehaviors behaviors) {
+        setDefaultBehavior(behaviors);
+
         authAPI.setBehaviors(behaviors);
         epicsAPI.setBehaviors(behaviors);
         historyAPI.setBehaviors(behaviors);
@@ -54,6 +56,10 @@ public class TaigaClient {
         userStoryCustomAttributesAPI.setBehaviors(behaviors);
         userStoryCustomAttributesValuesAPI.setBehaviors(behaviors);
         userStoryHistoryAPI.setBehaviors(behaviors);
+    }
+
+    public static APIWrapperBehaviors getBehaviors(){
+        return TaigaClient.behaviors;
     }
 
     public static AuthAPI getAuthAPI() {
