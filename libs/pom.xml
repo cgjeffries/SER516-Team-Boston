@@ -15,5 +15,6 @@
     <modules>
         <module>bostonhttp</module>
         <module>taiga</module>
+        <module>bostonmodel</module>
     </modules>
 </project>
