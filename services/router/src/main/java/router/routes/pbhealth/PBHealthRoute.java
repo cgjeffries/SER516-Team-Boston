@@ -22,7 +22,7 @@ public class PBHealthRoute extends Route {
     @Override
     public String getDevelopmentHost() {
         // TODO: place an actual development host here
-        return "http://boston-pbhealth:9000/";
+        return "http://localhost:9000/";
     }
 
     @Override

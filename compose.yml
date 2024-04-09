@@ -7,18 +7,3 @@ services:
         - PORT=8000
     ports:
       - "8000:8000"
-    networks:
-      - boston
-  boston-pbhealth:
-    build:
-      dockerfile: ./services/pbhealth/Dockerfile
-      context: ./
-      args:
-        - PORT=9000
-    ports:
-      - "9000:9000"
-    networks:
-      - boston
-networks:
-  boston:
-    driver: bridge

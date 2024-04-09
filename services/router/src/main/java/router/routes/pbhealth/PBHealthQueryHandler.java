@@ -1,6 +1,5 @@
 package router.routes.pbhealth;
 
-import bostonmodel.pbhealth.PBHealthMetrics;
 import router.routes.RouteQueryHandler;
 import spark.Request;
 import spark.Response;
@@ -16,14 +15,20 @@ class PBHealthQueryHandler extends RouteQueryHandler<Object> {
 
     @Override
     public boolean matches(Request request) {
-        return request.queryParams().contains("project_id");
+        return request.queryParams().contains("project_id")
+                && request.queryParams().contains("low_threshold")
+                && request.queryParams().contains("mid_threshold")
+                && request.queryParams().contains("high_threshold");
     }
 
     @Override
-    public PBHealthMetrics handle(Request request, Response response) {
-        AtomicReference<PBHealthMetrics> apiResult = new AtomicReference<>(null);
+    public Object handle(Request request, Response response) {
+        AtomicReference<Object> apiResult = new AtomicReference<>(null);
         api.getPBHealth(
                 Integer.parseInt(request.queryParams("project_id")),
+                Double.parseDouble(request.queryParams("low_threshold")),
+                Double.parseDouble(request.queryParams("mid_threshold")),
+                Double.parseDouble(request.queryParams("high_threshold")),
                 result -> {
                     if (result == null) {
                         response.status(500);
