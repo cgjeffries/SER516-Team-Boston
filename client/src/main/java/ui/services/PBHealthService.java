@@ -55,7 +55,14 @@ public class PBHealthService extends Service<Object> {
 
                 AtomicReference<PBHealthMetrics> metricsReference = new AtomicReference<>();
                 pbHealthAPI.getPBHealth(projectId, (foo) ->{
-                    metricsReference.set(foo.getContent()); //TODO: add error handling here
+                    if(foo.getStatus() == 200){
+                        metricsReference.set(foo.getContent());
+                    }
+                    else{
+                        System.out.println("Error: PBHealth service returned bad response code: " + foo.getStatus());
+                        metricsReference.set(new PBHealthMetrics(0,0,0));
+                    }
+
                 }).join();
 
                 PBHealthMetrics metrics = metricsReference.get();
