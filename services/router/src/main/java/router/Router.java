@@ -1,5 +1,6 @@
 package router;
 
+import bostonmodel.util.JsonTransformer;
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +21,10 @@ public class Router {
                 Object data = route.handleServiceRequest(request, response);
                 if (data == null) {
                     response.status(HttpStatus.SC_BAD_REQUEST);
-                    return "{}"; // TODO: figure out what to return for null requests
+                    return null;
                 }
                 return data;
-            }));
+            }), new JsonTransformer());
         });
     }
 }

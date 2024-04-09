@@ -3,6 +3,7 @@ package pbhealth;
 import static spark.Spark.get;
 import static spark.Spark.port;
 
+import bostonmodel.pbhealth.PBHealthMetrics;
 import bostonmodel.util.JsonTransformer;
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
@@ -14,7 +15,7 @@ public class Main {
 
     public static void main(String[] args) {
         port(9000);
-        get("/", (request, response) -> {
+        get("/pbhealth", (request, response) -> {
             String projectIdParam = request.queryParams("project_id");
             if (projectIdParam == null) {
                 response.type("application/json");
@@ -30,7 +31,9 @@ public class Main {
                 return ""; // TODO: return error object transofmed to json using response transformer
             }
 
-            return PBHealthService.calculatePBHealth(projectId);
+            PBHealthMetrics metrics = PBHealthService.calculatePBHealth(projectId);
+
+            return metrics;
         }, new JsonTransformer());
     }
 }

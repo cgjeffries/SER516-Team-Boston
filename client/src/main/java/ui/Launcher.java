@@ -1,6 +1,8 @@
 package ui;
 
 import atlantafx.base.theme.PrimerLight;
+import bostonclient.BostonClient;
+import bostonclient.BostonClientOptions;
 import bostonhttp.api.APIWrapperBehaviors;
 import bostonhttp.models.AuthToken;
 import bostonhttp.util.TokenStore;
@@ -33,6 +35,7 @@ public class Launcher extends Application {
             TaigaClient.setDefaultAPIBehaviors(new APIWrapperBehaviors().withBaseApiUrlResolver(
                     () -> Settings.get().getAppModel().getApiURL()));
         }
+        BostonClient.buildClient(new BostonClientOptions().withRouter("http://localhost:8000/"));
         Settings.get().getAppModel().loadUser();
     }
 
