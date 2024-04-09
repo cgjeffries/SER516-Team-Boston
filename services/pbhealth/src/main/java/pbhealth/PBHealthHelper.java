@@ -1,4 +1,4 @@
-package ui.metrics.pbHealth;
+package pbhealth;
 
 import taiga.TaigaClient;
 import taiga.models.project.Project;

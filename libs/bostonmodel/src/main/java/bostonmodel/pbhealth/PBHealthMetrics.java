@@ -1,8 +1,19 @@
 package bostonmodel.pbhealth;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class PBHealthMetrics {
+    @SerializedName("pb_health_ratio")
+    @Expose
     private final double pbHealthRatio;
+
+    @SerializedName("groomed_story_count")
+    @Expose
     private final int groomedStoryCount;
+
+    @SerializedName("total_story_count")
+    @Expose
     private final int totalStoryCount;
 
     public PBHealthMetrics(double pbHealthRatio, int groomedStoryCount, int totalStoryCount) {
