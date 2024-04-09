@@ -9,10 +9,7 @@ import taiga.models.sprint.UserStory;
 
 import bostonmodel.scopechange.ScopeChangeItem;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ScopeChangeCalculator {
@@ -70,8 +67,8 @@ public class ScopeChangeCalculator {
         }).join();
 
         if (sprint.get() == null) {
-            response.status(HttpStatus.SC_NOT_FOUND);
-            return null;
+            response.status(HttpStatus.SC_BAD_REQUEST);
+            return new ArrayList<>();
         }
 
         return sprint
