@@ -1,13 +1,24 @@
-package scopechange;
+package bostonmodel.scopechange;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import taiga.models.sprint.UserStory;
 
 import java.util.Date;
 
 public class ScopeChangeItem {
-    private final UserStory story;
-    private final boolean addedToSprintLate;
+    @SerializedName("changeDate")
+    @Expose
     private final Date changeDate;
+
+    @SerializedName("story")
+    @Expose
+    private final UserStory story;
+
+    @SerializedName("addedAfterStart")
+    @Expose
+    private final boolean addedToSprintLate;
 
     public ScopeChangeItem(Date changeDate, UserStory story, boolean addedAfterStart) {
         this.changeDate = changeDate;

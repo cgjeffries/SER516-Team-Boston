@@ -7,6 +7,8 @@ import taiga.TaigaClient;
 import taiga.models.sprint.Sprint;
 import taiga.models.sprint.UserStory;
 
+import bostonmodel.scopechange.ScopeChangeItem;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
