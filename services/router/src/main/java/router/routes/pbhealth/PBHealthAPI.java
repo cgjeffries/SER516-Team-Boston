@@ -1,6 +1,7 @@
 package router.routes.pbhealth;
 
 import bostonhttp.api.APIResponse;
+import bostonmodel.pbhealth.PBHealthMetrics;
 import router.routes.Route;
 import router.routes.RouteAPI;
 
@@ -15,12 +16,8 @@ class PBHealthAPI extends RouteAPI {
 
     public CompletableFuture<Void> getPBHealth(
             int projectId,
-            double lowThreshold,
-            double midThreshold,
-            double highThreshold,
-            Consumer<APIResponse<Object>> callback) {
-        return queryAsync("?project_id=" + projectId + "&low_threshold=" + lowThreshold + "&mid_threshold="
-                + midThreshold + "&high_threshold=" + highThreshold, Object.class)
+            Consumer<APIResponse<PBHealthMetrics>> callback) {
+        return queryAsync("?project_id=" + projectId, PBHealthMetrics.class)
                 .thenAccept(callback);
     }
 }
