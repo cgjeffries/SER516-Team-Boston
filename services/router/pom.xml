@@ -22,7 +22,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>router.scopechange.Main</mainClass>
+                            <mainClass>router.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
