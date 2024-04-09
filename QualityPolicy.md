@@ -2,7 +2,7 @@
 
 ## Branches
 
-* There shall not be any commits made directly to the Main branch.
+* There shall not be any commits made directly to the scopechange.Main branch.
 * A single branch shall be made per User Story.
 * No more than this one branch shall be created per User Story, except as follows:
     * A major refactoring or breaking change is being made such that it would cause disruption from uncompilable code if
@@ -34,7 +34,7 @@
 
 ## Releases
 
-* A Release Tag shall be created for the state of the Main branch after each merged pull request
+* A Release Tag shall be created for the state of the scopechange.Main branch after each merged pull request
 * The Release Tag shall follow the naming scheme `#.#.#` Where the last number is for user stories and second number is
   for period releases
 

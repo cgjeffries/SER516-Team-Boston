@@ -17,5 +17,6 @@
         <module>taiga</module>
         <module>bostonclient</module>
         <module>bostonmodel</module>
+        <module>serviceutil</module>
     </modules>
 </project>

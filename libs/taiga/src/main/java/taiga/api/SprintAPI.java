@@ -61,4 +61,8 @@ public class SprintAPI extends APIWrapperBase {
             int project, Consumer<APIResponse<Sprint[]>> callback) {
         return this.listSprints(project, true, callback);
     }
+
+    public CompletableFuture<Void> getSprint(int sprintId, Consumer<APIResponse<Sprint>> callback) {
+        return queryAsync("/" + sprintId, Sprint.class).thenAccept(callback);
+    }
 }
