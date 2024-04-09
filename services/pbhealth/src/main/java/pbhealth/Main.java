@@ -3,7 +3,7 @@ package pbhealth;
 import static spark.Spark.get;
 import static spark.Spark.port;
 
-import bostonmodel.pbhealth.PBHealthMetrics;
+import bostonmodel.util.JsonTransformer;
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +30,7 @@ public class Main {
                 return ""; // TODO: return error object transofmed to json using response transformer
             }
 
-            PBHealthMetrics resultMetrics = PBHealthService.calculatePBHealth(projectId);
-
-            return "";
-        });
+            return PBHealthService.calculatePBHealth(projectId);
+        }, new JsonTransformer());
     }
 }
