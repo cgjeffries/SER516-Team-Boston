@@ -1,5 +1,9 @@
 package ui.services;
 
+import bostonclient.BostonClient;
+import bostonclient.apis.PBHealthAPI;
+import bostonmodel.pbhealth.PBHealthMetrics;
+import java.util.concurrent.atomic.AtomicReference;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
@@ -17,11 +21,13 @@ public class PBHealthService extends Service<Object> {
     private final DoubleProperty pbHealthRatio;
     private final IntegerProperty groomedStoryCount;
     private final IntegerProperty totalStoryCount;
+    private PBHealthAPI pbHealthAPI;
 
     public PBHealthService() {
         this.pbHealthRatio = new SimpleDoubleProperty();
         this.groomedStoryCount = new SimpleIntegerProperty();
         this.totalStoryCount = new SimpleIntegerProperty();
+        this.pbHealthAPI = BostonClient.getPBChangeAPI();
     }
 
     /**
@@ -47,22 +53,17 @@ public class PBHealthService extends Service<Object> {
             @Override
             protected Object call() {
 
-                PBHealthHelper pbHealthHelper = new PBHealthHelper(projectId);
-                List<UserStoryDetail> groomedUserStories = pbHealthHelper.getGroomedPB();
-                List<UserStoryDetail> notGroomedUserStories = pbHealthHelper.getNotGroomedPB();
+                AtomicReference<PBHealthMetrics> metricsReference = new AtomicReference<>();
+                pbHealthAPI.getPBHealth(projectId, (foo) ->{
+                    metricsReference.set(foo.getContent()); //TODO: add error handling here
+                }).join();
 
-                int totalUserStoryCount = groomedUserStories.size() + notGroomedUserStories.size();
-                double ratio;
-                if (totalUserStoryCount > 0) {
-                    ratio = (double) groomedUserStories.size() / totalUserStoryCount;
-                } else {
-                    ratio = 0;
-                }
+                PBHealthMetrics metrics = metricsReference.get();
 
                 Platform.runLater(() -> {
-                    pbHealthRatio.set(ratio);
-                    groomedStoryCount.set(groomedUserStories.size());
-                    totalStoryCount.set(totalUserStoryCount);
+                    pbHealthRatio.set(metrics.getPbHealthRatio());
+                    groomedStoryCount.set(metrics.getGroomedStoryCount());
+                    totalStoryCount.set(metrics.getTotalStoryCount());
                 });
 
                 return null;

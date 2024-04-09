@@ -10,21 +10,14 @@ import settings.Settings;
 import ui.components.screens.ScreenManager;
 import ui.metrics.pbHealth.PBHealth;
 
-import bostonclient.BostonClient;
-import bostonclient.apis.PBHealthAPI;
-import bostonclient.models.PBHealthResponse;
-import bostonhttp.api.APIResponse;
-
 public class PBHealthScreen extends BaseMetricConfiguration {
     private PBHealth pbHealth;
     private Spinner<Double> goodHealthThreshold;
     private Spinner<Double> fairHealthThreshold;
     private Spinner<Double> poorHealthThreshold;
-    private PBHealthAPI pbHealthAPI;
 
     public PBHealthScreen(ScreenManager screenManager, String id, String fxmlFilename) {
         super(screenManager, id, fxmlFilename);
-        this.pbHealthAPI = BostonClient.getPBChangeAPI();
     }
 
     @Override
@@ -72,17 +65,6 @@ public class PBHealthScreen extends BaseMetricConfiguration {
         if (this.pbHealth == null) {
             return;
         }
-
-        int projectId = Settings.get().getAppModel().getCurrentProject().get().getId();
-        double lowThreshold = poorHealthThreshold.getValue();
-        double midThreshold = fairHealthThreshold.getValue();
-        double highThreshold = goodHealthThreshold.getValue();
-
-        pbHealthAPI.getPBHealth(projectId, lowThreshold, midThreshold, highThreshold, this::handlePBHealthResponse);
+        this.pbHealth.calculate(Settings.get().getAppModel().getCurrentProject().get().getId());
     }
-
-    private void handlePBHealthResponse(APIResponse<PBHealthResponse> response) {
-
-    }
-
 }

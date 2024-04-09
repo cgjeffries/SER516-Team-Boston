@@ -12,7 +12,7 @@ public class PBHealthAPI extends MetricAPI {
         super("pbhealth", routerUrl);
     }
 
-    public CompletableFuture<Void> getPBHealth(int projectId, double lowThreshold, double midThreshold, double highThreshold,
+    public CompletableFuture<Void> getPBHealth(int projectId,
             Consumer<APIResponse<PBHealthMetrics>> callback) {
         return queryAsync("?project_id=" + projectId, PBHealthMetrics.class)
                 .thenAccept(callback);
