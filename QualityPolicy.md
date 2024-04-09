@@ -37,3 +37,10 @@
 * A Release Tag shall be created for the state of the Main branch after each merged pull request
 * The Release Tag shall follow the naming scheme `#.#.#` Where the last number is for user stories and second number is
   for period releases
+
+## Swimlanes
+
+* Swimlanes will have a DONE, DELIVERED, and DEPLOYED status
+* DONE meaning that the work for the user story is completely DONE
+* DELIVERED meaning that the additions have been delivered with a release
+* DEPLOYED meaning that the additions are containerized and push button deployable
