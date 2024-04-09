@@ -1,3 +1,8 @@
+package scopechange;
+
+import org.apache.http.HttpStatus;
+import spark.Request;
+import spark.Response;
 import taiga.TaigaClient;
 import taiga.models.sprint.Sprint;
 import taiga.models.sprint.UserStory;
@@ -21,7 +26,7 @@ public class ScopeChangeCalculator {
      * @param userStory The userstory being analyzed
      * @param sprint    The sprint the userstory belongs too
      * @return The date the userstory was added if added after the sprint start,
-     *         else returns null.
+     * else returns null.
      */
     public static Date getAddedAfterStartDate(UserStory userStory, Sprint sprint) {
         AtomicReference<Date> addedDate = new AtomicReference<>();
@@ -49,16 +54,30 @@ public class ScopeChangeCalculator {
      * Analyzes the sprints User Stories and returns a list of those that were added
      * after the start of the sprint
      *
-     * @param sprint The Sprint to analyze for scope change
+     * @param request
+     * @param response
+     * @param sprintId
      * @return A list of ScopeChangeItems which contain the added UserStories
      */
-    public List<ScopeChangeItem> calculate(int sprintId) {
-        List<UserStory> stories = sprint.getUserStories();
+    public static List<ScopeChangeItem> calculate(Request request, Response response, int sprintId) {
+        AtomicReference<Sprint> sprint = new AtomicReference<>();
+        TaigaClient.getSprintAPI().getSprint(sprintId, result -> {
+            if (result.getStatus() == HttpStatus.SC_OK) {
+                sprint.set(result.getContent());
+            }
+        }).join();
 
-        List<ScopeChangeItem> addedAfterStart = stories
+        if (sprint.get() == null) {
+            response.status(HttpStatus.SC_NOT_FOUND);
+            return null;
+        }
+
+        return sprint
+                .get()
+                .getUserStories()
                 .parallelStream()
                 .map(s -> {
-                    Date addedDate = ScopeChangeCalculator.getAddedAfterStartDate(s, sp);
+                    Date addedDate = ScopeChangeCalculator.getAddedAfterStartDate(s, sprint.get());
                     if (addedDate == null) {
                         return null;
                     }
@@ -66,8 +85,5 @@ public class ScopeChangeCalculator {
                 })
                 .filter(Objects::nonNull)
                 .toList();
-
-        return addedAfterStart;
     }
-
 }

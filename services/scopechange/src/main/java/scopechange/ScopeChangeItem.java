@@ -1,3 +1,5 @@
+package scopechange;
+
 import taiga.models.sprint.UserStory;
 
 import java.util.Date;
@@ -27,7 +29,7 @@ public class ScopeChangeItem {
 
     @Override
     public String toString() {
-        return "ScopeChangeItem{" +
+        return "scopechange.ScopeChangeItem{" +
                 "story=" + story +
                 ", AddedToSprintLate=" + addedToSprintLate +
                 '}';
