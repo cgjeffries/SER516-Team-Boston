@@ -69,6 +69,14 @@ ensuring sprint goals remain achievable despite any alterations to the initially
    cd SER516-Team-Boston
    ```
 
+### One Punch Run Command
+
+At the root of the project, run:
+
+   ```bash
+   ./scripts/run_deployed.sh
+   ```
+
 ### Building
 
 At the root of the project, run:
