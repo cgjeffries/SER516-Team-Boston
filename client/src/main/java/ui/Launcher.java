@@ -1,7 +1,10 @@
 package ui;
 
 import atlantafx.base.theme.PrimerLight;
+import bostonclient.BostonClient;
+import bostonclient.BostonClientOptions;
 import bostonhttp.api.APIWrapperBehaviors;
+import bostonhttp.models.AuthToken;
 import bostonhttp.util.TokenStore;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -22,8 +25,17 @@ public class Launcher extends Application {
     public void init() {
         TokenStore.setTokenRetriever(() -> Settings.get().getAppModel().getTokens());
         TokenStore.setTokenSaver(tokens -> Settings.get().getAppModel().setTokens(tokens));
-        TaigaClient.setDefaultAPIBehaviors(new APIWrapperBehaviors().withBaseApiUrlResolver(() -> Settings.get().getAppModel().getApiURL()));
         Settings.get().load();
+        if(Settings.get().getAppModel().getTokens() != null) {
+            TaigaClient.setDefaultAPIBehaviors(new APIWrapperBehaviors().withBaseApiUrlResolver(
+                    () -> Settings.get().getAppModel().getApiURL())
+                .withAuthToken(new AuthToken(Settings.get().getAppModel().getTokens().getAuth())));
+        }
+        else{
+            TaigaClient.setDefaultAPIBehaviors(new APIWrapperBehaviors().withBaseApiUrlResolver(
+                    () -> Settings.get().getAppModel().getApiURL()));
+        }
+        BostonClient.buildClient(new BostonClientOptions().withRouter("http://localhost:8000/"));
         Settings.get().getAppModel().loadUser();
     }
 

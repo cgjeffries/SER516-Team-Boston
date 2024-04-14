@@ -1,0 +1,34 @@
+services:
+  boston-router:
+    build: 
+      dockerfile: ./services/router/Dockerfile
+      context: ./
+      args:
+        - PORT=8000
+    ports:
+      - "8000:8000"
+    networks:
+      - boston
+  boston-pbhealth:
+    build:
+      dockerfile: ./services/pbhealth/Dockerfile
+      context: ./
+      args:
+        - PORT=9000
+    ports:
+      - "9000:9000"
+    networks:
+      - boston
+  boston-scopechange:
+    build:
+      dockerfile: ./services/scopechange/Dockerfile
+      context: ./
+      args:
+        - PORT=9001
+    ports:
+      - "9001:9001"
+    networks:
+      - boston
+networks:
+  boston:
+    driver: bridge
