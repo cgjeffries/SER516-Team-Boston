@@ -1,6 +1,14 @@
 package taskinertia;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.apache.http.HttpStatus;
+
+import bostonmodel.taskinertia.TaskInertiaMetrics;
 import serviceutil.DateUtil;
 import spark.Response;
 import taiga.TaigaClient;
@@ -8,15 +16,8 @@ import taiga.models.taskhistory.ItemHistory;
 import taiga.models.taskhistory.ItemHistoryValuesDiff;
 import taiga.models.tasks.Task;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.TreeMap;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 public class TaskInertiaCalculator {
-    public static TreeMap<LocalDate, Double> calculate(Response response, int projectId, LocalDate startDate, LocalDate endDate) {
+    public static TaskInertiaMetrics calculate(Response response, int projectId, LocalDate startDate, LocalDate endDate) {
 
         List<Task> tasks = new ArrayList<>();
         TaigaClient.getTasksAPI().listTasksByProject(projectId, result -> {
@@ -31,7 +32,7 @@ public class TaskInertiaCalculator {
         }
 
         TreeMap<LocalDate, Integer> taskCounts = new TreeMap<>();
-        TreeMap<LocalDate, Double> taskInertia = new TreeMap<>();
+        TreeMap<LocalDate, Double> inertia = new TreeMap<>();
 
         tasks
                 .parallelStream()
@@ -63,14 +64,14 @@ public class TaskInertiaCalculator {
             int taskCount = totalTasksAtGivenDate(tasks, date);
             if (taskCounts.containsKey(date)) {
                 double percent = ((double) (taskCount - taskCounts.get(date)) / taskCount);
-                taskInertia.put(date, percent);
+                inertia.put(date, percent);
             } else {
-                taskInertia.put(date, 1.0d);
+                inertia.put(date, 1.0d);
             }
         }
 
         response.status(HttpStatus.SC_OK);
-        return taskInertia;
+        return new TaskInertiaMetrics(inertia);
     }
 
     private static int totalTasksAtGivenDate(List<Task> tasks, LocalDate date) {

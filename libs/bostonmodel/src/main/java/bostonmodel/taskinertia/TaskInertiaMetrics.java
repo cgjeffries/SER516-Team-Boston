@@ -1,11 +1,16 @@
 package bostonmodel.taskinertia;
 
+import java.time.LocalDate;
 import java.util.TreeMap;
 
 public class TaskInertiaMetrics {
-    private TreeMap<String, Double> inertia;
+    private TreeMap<LocalDate, Double> inertia;
 
-    public TreeMap<String, Double> getInertia() {
+    public TaskInertiaMetrics(TreeMap<LocalDate, Double> inertia) {
+        this.inertia = inertia;
+    }
+
+    public TreeMap<LocalDate, Double> getInertia() {
         return inertia;
     }
 }
