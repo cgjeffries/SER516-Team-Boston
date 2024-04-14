@@ -16,9 +16,7 @@ import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TaskInertiaCalculator {
-    public static TreeMap<LocalDate, Double> calculate(Response response, int projectId, Date startDate, Date endDate) {
-        LocalDate startDateLocal = DateUtil.toLocal(startDate);
-        LocalDate endDateLocal = DateUtil.toLocal(endDate);
+    public static TreeMap<LocalDate, Double> calculate(Response response, int projectId, LocalDate startDate, LocalDate endDate) {
 
         List<Task> tasks = new ArrayList<>();
         TaigaClient.getTasksAPI().listTasksByProject(projectId, result -> {
@@ -51,14 +49,17 @@ public class TaskInertiaCalculator {
                             return;
                         }
                         if (!moved.get()) {
-                            taskCounts.putIfAbsent(DateUtil.toLocal(entry.getCreatedAt()), 0);
-                            taskCounts.put(DateUtil.toLocal(entry.getCreatedAt()), taskCounts.get(DateUtil.toLocal(entry.getCreatedAt())) + 1);
+                            Integer currentDateCount = taskCounts.get(DateUtil.toLocal(entry.getCreatedAt()));
+                            if (currentDateCount == null) {
+                                currentDateCount = 0;
+                            }
+                            taskCounts.put(DateUtil.toLocal(entry.getCreatedAt()), currentDateCount + 1);
                             moved.set(true);
                         }
                     });
                 });
 
-        for (LocalDate date = startDateLocal; !date.isAfter(endDateLocal); date = date.plusDays(1)) {
+        for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
             int taskCount = totalTasksAtGivenDate(tasks, date);
             if (taskCounts.containsKey(date)) {
                 double percent = ((double) (taskCount - taskCounts.get(date)) / taskCount);
