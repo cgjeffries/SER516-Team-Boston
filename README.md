@@ -142,6 +142,12 @@ interact with the application visually. The main technical aspects include:
 - Configuration and Settings Management: Manages application settings and configurations (Settings.java, AppModel.java),
   including saving and loading user preferences and project data.
 
+## TROUBLESHOOTING
+
+If you encounter issues, particularly if no data is coming in, it may help to 
+delete the 'settings.json' file in your home directory 
+(e.g. 'C:\Users\user\.boston\settings.json').
+
 ### NOTE
 
 In case you don't have Maven installed, please refer to following tutorial:
