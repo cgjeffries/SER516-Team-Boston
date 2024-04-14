@@ -22,6 +22,7 @@
         <module>scopechange</module>
         <module>taskexcess</module>
         <module>router</module>
+        <module>taskinertia</module>
     </modules>
     <dependencyManagement>
         <dependencies>
