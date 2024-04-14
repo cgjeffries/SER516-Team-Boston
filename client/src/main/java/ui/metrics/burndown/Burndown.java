@@ -10,13 +10,13 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import org.kordamp.ikonli.boxicons.BoxiconsRegular;
 import taiga.models.sprint.Sprint;
 import ui.components.Icon;
 import ui.services.BurndownService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Burndown extends StackPane {
@@ -73,7 +73,8 @@ public class Burndown extends StackPane {
                 XYChart.Series<String, Number> current = new XYChart.Series<>(data.getCalculated());
                 current.setName("Current (" + sprint.getName() + ")");
 
-                chart.getData().addAll(ideal, current);
+                chart.getData().add(ideal);
+                chart.getData().add(current);
             }
         });
 
@@ -111,54 +112,52 @@ public class Burndown extends StackPane {
     }
 
 
-    private Tab createCombinedBurndownTab(
-        ObservableMap<Sprint, BurndownService.Data> taskData,
-        ObservableMap<Sprint, BurndownService.Data> userStoryData,
-        ObservableMap<Sprint, BurndownService.Data> businessValueData) {
-        
+    private Tab createCombinedBurndownTab(ObservableMap<Sprint, BurndownService.Data> taskDataMap, ObservableMap<Sprint, BurndownService.Data> userDataMap, ObservableMap<Sprint, BurndownService.Data> bizDataMap) {
         Tab tab = new Tab("Combined");
         tab.setGraphic(new Icon(BoxiconsRegular.CHART));
     
-        ProgressIndicator progress = new ProgressIndicator(-1d);
-        progress.visibleProperty().bind(this.service.runningProperty());
-
-        CategoryAxis date = new CategoryAxis();
-        date.setLabel("Date");
-        NumberAxis value = new NumberAxis();
-        value.setLabel("Points");
-
-        AreaChart<String, Number> chart = new AreaChart<>(date, value);
-
-        addSeriesToChart(chart, "Tasks", taskData);
-        addSeriesToChart(chart, "User Stories", userStoryData);
-        addSeriesToChart(chart, "Business Values", businessValueData);
+        CategoryAxis dateAxis = new CategoryAxis();
+        dateAxis.setLabel("Date");
+        NumberAxis pointsAxis = new NumberAxis();
+        pointsAxis.setLabel("Points");
+    
+        AreaChart<String, Number> chart = new AreaChart<>(dateAxis, pointsAxis);
+        chart.setTitle("Combined Burndown Chart");
+    
+        // create a series for each type of burndown data
+        createAndAddSeries(chart, taskDataMap, "Task Burndown");
+        createAndAddSeries(chart, userDataMap, "User Story Burndown");
+        createAndAddSeries(chart, bizDataMap, "Business Value Burndown");
     
         StackPane root = new StackPane(chart);
         tab.setContent(root);
     
         return tab;
     }
-        
-    private void addSeriesToChart(AreaChart<String, Number> chart, String seriesName, 
-        ObservableMap<Sprint, BurndownService.Data> dataMap) {
-        
+    
+    private void createAndAddSeries(AreaChart<String, Number> chart, ObservableMap<Sprint, BurndownService.Data> dataMap, String seriesName) {
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName(seriesName);
-
-        // assuming the first sprint's dates as the reference for all series
-        if (!dataMap.isEmpty()) {
-            Sprint firstSprint = dataMap.keySet().iterator().next();
-            BurndownService.Data firstData = dataMap.get(firstSprint);
-
-            for (int i = 0; i < firstData.getCalculated().size(); i++) {
-                String dateLabel = "Day " + (i + 1);
-                double value = firstData.getCalculated().get(i).getYValue().doubleValue();
-                series.getData().add(new XYChart.Data<>(dateLabel, value));
+    
+        dataMap.addListener((MapChangeListener.Change<? extends Sprint, ? extends BurndownService.Data> change) -> {
+            if (change.wasAdded()) {
+                BurndownService.Data data = change.getValueAdded();
+    
+                List<XYChart.Data<String, Number>> seriesData = new ArrayList<>();
+                for (XYChart.Data<String, Number> datum : data.getCalculated()) {
+                    seriesData.add(new XYChart.Data<>(datum.getXValue(), datum.getYValue()));
+                }
+    
+                if (chart.getData().contains(series)) {
+                    series.getData().setAll(seriesData);
+                } else {
+                    series.getData().addAll(seriesData);
+                    chart.getData().add(series);
+                }
             }
-        }
-
-        chart.getData().add(series);
+        });
     }
+    
 
 
 
