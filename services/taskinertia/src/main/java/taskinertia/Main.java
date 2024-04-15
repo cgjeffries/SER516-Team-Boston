@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import serviceutil.Env;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 import static spark.Spark.get;
 import static spark.Spark.port;
@@ -33,7 +34,7 @@ public class Main {
 
             try {
                 start = LocalDate.parse(request.queryParams("start_date"));
-            } catch (NumberFormatException ex) {
+            } catch (DateTimeParseException ex) {
                 response.status(HttpStatus.SC_BAD_REQUEST);
                 logger.error("start_date must be a date in the format 'YYYY-MM-DD'");
                 return "";
@@ -41,7 +42,7 @@ public class Main {
 
             try {
                 end = LocalDate.parse(request.queryParams("end_date"));
-            } catch (NumberFormatException ex) {
+            } catch (DateTimeParseException ex) {
                 response.status(HttpStatus.SC_BAD_REQUEST);
                 logger.error("end_date must be a date in the format 'YYYY-MM-DD'");
                 return "";
