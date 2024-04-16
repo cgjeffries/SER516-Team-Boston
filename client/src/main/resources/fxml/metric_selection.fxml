@@ -35,6 +35,8 @@
                         <Tile fx:id="scopechange_tile"
                               description="Display the user stories added after the start of the sprint"
                               title="Scope Change"/>
+                        <Tile fx:id="taskexcess_tile" description="Track the ratio of new tasks to total number of tasks"
+                              title="Task Excess"/>
                         <Separator prefWidth="200.0"/>
                     </children>
                 </VBox>
