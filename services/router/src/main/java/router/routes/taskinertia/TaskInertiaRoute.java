@@ -27,7 +27,7 @@ public class TaskInertiaRoute extends Route {
 
     @Override
     public String getProductionHost() {
-        return "http://boston-taskinertia.railway.internal:9002";
+        return "http://boston-taskinertia.railway.internal:9002/";
     }
 
     @Override
