@@ -21,6 +21,7 @@
         <module>pbhealth</module>
         <module>scopechange</module>
         <module>router</module>
+        <module>taskinertia</module>
     </modules>
     <dependencyManagement>
         <dependencies>
