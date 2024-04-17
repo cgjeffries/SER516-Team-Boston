@@ -28,8 +28,6 @@ public class BurndownService extends Service<Object> {
     private final ObservableMap<Sprint, Data> userStoryBurndownData;
     private final ObservableMap<Sprint, Data> businessValueBurndownData;
 
-    private final ObservableMap<Sprint, Data> combinedBurndownData;
-
 
     private boolean overlay = false;
 
@@ -43,8 +41,6 @@ public class BurndownService extends Service<Object> {
         this.userStoryBurndownData = FXCollections.observableHashMap();
         this.businessValueBurndownData = FXCollections.observableHashMap();
         
-        this.combinedBurndownData = FXCollections.observableHashMap();
-
         sprints = new ArrayList<>();
     }
 
@@ -92,7 +88,6 @@ public class BurndownService extends Service<Object> {
                     taskBurndownData.clear();
                     userStoryBurndownData.clear();
                     businessValueBurndownData.clear();
-                    combinedBurndownData.clear();
                 });
 
                 for (Sprint sprint : sprints) {
@@ -105,8 +100,6 @@ public class BurndownService extends Service<Object> {
                         updateBurndownData(taskBurndownData, taskXYData, sprint);
                         updateBurndownData(userStoryBurndownData, userStoryXYData, sprint);
                         updateBurndownData(businessValueBurndownData, businessValueXYData, sprint);
-                        updateBurndownData(combinedBurndownData, taskXYData, sprint);
-                        combineAndUpdateBurndownData(combinedBurndownData, taskXYData, userStoryXYData, businessValueXYData, sprint);
                     });
                 }
 
@@ -142,23 +135,6 @@ public class BurndownService extends Service<Object> {
 
         burndownDataMap.put(sprint, burndownData);
     }
-
-    private void combineAndUpdateBurndownData(ObservableMap<Sprint, Data> combinedDataMap, List<BurnDownEntry> taskData, List<BurnDownEntry> storyData, List<BurnDownEntry> valueData, Sprint sprint) {
-        List<XYChart.Data<String, Number>> combinedCalculated = new ArrayList<>();
-        SimpleDateFormat format = new SimpleDateFormat("MMM dd");
-    
-        // assuming all datasets have the same length and dates bc same sprint
-        for (int i = 0; i < taskData.size(); i++) {
-            String dateLabel = format.format(taskData.get(i).getDate());
-            Number combinedValue = taskData.get(i).getCurrent() + storyData.get(i).getCurrent() + valueData.get(i).getCurrent();
-            combinedCalculated.add(new XYChart.Data<>(dateLabel, combinedValue));
-        }
-    
-        Data combinedData = new Data();
-        combinedData.setCalculated(combinedCalculated);
-        combinedDataMap.put(sprint, combinedData);
-    }
-    
 
     public static class Data {
         private final ObservableList<XYChart.Data<String, Number>> calculated;
