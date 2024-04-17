@@ -145,9 +145,7 @@ public class Burndown extends StackPane {
         ProgressIndicator progress = new ProgressIndicator(-1d);
         progress.visibleProperty().bind(this.service.runningProperty());
 
-        // combinedChart.setTitle("Combined Burndown Chart");
         combinedChart.setAnimated(false);
-        // combinedChart.setCreateSymbols(false);
         combinedChart.visibleProperty().bind(this.service.runningProperty().not());
 
         StackPane root = new StackPane(combinedChart, progress);
