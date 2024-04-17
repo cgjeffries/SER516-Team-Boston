@@ -1,6 +1,6 @@
 package router.routes.scopechange;
 
-import bostonmodel.scopechange.ScopeChangeItem;
+import bostonmodel.scopechange.ScopeChangeMetrics;
 import org.apache.http.HttpStatus;
 import router.routes.RouteQueryHandler;
 import spark.Request;
@@ -23,7 +23,7 @@ public class ScopeChangeQueryHandler extends RouteQueryHandler<Object> {
 
     @Override
     public Object handle(Request request, Response response) {
-        AtomicReference<ScopeChangeItem> apiResult = new AtomicReference<>(null);
+        AtomicReference<ScopeChangeMetrics> apiResult = new AtomicReference<>(null);
         api.getScopeChange(Integer.parseInt(request.queryParams("sprint_id")),
                 result -> {
                     if (result == null) {
