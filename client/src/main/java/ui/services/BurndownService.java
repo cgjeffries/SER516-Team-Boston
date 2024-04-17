@@ -28,7 +28,6 @@ public class BurndownService extends Service<Object> {
     private final ObservableMap<Sprint, Data> userStoryBurndownData;
     private final ObservableMap<Sprint, Data> businessValueBurndownData;
 
-
     private boolean overlay = false;
 
     public BurndownService() {
@@ -40,7 +39,6 @@ public class BurndownService extends Service<Object> {
 
         this.userStoryBurndownData = FXCollections.observableHashMap();
         this.businessValueBurndownData = FXCollections.observableHashMap();
-        
         sprints = new ArrayList<>();
     }
 
