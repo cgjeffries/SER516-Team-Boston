@@ -87,8 +87,8 @@ public class MetricSelection extends Screen {
         taskexcess_tile.setGraphic(new Icon(BoxiconsSolid.TRASH, 48));
         taskexcess_tile.setActionHandler(() -> {
             // TODO enable once screen is in place
-            // Settings.get().getAppModel().setSelectedMetric("Scope Change");
-            // screenManager.switchScreen("project_selection");
+             Settings.get().getAppModel().setSelectedMetric("Task Excess");
+             screenManager.switchScreen("project_selection");
         });
     }
 

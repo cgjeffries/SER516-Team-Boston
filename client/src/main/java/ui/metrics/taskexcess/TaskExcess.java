@@ -4,15 +4,22 @@ import javafx.beans.binding.Bindings;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import ui.services.LeadTimeService;
+
+import java.util.Date;
 
 public class TaskExcess extends StackPane {
     // TODO add javafx serice
-
+    private final LeadTimeService service;
+    private final TabPane tabPane;
     public TaskExcess() {
-        init();
+        this.service = new LeadTimeService();
+        this.tabPane = new TabPane();
+        this.init();
     }
 
     private void init() {
@@ -39,5 +46,11 @@ public class TaskExcess extends StackPane {
 
         getChildren().add(root);
 
+    }
+    public void switchDates(Integer projectId, Date startDate, Date endDate) {
+        this.service.recalculate(projectId, startDate, endDate);
+    }
+    public void focusFirstTab() {
+        tabPane.getSelectionModel().selectFirst();
     }
 }
