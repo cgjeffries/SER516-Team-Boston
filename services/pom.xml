@@ -20,7 +20,9 @@
         <module>pbchange</module>
         <module>pbhealth</module>
         <module>scopechange</module>
+        <module>taskexcess</module>
         <module>router</module>
+        <module>taskinertia</module>
     </modules>
     <dependencyManagement>
         <dependencies>
