@@ -85,9 +85,8 @@ public class MetricSelection extends Screen {
         });
         taskinertia_tile.setGraphic(new Icon(BoxiconsRegular.TRANSFER, 48)); // Choose an appropriate icon
         taskinertia_tile.setActionHandler(() -> {
-            // TODO add once metric screen is added
-            // Settings.get().getAppModel().setSelectedMetric("Scope Change");
-            // screenManager.switchScreen("project_selection");
+            Settings.get().getAppModel().setSelectedMetric("Task Inertia");
+            screenManager.switchScreen("project_selection");
         });
     }
 

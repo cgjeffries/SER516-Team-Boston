@@ -1,4 +1,4 @@
-package ui.screens;
+package ui.metrics.taskinertia;
 
 import javafx.application.Application;
 import javafx.beans.property.ObjectProperty;
@@ -12,14 +12,12 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.TreeMap;
 
-public class TaskInertiaGUI extends Application {
+public class TaskInertia extends Application {
 
     private final ObjectProperty<LocalDate> startDate = new SimpleObjectProperty<>();
     private final ObjectProperty<LocalDate> endDate = new SimpleObjectProperty<>();
@@ -29,10 +27,7 @@ public class TaskInertiaGUI extends Application {
 
 
 
-    public TaskInertiaGUI(int projectId, String authToken, String endpoint){
-        this.projectId = projectId;
-        this.authToken = authToken;
-        this.endpoint = endpoint;
+    public TaskInertia(){
         endDate.set(LocalDate.now());
     }
 
