@@ -73,7 +73,7 @@ public class TaskInertiaGUI extends Application {
     private void updateChartData(BarChart<String, Number> barChart) {
         LocalDate start = startDate.get();
         LocalDate end = endDate.get();
-        TreeMap<LocalDate, Float> taskInertiaMap = TaskInertia.getTaskInertia(projectId, authToken, endpoint, start, end);
+        // TreeMap<LocalDate, Float> taskInertiaMap = TaskInertia.getTaskInertia(projectId, authToken, endpoint, start, end);
     
         // Clear previous data from the chart
         barChart.getData().clear();
@@ -95,18 +95,18 @@ public class TaskInertiaGUI extends Application {
         }
     
         // Add data points to the series
-        taskInertiaMap.forEach((date, inertia) -> {
-            String dateString = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-            XYChart.Data<String, Number> data = new XYChart.Data<>(dateString, inertia);
-            series.getData().add(data);
-            Tooltip tooltip = new Tooltip(String.format("Inertia: %.2f%%", inertia));
-            // Install tooltip when the node for this data point is created
-            data.nodeProperty().addListener((obs, oldNode, newNode) -> {
-                if (newNode != null) {
-                    Tooltip.install(newNode, tooltip);
-                }
-            });
-        });
+        // taskInertiaMap.forEach((date, inertia) -> {
+        //     String dateString = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        //     XYChart.Data<String, Number> data = new XYChart.Data<>(dateString, inertia);
+        //     series.getData().add(data);
+        //     Tooltip tooltip = new Tooltip(String.format("Inertia: %.2f%%", inertia));
+        //     // Install tooltip when the node for this data point is created
+        //     data.nodeProperty().addListener((obs, oldNode, newNode) -> {
+        //         if (newNode != null) {
+        //             Tooltip.install(newNode, tooltip);
+        //         }
+        //     });
+        // });
     
         // Add the series to the chart
         barChart.getData().add(series);
