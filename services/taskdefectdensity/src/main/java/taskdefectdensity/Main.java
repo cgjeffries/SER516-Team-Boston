@@ -18,7 +18,6 @@ public class Main {
             response.type("application/json");
             String sprintIdParam = request.queryParams("sprint_id");
             if (sprintIdParam == null) {
-                response.type("application/json");
                 response.status(HttpStatus.SC_BAD_REQUEST);
                 return "";
             }

@@ -21,13 +21,13 @@ public class TaskDefectDensityRoute extends Route {
 
     @Override
     public String getDevelopmentHost() {
-        return "http://boston-taskdefectdensity:9004/";
+        return "http://boston-taskdefectdensity:9005/";
     }
 
     @Override
     public String getProductionHost() {
-        // TODO: place an actual production host here
-        return null;
+
+        return "http://boston-taskdefectdensity.railway.internal:9005/";
     }
 
     @Override
