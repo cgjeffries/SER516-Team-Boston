@@ -6,6 +6,7 @@ import bostonclient.BostonClient;
 import bostonclient.apis.TaskExcessAPI;
 import bostonmodel.pbhealth.PBHealthMetrics;
 import bostonmodel.taskexcess.TaskExcessMetrics;
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -27,6 +28,17 @@ public class TaskExcessService extends Service<Object> {
         this.taskExcessRatio = new SimpleDoubleProperty();
         this.taskExcessAPI= BostonClient.getTaskExcessAPI();
     }
+    public DoubleProperty getTaskExcessRatio() {
+        return taskExcessRatio;
+    }
+
+    public IntegerProperty getTotalTaskCount() {
+        return totalTaskCount;
+    }
+
+    public IntegerProperty getNewTaskCount() {
+        return newTaskCount;
+    }
 
     @Override
     protected Task<Object> createTask() {
@@ -41,7 +53,7 @@ public class TaskExcessService extends Service<Object> {
                     }
                     else{
                         System.out.println("Error: Task excess service returned bad response code: " + foo.getStatus());
-                        metricsReference.set(new TaskExcessMetrics(0,0));
+                        metricsReference.set(new TaskExcessMetrics(0,0,0));
                     }
 
                 }).join();
@@ -49,9 +61,9 @@ public class TaskExcessService extends Service<Object> {
                 TaskExcessMetrics metrics = metricsReference.get();
 
                 Platform.runLater(() -> {
-                    pbHealthRatio.set(metrics.getPbHealthRatio());
-                    groomedStoryCount.set(metrics.getGroomedStoryCount());
-                    totalStoryCount.set(metrics.getTotalStoryCount());
+                    taskExcessRatio.set(metrics.gettaskExcessRatio());
+                    totalTaskCount.set(metrics.getTotalTasks());
+                    newTaskCount.set(metrics.getNewTasks());
                 });
 
                 return null;
