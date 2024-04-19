@@ -1,33 +1,32 @@
-package router.routes.taskinertia;
-
-import java.util.List;
+package router.routes.scopechange;
 
 import router.routes.Route;
 import router.routes.RouteQueryHandler;
 import spark.Request;
 import spark.Response;
 
-public class TaskInertiaRoute extends Route {
+import java.util.List;
 
-    private final TaskInertiaAPI api;
+public class ScopeChangeRoute extends Route{
+    private final ScopeChangeAPI api;
 
-    public TaskInertiaRoute() {
-        this.api = new TaskInertiaAPI(this);
+    public ScopeChangeRoute() {
+        this.api = new ScopeChangeAPI(this);
     }
 
     @Override
     public String getName() {
-        return "taskinertia";
+        return "scopechange";
     }
 
     @Override
     public String getDevelopmentHost() {
-        return "http://boston-taskinertia:9002/";
+        return "http://boston-scopechange:9001/";
     }
 
     @Override
     public String getProductionHost() {
-        return "http://boston-taskinertia.railway.internal:9002/";
+        return null;
     }
 
     @Override
@@ -38,8 +37,7 @@ public class TaskInertiaRoute extends Route {
     @Override
     public List<RouteQueryHandler<Object>> getRouteQueryHandlers() {
         return List.of(
-                new TaskInertiaQueryHandler(api));
-
+                new ScopeChangeQueryHandler(api)
+        );
     }
-
 }

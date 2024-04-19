@@ -1,5 +1,6 @@
 package scopechange;
 
+import bostonmodel.scopechange.ScopeChangeMetrics;
 import org.apache.http.HttpStatus;
 import spark.Request;
 import spark.Response;
@@ -58,7 +59,7 @@ public class ScopeChangeCalculator {
      * @param sprintId
      * @return A list of ScopeChangeItems which contain the added UserStories
      */
-    public static List<ScopeChangeItem> calculate(Request request, Response response, int sprintId) {
+    public static ScopeChangeMetrics calculate(Request request, Response response, int sprintId) {
         AtomicReference<Sprint> sprint = new AtomicReference<>();
         TaigaClient.getSprintAPI().getSprint(sprintId, result -> {
             if (result.getStatus() == HttpStatus.SC_OK) {
@@ -68,10 +69,10 @@ public class ScopeChangeCalculator {
 
         if (sprint.get() == null) {
             response.status(HttpStatus.SC_BAD_REQUEST);
-            return new ArrayList<>();
+            return null;
         }
 
-        return sprint
+        List<ScopeChangeItem> items = sprint
                 .get()
                 .getUserStories()
                 .parallelStream()
@@ -84,5 +85,6 @@ public class ScopeChangeCalculator {
                 })
                 .filter(Objects::nonNull)
                 .toList();
+        return new ScopeChangeMetrics(items);
     }
 }
