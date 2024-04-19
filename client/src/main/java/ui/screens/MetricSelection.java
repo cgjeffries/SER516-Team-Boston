@@ -79,7 +79,7 @@ public class MetricSelection extends Screen {
         scopechange_tile.setGraphic(new Icon(BoxiconsRegular.PLUS_CIRCLE, 48)); // Choose an appropriate icon
         scopechange_tile.setActionHandler(() -> {
             Settings.get().getAppModel().setSelectedMetric("Scope Change");
-            screenManager.switchScreen("project_selection");
+            class PBChangeRoute            screenManager.switchScreen("project_selection");
         });
     }
 

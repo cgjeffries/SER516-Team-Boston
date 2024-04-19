@@ -2,6 +2,7 @@ package router.routes;
 
 import java.util.List;
 
+import router.routes.pbchange.PBChangeRoute;
 import router.routes.pbhealth.PBHealthRoute;
 import router.routes.scopechange.ScopeChangeRoute;
 import router.routes.taskexcess.TaskExcessRoute;
@@ -13,7 +14,8 @@ public class Routes {
                 new PBHealthRoute(),
                 new ScopeChangeRoute(),
                 new TaskExcessRoute(),
-                new TaskInertiaRoute()
+                new TaskInertiaRoute(),
+                new PBChangeRoute()
         );
     }
 }

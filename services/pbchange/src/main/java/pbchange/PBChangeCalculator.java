@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.http.HttpStatus;
 
 import bostonmodel.pbchange.PBChangeItem;
+import bostonmodel.pbchange.PBChangeMetrics;
 import spark.Response;
 import taiga.TaigaClient;
 import taiga.models.sprint.Sprint;
@@ -49,7 +50,7 @@ public class PBChangeCalculator {
         return stories;
     }
 
-    public static List<PBChangeItem> calculate(Response response, int sprintId) {
+    public static PBChangeMetrics calculate(Response response, int sprintId) {
         AtomicReference<Sprint> atomicSprint = new AtomicReference<>();
         TaigaClient.getSprintAPI().getSprint(sprintId, result -> {
             if (result.getStatus() == HttpStatus.SC_OK) {
@@ -88,6 +89,6 @@ public class PBChangeCalculator {
 
         List<PBChangeItem> items = new ArrayList<>(addedAfterSprint);
         items.addAll(removedFromPbAfterStart);
-        return items;
+        return new PBChangeMetrics(items);
     }
 }
