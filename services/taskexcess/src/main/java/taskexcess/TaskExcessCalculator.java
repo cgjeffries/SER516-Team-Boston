@@ -32,7 +32,8 @@ public class TaskExcessCalculator {
                 .filter(t -> t.getStatusExtraInfo().getName().equalsIgnoreCase("new"))
                 .toList()
                 .size();
-                
-        return new TaskExcessMetrics(totalTasks, newTasks);
+        double taskExcess = (double) (newTasks / totalTasks);
+
+        return new TaskExcessMetrics(totalTasks, newTasks, taskExcess);
     }
 }
