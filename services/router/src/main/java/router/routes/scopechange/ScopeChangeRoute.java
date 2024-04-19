@@ -26,7 +26,7 @@ public class ScopeChangeRoute extends Route{
 
     @Override
     public String getProductionHost() {
-        return null;
+        return "http://boston-scopechange.railway.internal:9001/";
     }
 
     @Override
