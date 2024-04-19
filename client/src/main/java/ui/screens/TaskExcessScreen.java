@@ -1,17 +1,20 @@
 package ui.screens;
 
 import atlantafx.base.theme.Styles;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import settings.Settings;
+import taiga.models.sprint.Sprint;
 import ui.components.screens.ScreenManager;
 import ui.metrics.taskexcess.TaskExcess;
 import ui.util.DateUtil;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 
 public class TaskExcessScreen extends BaseMetricConfiguration{
 
@@ -32,17 +35,65 @@ public class TaskExcessScreen extends BaseMetricConfiguration{
 
     @Override
     protected void beforeVisualizationMount(){
-        //TODO
+        this.taskExcess = new TaskExcess();
     }
 
     @Override
     protected void beforeParameterMount(){
-        //TODO
+        sprint_name.textProperty().unbind();
+
+        this.startDate = new DatePicker();
+        this.endDate = new DatePicker();
+        this.startDate.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (taskExcess != null) {
+                calendarUpdate();
+            }
+
+            //disable all days in the EndDate picker before the start date
+            endDate.setDayCellFactory(picker -> new DateCell() {
+                @Override
+                public void updateItem(LocalDate date, boolean empty) {
+                    super.updateItem(date, empty);
+                    setDisable(empty || date.isBefore(startDate.getValue().plusDays(1)));
+                }
+            });
+        });
+        this.endDate.valueProperty().addListener((obs, oldValue, newValue) -> {
+            if (taskExcess != null) {
+                calendarUpdate();
+            }
+
+            //disable all days in the StartDate picker after the end date
+            startDate.setDayCellFactory(picker -> new DateCell() {
+                @Override
+                public void updateItem(LocalDate date, boolean empty) {
+                    super.updateItem(date, empty);
+                    setDisable(empty || date.isAfter(endDate.getValue()));
+                }
+            });
+        });
     }
 
     @Override
     protected void afterVisualizationMount(){
-        //TODO
+        sprint_combobox.setOnAction((e) -> {
+            Sprint sprint = sprint_combobox.getValue();
+            if (sprint == null) {
+                return;
+            }
+            this.startDate.setValue(DateUtil.toLocal(sprint.getEstimatedStart()));
+            this.endDate.setValue(DateUtil.toLocal(sprint.getEstimatedFinish()));
+
+            sprint_name.setText(sprint.getName());
+            updateTaskExcess();
+        });
+        sprint_combobox.getSelectionModel().selectLast();
+
+        Sprint sprint = sprint_combobox.getValue();
+        this.startDate.setValue(DateUtil.toLocal(sprint.getEstimatedStart()));
+        this.endDate.setValue(DateUtil.toLocal(sprint.getEstimatedFinish()));
+        sprint_name.setText(sprint.getName());
+        updateTaskExcess();
     }
     /**
      * helper function for creating datePicker boxes in the parameters box

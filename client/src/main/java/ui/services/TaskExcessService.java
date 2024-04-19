@@ -71,6 +71,7 @@ public class TaskExcessService extends Service<Object> {
         };
     }
 
+
     public void recalculate(int sprintId) {
         this.sprintId = sprintId;
         this.restart();
