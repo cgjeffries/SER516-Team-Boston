@@ -21,7 +21,7 @@ public class PBChangeCalculator {
     private static Date getRemovedFromPbAfterStartDate(UserStoryDetail userStory, Sprint sprint) {
         AtomicReference<Date> removedDate = new AtomicReference<>();
         TaigaClient.getHistoryAPI().getUserStoryHistory(userStory.getId(), result -> {
-            if (result.getStatus() != 200) {
+            if (result.getStatus() != HttpStatus.SC_OK) {
                 return;
             }
             Arrays.stream(result.getContent())
@@ -30,8 +30,9 @@ public class PBChangeCalculator {
                         if (milestoneDiff == null) {
                             return;
                         }
-                        boolean afterStart = historyItem.getCreatedAt().after(sprint.getEstimatedStart());
-                        if (afterStart && milestoneDiff.get(0) == null && milestoneDiff.get(1) != null
+                        boolean duringSprint = historyItem.getCreatedAt().after(sprint.getEstimatedStart())
+                                && historyItem.getCreatedAt().before(sprint.getEstimatedFinish());
+                        if (duringSprint && milestoneDiff.get(0) == null && milestoneDiff.get(1) != null
                                 && removedDate.get() == null) {
                             removedDate.set(historyItem.getCreatedAt());
                         }
@@ -71,7 +72,8 @@ public class PBChangeCalculator {
 
         List<PBChangeItem> addedAfterSprint = stories
                 .parallelStream()
-                .filter(s -> s.getCreatedDate().after(sprint.getEstimatedStart()))
+                .filter(s -> s.getCreatedDate().after(sprint.getEstimatedStart())
+                        && s.getCreatedDate().before(sprint.getEstimatedStart()))
                 .map(s -> new PBChangeItem(s.getCreatedDate(), s, true))
                 .toList();
 
