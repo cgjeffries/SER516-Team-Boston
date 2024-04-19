@@ -33,7 +33,7 @@ public class TaskExcessCalculator {
                 .toList()
                 .size();
         double taskExcess = (double) (newTasks / totalTasks);
-
+        System.out.println(totalTasks+" "+newTasks+" "+taskExcess);
         return new TaskExcessMetrics(totalTasks, newTasks, taskExcess);
     }
 }

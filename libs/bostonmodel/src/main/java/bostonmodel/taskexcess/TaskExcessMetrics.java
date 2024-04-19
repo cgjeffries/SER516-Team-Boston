@@ -14,7 +14,6 @@ public class TaskExcessMetrics {
     public int getTotalTasks() {
         return totalTasks;
     }
-
     public int getNewTasks() {
         return newTasks;
     }
