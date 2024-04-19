@@ -47,6 +47,16 @@ services:
       - "9002:9002"
     networks:
       - boston
+  boston-taskdefectdensity:
+    build:
+      dockerfile: ./services/taskdefectdensity/Dockerfile
+      context: ./
+      args:
+        - PORT=9004
+    ports:
+      - "9004:9004"
+    networks:
+      - boston
 networks:
   boston:
     driver: bridge
