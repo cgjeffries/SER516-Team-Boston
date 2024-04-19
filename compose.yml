@@ -52,9 +52,9 @@ services:
       dockerfile: ./services/taskdefectdensity/Dockerfile
       context: ./
       args:
-        - PORT=9004
+        - PORT=9005
     ports:
-      - "9004:9004"
+      - "9005:9005"
     networks:
       - boston
 networks:
