@@ -26,6 +26,9 @@ public class MetricSelection extends Screen {
     private Tile groomrate_tile;
     @FXML
     private Tile scopechange_tile;
+    @FXML
+    private Tile taskdefectdensity_tile;
+
 
     public MetricSelection(ScreenManager screenManager, String id, String fxmlFilename) {
         super(screenManager, id, fxmlFilename);
@@ -76,9 +79,15 @@ public class MetricSelection extends Screen {
             Settings.get().getAppModel().setSelectedMetric("Groom Rate");
             screenManager.switchScreen("project_selection");
         });
-        scopechange_tile.setGraphic(new Icon(BoxiconsRegular.PLUS_CIRCLE, 48)); // Choose an appropriate icon
+        scopechange_tile.setGraphic(new Icon(BoxiconsRegular.PLUS_CIRCLE, 48));
         scopechange_tile.setActionHandler(() -> {
             Settings.get().getAppModel().setSelectedMetric("Scope Change");
+            screenManager.switchScreen("project_selection");
+        });
+        
+        taskdefectdensity_tile.setGraphic(new Icon(BoxiconsRegular.STATION, 48));
+        taskdefectdensity_tile.setActionHandler(() -> {
+            Settings.get().getAppModel().setSelectedMetric("Task Defect Density");
             screenManager.switchScreen("project_selection");
         });
     }
