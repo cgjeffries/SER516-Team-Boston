@@ -3,11 +3,17 @@ package ui.screens;
 import java.time.LocalDate;
 
 import atlantafx.base.theme.Styles;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import taiga.models.sprint.Sprint;
 import ui.components.screens.ScreenManager;
@@ -66,8 +72,18 @@ public class TaskInertiaScreen extends BaseMetricConfiguration {
 
     @Override
     protected Pane visualization() {
-        // TODO replace with task inertia component
-        return new VBox();
+        Tab tempTab = new Tab();
+        TabPane tempTabPane = new TabPane();
+        CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis();
+        yAxis.setLabel("Task Inertia (%)");
+        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+        barChart.setTitle("Task Inertia Chart");
+        tempTab.setContent(barChart);
+        tempTabPane.getTabs().setAll(tempTab);
+        Pane temPane = new Pane();
+        temPane.getChildren().setAll(tempTabPane);
+        return temPane;
     }
 
     private VBox createDatePickerBox(String name, DatePicker datePicker) {
