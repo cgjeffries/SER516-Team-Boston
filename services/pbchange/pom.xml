@@ -10,6 +10,24 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
 
+    <build>
+        <finalName>pbchange</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2-beta-5</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>pbchange.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <artifactId>pbchange</artifactId>
     <dependencies>
         <dependency>

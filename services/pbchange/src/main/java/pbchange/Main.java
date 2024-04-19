@@ -16,6 +16,7 @@ public class Main {
     public static void main(String[] args) {
         port(Env.getPort());
         get("/pbchange", (request, response) -> {
+            response.type("application/json");
             int sprintId;
             try {
                 sprintId = Integer.parseInt(request.queryParams("sprint_id"));
