@@ -45,7 +45,7 @@ public class TaskDefectDensityService extends Service<Object> {
                         metricsReference.set(foo.getContent());
                     }
                     else{
-                        System.out.println("Error: PBHealth service returned bad response code: " + foo.getStatus());
+                        System.out.println("Error: Task Defect Density service returned bad response code: " + foo.getStatus());
                         metricsReference.set(new TaskDefectDensityMetrics(0,0));
                     }
 
