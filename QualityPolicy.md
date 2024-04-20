@@ -2,7 +2,7 @@
 
 ## Branches
 
-* There shall not be any commits made directly to the scopechange.Main branch.
+* There shall not be any commits made directly to the main branch.
 * A single branch shall be made per User Story.
 * No more than this one branch shall be created per User Story, except as follows:
     * A major refactoring or breaking change is being made such that it would cause disruption from uncompilable code if
