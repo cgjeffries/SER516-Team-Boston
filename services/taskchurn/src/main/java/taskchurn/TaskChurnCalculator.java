@@ -74,8 +74,6 @@ public class TaskChurnCalculator {
                 taskCount.put(createdDate, 1);
             }
         }
-        Integer baseline = taskCount.get(taskCount.firstKey());
-        Integer dayOne = baseline;
 
         for (ItemHistory taskHistory : taskHistoryList) {
             if (taskHistory.getValuesDiff() != null) { //null check
@@ -92,19 +90,10 @@ public class TaskChurnCalculator {
             }
         }
 
-        //taskModifiedCount.put(taskCount.firstKey(), 0);
         TreeSet<LocalDate> allKeys = new TreeSet<>();
         allKeys.addAll(taskCount.keySet());
         allKeys.addAll(taskModifiedCount.keySet());
-        //TODO: Fix this to be a count of changes rather than a percentage
         for (LocalDate date : allKeys) {
-
-//            Integer churn = (int) (((float) (Math.abs(taskCount.getOrDefault(date, 0) - baseline) + taskModifiedCount.getOrDefault(date, 0)) / (float) dayOne) * 100);
-//
-//            if (taskCount.get(date) != null) {
-//                baseline = taskCount.get(date);
-//            }
-//            taskChurn.put(date, Math.abs(churn));
 
             int tasksAdded = 0;
             if(taskCount.containsKey(date)){
