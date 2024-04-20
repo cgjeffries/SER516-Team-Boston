@@ -1,20 +1,15 @@
 package taskchurn;
 
-import bostonmodel.scopechange.ScopeChangeItem;
 import bostonmodel.taskchurn.TaskChurnItem;
-import java.lang.reflect.Array;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import java.util.concurrent.atomic.AtomicReference;
-import org.apache.http.HttpStatus;
 
+import org.apache.http.HttpStatus;
 import serviceutil.DateUtil;
 import spark.Response;
 import taiga.TaigaClient;
@@ -35,7 +30,12 @@ public class TaskChurnCalculator {
                 return;
             }
             sprintReference.set(result.getContent());
-        }).join(); //TODO: parallelize this and below
+        }).join();
+
+        if (sprintReference.get() == null) {
+            response.status(HttpStatus.SC_BAD_REQUEST);
+            return new ArrayList<>();
+        }
 
 
         AtomicReference<List<Task>> allTasksReference = new AtomicReference<>();
@@ -92,18 +92,32 @@ public class TaskChurnCalculator {
             }
         }
 
-        taskModifiedCount.put(taskCount.firstKey(), 0);
+        //taskModifiedCount.put(taskCount.firstKey(), 0);
         TreeSet<LocalDate> allKeys = new TreeSet<>();
         allKeys.addAll(taskCount.keySet());
         allKeys.addAll(taskModifiedCount.keySet());
         //TODO: Fix this to be a count of changes rather than a percentage
         for (LocalDate date : allKeys) {
 
-            Integer churn = (int) (((float) (Math.abs(taskCount.getOrDefault(date, 0) - baseline) + taskModifiedCount.getOrDefault(date, 0)) / (float) dayOne) * 100);
-            if (taskCount.get(date) != null) {
-                baseline = taskCount.get(date);
+//            Integer churn = (int) (((float) (Math.abs(taskCount.getOrDefault(date, 0) - baseline) + taskModifiedCount.getOrDefault(date, 0)) / (float) dayOne) * 100);
+//
+//            if (taskCount.get(date) != null) {
+//                baseline = taskCount.get(date);
+//            }
+//            taskChurn.put(date, Math.abs(churn));
+
+            int tasksAdded = 0;
+            if(taskCount.containsKey(date)){
+                tasksAdded = taskCount.get(date);
             }
-            taskChurn.put(date, Math.abs(churn));
+
+            int tasksModified = 0;
+            if(taskModifiedCount.containsKey(date)){
+                tasksModified = taskModifiedCount.get(date);
+            }
+
+            taskChurn.put(date, tasksAdded + tasksModified);
+
         }
 
 
