@@ -18,6 +18,7 @@ public class Router {
         Routes.getAll().forEach(route -> {
             logger.trace("Adding " + route.getName() + " to api.");
             get("/" + route.getName(), ((request, response) -> {
+                response.type("application/json");
                 Object data = route.handleServiceRequest(request, response);
                 if (data == null) {
                     response.status(HttpStatus.SC_BAD_REQUEST);
