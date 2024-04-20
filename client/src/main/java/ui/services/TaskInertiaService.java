@@ -1,30 +1,35 @@
 package ui.services;
 
 import bostonclient.BostonClient;
-import bostonmodel.taskinertia.TaskInertiaMetrics;
 import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.value.ObservableObjectValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import org.apache.http.HttpStatus;
-import ui.util.DateUtil;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class TaskInertiaService extends Service<Object> {
 
     private int projectId;
-    private Date start;
-    private Date end;
+    private LocalDate start;
+    private LocalDate end;
 
-    private ObjectProperty<TaskInertiaMetrics> metrics;
+    private final ObservableMap<String, Double> inertia;
 
-    public ObjectProperty<TaskInertiaMetrics> getMetrics() {
-        return metrics;
+    public TaskInertiaService() {
+        this.inertia = FXCollections.observableHashMap();
     }
 
-    public void recalculate(int projectId, Date start, Date end) {
+    public ObservableMap<String, Double> getInertia() {
+        return inertia;
+    }
+
+    public void recalculate(int projectId, LocalDate start, LocalDate end) {
         this.projectId = projectId;
         this.start = start;
         this.end = end;
@@ -36,16 +41,21 @@ public class TaskInertiaService extends Service<Object> {
         return new Task<Object>() {
             @Override
             protected Object call() throws Exception {
+                inertia.clear();
                 BostonClient.getTaskInertiaAPI().getTaskInertia(
                         projectId,
-                        DateUtil.toLocal(start).toString(),
-                        DateUtil.toLocal(end).toString(),
+                        start.toString(),
+                        end.toString(),
                         result -> {
                             if (result.getStatus() != HttpStatus.SC_OK) {
-                                metrics.set(new TaskInertiaMetrics(null));
                                 return;
                             }
-                            Platform.runLater(() -> metrics.set(result.getContent()));
+                            TreeMap<LocalDate, Double> inertiaResult = result.getContent().getInertia();
+                            Map<String, Double> formattedInertia = inertiaResult
+                                    .entrySet()
+                                    .stream()
+                                    .collect(Collectors.toMap(entry -> entry.getKey().toString(), Map.Entry::getValue));
+                            Platform.runLater(() -> inertia.putAll(formattedInertia));
                         }
                 ).join();
 
@@ -62,4 +72,5 @@ public class TaskInertiaService extends Service<Object> {
             exception.printStackTrace();
         }
     }
+
 }

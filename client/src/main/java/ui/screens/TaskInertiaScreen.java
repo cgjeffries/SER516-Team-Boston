@@ -37,7 +37,7 @@ public class TaskInertiaScreen extends BaseMetricConfiguration {
         this.endDate = new DatePicker();
         this.startDate.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (taskInertia != null) {
-                // TODO add UI method call to recalculate task inertia
+                taskInertia.recalculate(startDate.getValue(), endDate.getValue());
             }
             endDate.setDayCellFactory(picker -> new DateCell() {
                 @Override
@@ -49,7 +49,7 @@ public class TaskInertiaScreen extends BaseMetricConfiguration {
         });
         this.endDate.valueProperty().addListener((obs, oldValue, newValue) -> {
             if (taskInertia != null) {
-                // TODO add UI method call to recalculate task inertia
+                taskInertia.recalculate(startDate.getValue(), endDate.getValue());
             }
         });
         sprint_combobox.getSelectionModel().selectLast();
@@ -72,18 +72,7 @@ public class TaskInertiaScreen extends BaseMetricConfiguration {
 
     @Override
     protected Pane visualization() {
-        Tab tempTab = new Tab();
-        TabPane tempTabPane = new TabPane();
-        CategoryAxis xAxis = new CategoryAxis();
-        NumberAxis yAxis = new NumberAxis();
-        yAxis.setLabel("Task Inertia (%)");
-        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
-        barChart.setTitle("Task Inertia Chart");
-        tempTab.setContent(barChart);
-        tempTabPane.getTabs().setAll(tempTab);
-        Pane temPane = new Pane();
-        temPane.getChildren().setAll(tempTabPane);
-        return temPane;
+        return this.taskInertia;
     }
 
     private VBox createDatePickerBox(String name, DatePicker datePicker) {
@@ -99,6 +88,7 @@ public class TaskInertiaScreen extends BaseMetricConfiguration {
         }
         sprint_combobox.getSelectionModel().selectLast();
         Sprint selectedSprint = sprint_combobox.getValue();
+        taskInertia.recalculate(startDate.getValue(), endDate.getValue());
         // TODO add method call to recalculate task inertia
     }
 }
