@@ -37,6 +37,8 @@ services:
         - PORT=9003
     ports:
       - "9003:9003"
+    networks:
+      - boston
   boston-taskinertia:
     build:
       dockerfile: ./services/taskinertia/Dockerfile

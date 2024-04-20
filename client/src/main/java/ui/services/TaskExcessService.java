@@ -1,35 +1,48 @@
 package ui.services;
 
-import java.util.Date;
-import java.util.concurrent.atomic.AtomicReference;
-
 import bostonclient.BostonClient;
 import bostonclient.apis.TaskExcessAPI;
-import bostonmodel.pbhealth.PBHealthMetrics;
 import bostonmodel.taskexcess.TaskExcessMetrics;
 import javafx.application.Platform;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.chart.PieChart;
+import taiga.models.sprint.Sprint;
 
 public class TaskExcessService extends Service<Object> {
-    private int sprintId;
+    private Sprint sprint;
     private final IntegerProperty totalTaskCount;
     private final IntegerProperty newTaskCount;
     private final DoubleProperty taskExcessRatio;
-    private TaskExcessAPI taskExcessAPI;
+    private final TaskExcessAPI taskExcessAPI;
+    private final BooleanProperty validSprintSelected = new SimpleBooleanProperty(false);
 
     public TaskExcessService() {
         this.totalTaskCount = new SimpleIntegerProperty();
         this.newTaskCount = new SimpleIntegerProperty();
         this.taskExcessRatio = new SimpleDoubleProperty();
         this.taskExcessAPI = BostonClient.getTaskExcessAPI();
+    }
+    public BooleanProperty validSprintSelectedProperty() {
+        return validSprintSelected;
+    }
+
+    public void recalculate(Sprint sprint) {
+        if (sprint != null && sprint.getId() > 0) {
+            this.sprint = sprint;
+            restart();
+        } else {
+            Platform.runLater(() -> {
+                totalTaskCount.set(0);
+                newTaskCount.set(0);
+                taskExcessRatio.set(0.0);
+                validSprintSelected.set(false);
+            });
+            restart();
+        }
     }
 
     public ObservableList<PieChart.Data> getTaskPieChartData() {
@@ -53,34 +66,28 @@ public class TaskExcessService extends Service<Object> {
     @Override
     protected Task<Object> createTask() {
         return new Task<>() {
+
             @Override
             protected Void call() {
-                AtomicReference<TaskExcessMetrics> metricsReference = new AtomicReference<>();
-                taskExcessAPI.getTaskExcess(sprintId, response -> {
-                    if (response.getStatus() == 200) {
-                        metricsReference.set(response.getContent());
-
+                    taskExcessAPI.getTaskExcess(sprint.getId(), response -> {
+                    if (response.getStatus() == 200 && response.getContent() != null) {
+                        TaskExcessMetrics metrics = response.getContent();
+                        Platform.runLater(() -> {
+                            totalTaskCount.set(metrics.getTotalTasks());
+                            newTaskCount.set(metrics.getNewTasks());
+                            taskExcessRatio.set(metrics.gettaskExcessRatio());
+                            validSprintSelected.set(metrics.getTotalTasks() > 0);
+                        });
                     } else {
+                        Platform.runLater(() -> {
+                            validSprintSelected.set(false);
+                        });
                         System.err.println("Error: Task Excess service returned bad response code: " + response.getStatus());
                     }
                 }).join();
-
-                TaskExcessMetrics metrics = metricsReference.get();
-                Platform.runLater(() -> {
-                    totalTaskCount.set(metrics.getTotalTasks());
-                    newTaskCount.set(metrics.getNewTasks());
-                    taskExcessRatio.set(metrics.gettaskExcessRatio());
-                });
-
                 return null;
             }
         };
-    }
-
-
-    public void recalculate(int sprintId) {
-        this.sprintId = sprintId;
-        restart();
     }
 
 }

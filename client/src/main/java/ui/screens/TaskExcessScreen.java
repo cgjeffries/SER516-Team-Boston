@@ -11,6 +11,7 @@ import settings.Settings;
 import taiga.models.sprint.Sprint;
 import ui.components.screens.ScreenManager;
 import ui.metrics.taskexcess.TaskExcess;
+import ui.services.TaskExcessService;
 import ui.util.DateUtil;
 
 import java.text.SimpleDateFormat;
@@ -18,10 +19,8 @@ import java.time.LocalDate;
 
 public class TaskExcessScreen extends BaseMetricConfiguration{
 
-    private TaskExcess taskExcess;
-    private DatePicker startDate;
-    private DatePicker endDate;
 
+    private TaskExcess taskExcess;
     /**
      * Create a screen instance
      *
@@ -39,105 +38,26 @@ public class TaskExcessScreen extends BaseMetricConfiguration{
     }
 
     @Override
-    protected void beforeParameterMount(){
-        sprint_name.textProperty().unbind();
-
-        this.startDate = new DatePicker();
-        this.endDate = new DatePicker();
-        this.startDate.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (taskExcess != null) {
-                calendarUpdate();
-            }
-
-            //disable all days in the EndDate picker before the start date
-            endDate.setDayCellFactory(picker -> new DateCell() {
-                @Override
-                public void updateItem(LocalDate date, boolean empty) {
-                    super.updateItem(date, empty);
-                    setDisable(empty || date.isBefore(startDate.getValue().plusDays(1)));
-                }
-            });
-        });
-        this.endDate.valueProperty().addListener((obs, oldValue, newValue) -> {
-            if (taskExcess != null) {
-                calendarUpdate();
-            }
-
-            //disable all days in the StartDate picker after the end date
-            startDate.setDayCellFactory(picker -> new DateCell() {
-                @Override
-                public void updateItem(LocalDate date, boolean empty) {
-                    super.updateItem(date, empty);
-                    setDisable(empty || date.isAfter(endDate.getValue()));
-                }
-            });
-        });
+    protected Pane visualization() {
+        return this.taskExcess;
     }
 
     @Override
-    protected void afterVisualizationMount(){
+    protected Pane parameters() {
+        return null;
+    }
+
+    @Override
+    protected void afterVisualizationMount() {
         sprint_combobox.setOnAction((e) -> {
             Sprint sprint = sprint_combobox.getValue();
             if (sprint == null) {
                 return;
             }
-            this.startDate.setValue(DateUtil.toLocal(sprint.getEstimatedStart()));
-            this.endDate.setValue(DateUtil.toLocal(sprint.getEstimatedFinish()));
-
-            sprint_name.setText(sprint.getName());
-            updateTaskExcess();
+            this.taskExcess.recalculate(sprint);
         });
         sprint_combobox.getSelectionModel().selectLast();
-
-        Sprint sprint = sprint_combobox.getValue();
-        this.startDate.setValue(DateUtil.toLocal(sprint.getEstimatedStart()));
-        this.endDate.setValue(DateUtil.toLocal(sprint.getEstimatedFinish()));
-        sprint_name.setText(sprint.getName());
-        updateTaskExcess();
-    }
-    /**
-     * helper function for creating datePicker boxes in the parameters box
-     */
-    private VBox createDatePickerBox(String name, DatePicker datePicker) {
-        Label text = new Label(name);
-        text.getStyleClass().add(Styles.TEXT_BOLD);
-        return new VBox(text, datePicker);
-    }
-
-    @Override
-    protected Pane visualization() {
-        return this.taskExcess;
-    }
-
-
-    /**
-     * update the value of the calendars with the values from the sprint in the sprint combobox
-     */
-    private void calendarUpdate() {
-        if (startDate.getValue() != null && endDate.getValue() != null) {
-            SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yyyy");
-
-            sprint_name.setText(format.format(DateUtil.toDate(startDate.getValue())) + " - " +
-                    format.format(DateUtil.toDate(endDate.getValue())));
-            updateTaskExcess();
-        }
-    }
-
-    /**
-     * update the Task Excess based on the date range
-     */
-    private void updateTaskExcess() {
-        taskExcess.switchDates(Settings.get().getAppModel().getCurrentProject().get().getId(),
-                DateUtil.toDate(startDate.getValue()), DateUtil.toDate(endDate.getValue()));
-    }
-    @Override
-    protected Pane parameters() {
-        HBox container = new HBox(
-                createDatePickerBox("Start Date: ", startDate),
-                createDatePickerBox("End Date: ", endDate)
-        );
-        container.setSpacing(5);
-        return container;
+        this.taskExcess.recalculate(sprint_combobox.getValue());
     }
 
     @Override
@@ -146,7 +66,6 @@ public class TaskExcessScreen extends BaseMetricConfiguration{
             return;
         }
         sprint_combobox.getSelectionModel().selectLast();
-        this.taskExcess.focusFirstTab();
     }
 }
 
