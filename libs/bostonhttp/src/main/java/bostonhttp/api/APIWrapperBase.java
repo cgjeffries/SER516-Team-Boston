@@ -5,14 +5,17 @@ import bostonhttp.models.RefreshResponse;
 import bostonhttp.models.Tokens;
 import bostonhttp.util.AuthTokenSingleton;
 import bostonhttp.util.HTTPClientSingleton;
+import bostonhttp.util.LocalDateAdapter;
 import bostonhttp.util.TokenStore;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -85,7 +88,9 @@ public abstract class APIWrapperBase {
             if (response.statusCode() == 200) {
                 // If so, deserialize object, wrap it in a apiwrapper.APIResponse, and return it
                 String json = response.body();
-                Gson gson = new Gson();
+                Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter().nullSafe())
+                .create();
                 try {
                     T r = gson.fromJson(json, contentType);
                     return new APIResponse<>(200, r);
@@ -365,7 +370,9 @@ public abstract class APIWrapperBase {
     protected <T, U> CompletableFuture<APIResponse<T>> postAsync(
             String path, U body, Class<T> responseType, boolean useAuth) {
         try {
-            Gson gson = new Gson();
+            Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter().nullSafe())
+                .create();
             // Construct HTTP request
             HttpRequest.Builder request =
                     HttpRequest.newBuilder()

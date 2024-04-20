@@ -1,33 +1,32 @@
-package router.routes.taskinertia;
-
-import java.util.List;
+package router.routes.taskexcess;
 
 import router.routes.Route;
 import router.routes.RouteQueryHandler;
 import spark.Request;
 import spark.Response;
 
-public class TaskInertiaRoute extends Route {
+import java.util.List;
 
-    private final TaskInertiaAPI api;
+public class TaskExcessRoute extends Route {
+    private final TaskExcessAPI api;
 
-    public TaskInertiaRoute() {
-        this.api = new TaskInertiaAPI(this);
+    public TaskExcessRoute() {
+        this.api = new TaskExcessAPI(this);
     }
 
     @Override
     public String getName() {
-        return "taskinertia";
+        return "taskexcess";
     }
 
     @Override
     public String getDevelopmentHost() {
-        return "http://boston-taskinertia:9002/";
+        return "http://boston-taskexcess:9003/";
     }
 
     @Override
     public String getProductionHost() {
-        return "http://boston-taskinertia.railway.internal:9002/";
+        return "http://boston-taskexcess.railway.internal:9003/";
     }
 
     @Override
@@ -38,8 +37,7 @@ public class TaskInertiaRoute extends Route {
     @Override
     public List<RouteQueryHandler<Object>> getRouteQueryHandlers() {
         return List.of(
-                new TaskInertiaQueryHandler(api));
-
+                new TaskExcessQueryHandler(api)
+        );
     }
-
 }

@@ -29,6 +29,14 @@ services:
       - "9001:9001"
     networks:
       - boston
+  boston-taskexcess:
+    build:
+      dockerfile: ./services/taskexcess/Dockerfile
+      context: ./
+      args:
+        - PORT=9003
+    ports:
+      - "9003:9003"
   boston-taskinertia:
     build:
       dockerfile: ./services/taskinertia/Dockerfile
@@ -37,6 +45,16 @@ services:
         - PORT=9002
     ports:
       - "9002:9002"
+    networks:
+      - boston
+  boston-taskdefectdensity:
+    build:
+      dockerfile: ./services/taskdefectdensity/Dockerfile
+      context: ./
+      args:
+        - PORT=9005
+    ports:
+      - "9005:9005"
     networks:
       - boston
 networks:

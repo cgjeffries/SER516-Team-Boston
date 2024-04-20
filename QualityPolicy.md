@@ -37,6 +37,12 @@
 * A Release Tag shall be created for the state of the scopechange.Main branch after each merged pull request
 * The Release Tag shall follow the naming scheme `#.#.#` Where the last number is for user stories and second number is
   for period releases
+* The Release shall be created by creating and pushing a tag to the repository, **NOT** manually creating a release on the Github website (which is handled by a workflow). This can be done by running the following commands:
+```shell
+#            tag     annotation
+git tag -am 2.0.0 "Release 2.0.0"
+git push -u origin 2.0.0
+```
 
 ## Swimlanes
 
