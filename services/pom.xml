@@ -23,6 +23,7 @@
         <module>taskexcess</module>
         <module>router</module>
         <module>taskinertia</module>
+        <module>taskdefectdensity</module>
     </modules>
     <dependencyManagement>
         <dependencies>
