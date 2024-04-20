@@ -78,15 +78,13 @@ public class MetricSelection extends Screen {
             Settings.get().getAppModel().setSelectedMetric("Groom Rate");
             screenManager.switchScreen("project_selection");
         });
-        scopechange_tile.setGraphic(new Icon(BoxiconsRegular.PLUS_CIRCLE, 48)); // Choose an appropriate icon
+        scopechange_tile.setGraphic(new Icon(BoxiconsRegular.PLUS_CIRCLE, 48));
         scopechange_tile.setActionHandler(() -> {
             Settings.get().getAppModel().setSelectedMetric("Scope Change");
             screenManager.switchScreen("project_selection");
         });
-
         taskexcess_tile.setGraphic(new Icon(BoxiconsSolid.TRASH, 48));
         taskexcess_tile.setActionHandler(() -> {
-            // TODO enable once screen is in place
              Settings.get().getAppModel().setSelectedMetric("Task Excess");
              screenManager.switchScreen("project_selection");
         });

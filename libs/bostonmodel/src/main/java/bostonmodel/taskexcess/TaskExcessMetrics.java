@@ -17,7 +17,7 @@ public class TaskExcessMetrics {
     public int getNewTasks() {
         return newTasks;
     }
-    public double gettaskExcessRatio() {
+    public double getTaskExcessRatio() {
         return taskExcessRatio;
     }
 
