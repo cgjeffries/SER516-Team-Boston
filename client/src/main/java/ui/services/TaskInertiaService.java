@@ -41,7 +41,7 @@ public class TaskInertiaService extends Service<Object> {
         return new Task<Object>() {
             @Override
             protected Object call() throws Exception {
-                inertia.clear();
+                Platform.runLater(inertia::clear);
                 BostonClient.getTaskInertiaAPI().getTaskInertia(
                         projectId,
                         start.toString(),

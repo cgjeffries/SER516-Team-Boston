@@ -83,7 +83,7 @@ public class TaskInertiaCalculator {
                     if (t.getFinishedDate() == null) {
                         return createdBeforeDate;
                     }
-                    LocalDate finishedDate = DateUtil.toLocal(t.getCreatedDate());
+                    LocalDate finishedDate = DateUtil.toLocal(t.getFinishedDate());
                     return createdBeforeDate && finishedDate.isAfter(date) || finishedDate.isEqual(date);
                 })
                 .toList()
