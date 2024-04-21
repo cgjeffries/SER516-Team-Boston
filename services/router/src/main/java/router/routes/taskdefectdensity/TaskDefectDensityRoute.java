@@ -1,4 +1,4 @@
-package router.routes.scopechange;
+package router.routes.taskdefectdensity;
 
 import router.routes.Route;
 import router.routes.RouteQueryHandler;
@@ -7,26 +7,27 @@ import spark.Response;
 
 import java.util.List;
 
-public class ScopeChangeRoute extends Route{
-    private final ScopeChangeAPI api;
+public class TaskDefectDensityRoute extends Route {
+    private final TaskDefectDensityAPI api;
 
-    public ScopeChangeRoute() {
-        this.api = new ScopeChangeAPI(this);
+    public TaskDefectDensityRoute() {
+        this.api = new TaskDefectDensityAPI(this);
     }
 
     @Override
     public String getName() {
-        return "scopechange";
+        return "taskdefectdensity";
     }
 
     @Override
     public String getDevelopmentHost() {
-        return "http://boston-scopechange:9001/";
+        return "http://boston-taskdefectdensity:9005/";
     }
 
     @Override
     public String getProductionHost() {
-        return "http://boston-scopechange.railway.internal:9001/";
+
+        return "http://boston-taskdefectdensity.railway.internal:9005/";
     }
 
     @Override
@@ -37,7 +38,7 @@ public class ScopeChangeRoute extends Route{
     @Override
     public List<RouteQueryHandler<Object>> getRouteQueryHandlers() {
         return List.of(
-                new ScopeChangeQueryHandler(api)
+                new TaskDefectDensityQueryHandler(api)
         );
     }
 }

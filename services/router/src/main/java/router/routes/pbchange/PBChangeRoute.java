@@ -1,32 +1,32 @@
-package router.routes.scopechange;
+package router.routes.pbchange;
+
+import java.util.List;
 
 import router.routes.Route;
 import router.routes.RouteQueryHandler;
 import spark.Request;
 import spark.Response;
 
-import java.util.List;
+public class PBChangeRoute extends Route {
+    private final PBChangeAPI api;
 
-public class ScopeChangeRoute extends Route{
-    private final ScopeChangeAPI api;
-
-    public ScopeChangeRoute() {
-        this.api = new ScopeChangeAPI(this);
+    public PBChangeRoute() {
+        this.api = new PBChangeAPI(this);
     }
 
     @Override
     public String getName() {
-        return "scopechange";
+        return "pbchange";
     }
 
     @Override
     public String getDevelopmentHost() {
-        return "http://boston-scopechange:9001/";
+        return "http://boston-pbchange:9004/";
     }
 
     @Override
     public String getProductionHost() {
-        return "http://boston-scopechange.railway.internal:9001/";
+        return "http://boston-pbchange.railway.internal:9004/";
     }
 
     @Override
@@ -37,7 +37,6 @@ public class ScopeChangeRoute extends Route{
     @Override
     public List<RouteQueryHandler<Object>> getRouteQueryHandlers() {
         return List.of(
-                new ScopeChangeQueryHandler(api)
-        );
+                new PBChangeQueryHandler(api));
     }
 }

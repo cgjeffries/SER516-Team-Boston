@@ -23,6 +23,7 @@
         <module>taskexcess</module>
         <module>router</module>
         <module>taskinertia</module>
+        <module>taskdefectdensity</module>
     </modules>
     <dependencyManagement>
         <dependencies>
@@ -49,6 +50,11 @@
             <dependency>
                 <groupId>org.boston</groupId>
                 <artifactId>serviceutil</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.boston</groupId>
+                <artifactId>bostonmodel</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
         </dependencies>
