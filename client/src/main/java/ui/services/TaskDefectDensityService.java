@@ -3,7 +3,7 @@ package ui.services;
 import bostonclient.BostonClient;
 import bostonclient.apis.TaskDefectDensityAPI;
 import bostonmodel.taskdefectdensity.TaskDefectDensityMetrics;
-import java.util.concurrent.atomic.AtomicReference;
+
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -11,8 +11,6 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 import javafx.scene.chart.PieChart;
 import taiga.models.sprint.Sprint;
 
@@ -44,27 +42,23 @@ public class TaskDefectDensityService extends Service<Object> {
     protected Task<Object> createTask() {
         return new Task<>() {
             @Override
-            protected Object call() {
+            protected Void call() {
+                taskddAPI.getTaskDD(sprint.getId(), response -> {
+                    if (response.getStatus() == 200 && response.getContent() != null) {
+                        TaskDefectDensityMetrics metrics = response.getContent();
+                        Platform.runLater(() -> {
+                            totalTasks.set(metrics.getTotalTasks());
+                            unfinishedTasks.set(metrics.getNewTasks());
 
-                AtomicReference<TaskDefectDensityMetrics> metricsReference = new AtomicReference<>();
-                taskddAPI.getTaskDD(projectId, (foo) ->{
-                    if(foo.getStatus() == 200){
-                        metricsReference.set(foo.getContent());
+                            taskDefectData.setAll(
+                                    new PieChart.Data("Unfinished Tasks", metrics.getNewTasks()),
+                                    new PieChart.Data("Finished Tasks", metrics.getTotalTasks())
+                            );
+                        });
+                    } else {
+                        System.err.println("Error: Task Defect Density service returned bad response code: " + response.getStatus());
                     }
-                    else{
-                        System.out.println("Error: Task Defect Density service returned bad response code: " + foo.getStatus());
-                        metricsReference.set(new TaskDefectDensityMetrics(0,0));
-                    }
-
                 }).join();
-
-                TaskDefectDensityMetrics metrics = metricsReference.get();
-
-                Platform.runLater(() -> {
-                    totalTasks.set(metrics.getTotalTasks());
-                    unfinishedTasks.set(metrics.getNewTasks());
-                });
-
                 return null;
             }
         };
