@@ -25,7 +25,7 @@ public class TaskChurnScreen extends BaseMetricConfiguration{
     }
     @Override
     protected Pane visualization() {
-        return null;
+        return this.taskChurn;
     }
 
     @Override
