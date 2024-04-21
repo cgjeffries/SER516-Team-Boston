@@ -37,7 +37,7 @@ public class TaskchurnRoute extends Route {
     @Override
     public List<RouteQueryHandler<Object>> getRouteQueryHandlers() {
         return List.of(
-                new TaskchurnQueryHandler(api)
+                new TaskChurnQueryHandler(api)
         );
     }
 }
