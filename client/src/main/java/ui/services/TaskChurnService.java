@@ -16,6 +16,8 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.chart.XYChart;
 import taiga.models.sprint.Sprint;
+import java.time.format.DateTimeFormatter;
+
 
 public class TaskChurnService extends Service<Object> {
     private Sprint sprint;
@@ -35,13 +37,13 @@ public class TaskChurnService extends Service<Object> {
             .sorted(Comparator.comparing(TaskChurnItem::getChurnDate))
             .toList();
 
-        SimpleDateFormat format = new SimpleDateFormat("MMM dd");
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("MMM dd");
 
         taskChurnData.setAll(
             sortedChurn.stream()
                 .map(t -> {
                     return new XYChart.Data<>(format.format(t.getChurnDate()),
-                        (Number) TimeUnit.MILLISECONDS.toDays(t.getChurnCount()));
+                        (Number) t.getChurnCount());
                 })
                 .toList());
 
@@ -73,7 +75,7 @@ public class TaskChurnService extends Service<Object> {
                                 new ArrayList<>())); //set to empty (instead of null) so things don't explode
                         }
                         metricsReference.set(result.getContent());
-                    });
+                    }).join();
 
                     TaskChurnMetrics taskChurnMetrics = metricsReference.get();
 
