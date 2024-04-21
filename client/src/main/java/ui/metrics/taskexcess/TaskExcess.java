@@ -42,7 +42,7 @@ public class TaskExcess extends StackPane {
         emptyText.visibleProperty().bind(service.validSprintSelectedProperty().not().and(service.runningProperty().not()));
 
         VBox.setVgrow(this, Priority.ALWAYS);
-        VBox root = new VBox(ratio, chart, emptyText);
+        VBox root = new VBox(ratio, chart);
         root.visibleProperty().bind(service.validSprintSelectedProperty().and(service.runningProperty().not()));
         root.setAlignment(Pos.CENTER);
 
