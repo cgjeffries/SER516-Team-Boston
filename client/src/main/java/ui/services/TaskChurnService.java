@@ -3,26 +3,49 @@ package ui.services;
 import bostonclient.BostonClient;
 import bostonmodel.taskchurn.TaskChurnItem;
 import bostonmodel.taskchurn.TaskChurnMetrics;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.scene.chart.XYChart;
 import taiga.models.sprint.Sprint;
 
 public class TaskChurnService extends Service<Object> {
     private Sprint sprint;
 
-    private final ObservableList<TaskChurnItem> taskChurnItems;
+    private final ObservableList<XYChart.Data<String, Number>> taskChurnData;
 
     public TaskChurnService() {
-        this.taskChurnItems = FXCollections.observableArrayList();
+        this.taskChurnData = FXCollections.observableArrayList();
     }
 
-    public ObservableList<TaskChurnItem> getTaskChurnItems(){
-        return taskChurnItems;
+    public ObservableList<XYChart.Data<String, Number>> getTaskChurnItems(){
+        return taskChurnData;
+    }
+
+    private void updateTaskChurns(TaskChurnMetrics taskChurnMetrics){
+        List<TaskChurnItem> sortedChurn = taskChurnMetrics.getTaskChurnItems().stream()
+            .sorted(Comparator.comparing(TaskChurnItem::getChurnDate))
+            .toList();
+
+        SimpleDateFormat format = new SimpleDateFormat("MMM dd");
+
+        taskChurnData.setAll(
+            sortedChurn.stream()
+                .map(t -> {
+                    return new XYChart.Data<>(format.format(t.getChurnDate()),
+                        (Number) TimeUnit.MILLISECONDS.toDays(t.getChurnCount()));
+                })
+                .toList());
+
+
     }
 
     public void recalculate(Sprint sprint) {
@@ -36,25 +59,31 @@ public class TaskChurnService extends Service<Object> {
         return new Task<>() {
             @Override
             protected Object call() {
-                if (sprint == null) {
-                    return null;
-                }
-                AtomicReference<TaskChurnMetrics> metricsReference = new AtomicReference<>();
-                BostonClient.getTaskChurnAPI().getTaskChurn(sprint.getId(), result -> {
-                    if (result.getStatus() != 200) {
-                        System.out.println("Error: TaskChurn service returned bad response code: " +
-                            result.getStatus());
-                        metricsReference.set(new TaskChurnMetrics(
-                            new ArrayList<>())); //set to empty (instead of null) so things don't explode
+                try {
+                    if (sprint == null) {
+                        return null;
                     }
-                    metricsReference.set(result.getContent());
-                });
+                    AtomicReference<TaskChurnMetrics> metricsReference = new AtomicReference<>();
+                    BostonClient.getTaskChurnAPI().getTaskChurn(sprint.getId(), result -> {
+                        if (result.getStatus() != 200) {
+                            System.out.println(
+                                "Error: TaskChurn service returned bad response code: " +
+                                    result.getStatus());
+                            metricsReference.set(new TaskChurnMetrics(
+                                new ArrayList<>())); //set to empty (instead of null) so things don't explode
+                        }
+                        metricsReference.set(result.getContent());
+                    });
 
-                TaskChurnMetrics taskChurnMetrics = metricsReference.get();
+                    TaskChurnMetrics taskChurnMetrics = metricsReference.get();
 
-                Platform.runLater(() -> {
-                    taskChurnItems.setAll(taskChurnMetrics.getTaskChurnItems());
-                });
+                    Platform.runLater(() -> {
+                        updateTaskChurns(taskChurnMetrics);
+                    });
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
 
                 return null;
             }

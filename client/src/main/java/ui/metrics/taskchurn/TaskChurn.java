@@ -1,7 +1,5 @@
 package ui.metrics.taskchurn;
 
-import javafx.beans.binding.Bindings;
-import javafx.collections.ObservableList;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -11,7 +9,6 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.StackPane;
 import taiga.models.sprint.Sprint;
 import ui.services.TaskChurnService;
-import ui.services.TaskExcessService;
 
 public class TaskChurn extends StackPane {
     private final TaskChurnService service;
@@ -32,10 +29,11 @@ public class TaskChurn extends StackPane {
         chart.visibleProperty().bind(this.service.runningProperty().not());
         chart.setAnimated(false);
 
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        XYChart.Series<String, Number> series = new XYChart.Series<>(this.service.getTaskChurnItems());
         series.setName("Task Churn (%)");
-        // series.dataProperty().bind(Bindings.createObjectBinding(() ->
-        //     this.service.getTaskChurnItems()
+//         series.dataProperty().bind(Bindings.createObjectBinding(() ->
+//             this.service.getTaskChurnItems()
+
         series.dataProperty().addListener(observable -> {
             for (final XYChart.Data<String, Number> data : series.getData()) {
                 Tooltip.install(data.getNode(), new Tooltip(String.format("Churn: %.2f%%", (Double) data.getYValue())));
