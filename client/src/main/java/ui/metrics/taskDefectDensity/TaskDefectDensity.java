@@ -1,6 +1,9 @@
 package ui.metrics.taskDefectDensity;
 
+import javafx.beans.binding.Bindings;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -13,7 +16,6 @@ import javafx.scene.chart.PieChart;
 
 public class TaskDefectDensity extends StackPane {
     private final TaskDefectDensityService service;
-    private PieChart pieChart; // moving hard-coded pie over
 
     public TaskDefectDensity() {
         this.service = new TaskDefectDensityService();
@@ -21,39 +23,46 @@ public class TaskDefectDensity extends StackPane {
     }
 
     private void init() {
-        VBox.setVgrow(this, Priority.ALWAYS);    
-        StackPane root = new StackPane();
-        VBox.setVgrow(root, Priority.ALWAYS);
-
-        pieChart = new PieChart();
-
-        pieChart.setTitle("Task Defect Density");
-        pieChart.getData().addAll(
-            new PieChart.Data("Finished", 30),
-            new PieChart.Data("Unfinished", 20),
-            new PieChart.Data("Deleted", 50)
-        );
-
-        VBox container = new VBox(
-            pieChart
-        );
-        container.setPrefHeight(VBox.USE_PREF_SIZE);
-        container.setAlignment(Pos.CENTER);
-        container.visibleProperty().bind(this.service.runningProperty().not());
-        VBox.setVgrow(container, Priority.ALWAYS);
-
         ProgressIndicator progress = new ProgressIndicator(-1d);
-        progress.visibleProperty().bind(this.service.runningProperty());
+        progress.visibleProperty().bind(service.runningProperty());
 
-        root.getChildren().add(progress);
-        root.getChildren().add(container);
+        PieChart chart = new PieChart();
+        chart.setAnimated(false);
+        chart.setData(service.getTaskPieChartData());
 
-        getChildren().add(root);
+        double unfinishedTasks = 0.0;
+        double finishedTasks = 0.0;
+        ObservableList<PieChart.Data> pieChartData = chart.getData();
 
+        for(PieChart.Data data : pieChartData) {
+            if(data.getName().equals("Unfinished Tasks")) {
+                unfinishedTasks = data.getPieValue();
+            } else if(data.getName().equals("Finished Tasks")) {
+                finishedTasks = data.getPieValue();
+            }
+        }
+
+        double taskDefectRatio = 0.0;
+        if(finishedTasks != 0) {
+            taskDefectRatio = (unfinishedTasks / finishedTasks) * 100.0;
+        }
+
+        Label ratio = new Label();
+        ratio.textProperty().bind(Bindings.format("Task Defect Density: %.2f%%", taskDefectRatio));
+
+        Label emptyText = new Label("No task defect density data for the selected sprint.");
+        emptyText.visibleProperty().bind(service.validSprintSelectedProperty().not().and(service.runningProperty().not()));
+
+        VBox.setVgrow(this, Priority.ALWAYS);
+        VBox root = new VBox(ratio,chart);
+        root.visibleProperty().bind(service.validSprintSelectedProperty().and(service.runningProperty().not()));
+        root.setAlignment(Pos.CENTER);
+
+        getChildren().addAll(progress, root, emptyText);
         this.service.start();
     }
 
-    public void calculate(int projectId) {
-        this.service.recalculate(projectId);
+    public void calculate(Sprint sprint) {
+        this.service.recalculate(sprint);
     }
 }

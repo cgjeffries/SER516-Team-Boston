@@ -12,6 +12,7 @@ public class BostonClient {
     public static void buildClient(BostonClientOptions options) {
         pbHealthAPI = new PBHealthAPI(options.getRouterUrl());
         taskExcessAPI = new TaskExcessAPI(options.getRouterUrl());
+        tddAPI = new TaskDefectDensityAPI(options.getRouterUrl());
     }
 
     public static PBHealthAPI getPBHealthAPI() {

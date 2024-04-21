@@ -2,7 +2,6 @@ package ui.screens;
 
 import javafx.scene.layout.Pane;
 import taiga.models.sprint.Sprint;
-import settings.Settings;
 import ui.components.screens.ScreenManager;
 import ui.metrics.taskDefectDensity.TaskDefectDensity;
 
@@ -26,6 +25,15 @@ public class TaskDefectDensityScreen extends BaseMetricConfiguration {
 
     @Override
     protected void afterVisualizationMount() {
+        sprint_combobox.setOnAction((e) -> {
+            Sprint sprint = sprint_combobox.getValue();
+            if (sprint == null) {
+                return;
+            }
+            this.taskDD.calculate(sprint);
+        });
+        sprint_combobox.getSelectionModel().selectLast();
+        this.taskDD.calculate(sprint_combobox.getValue());
     }
 
     @Override
@@ -43,6 +51,6 @@ public class TaskDefectDensityScreen extends BaseMetricConfiguration {
         if (this.taskDD == null) {
             return;
         }
-        this.taskDD.calculate(Settings.get().getAppModel().getCurrentProject().get().getId());
+        sprint_combobox.getSelectionModel().selectLast();
     }
 }
