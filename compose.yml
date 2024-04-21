@@ -47,6 +47,8 @@ services:
         - PORT=9003
     ports:
       - "9003:9003"
+    networks:
+      - boston
   boston-pbchange:
     build:
       dockerfile: ./services/pbchange/Dockerfile
