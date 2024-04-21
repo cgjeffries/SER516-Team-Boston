@@ -9,17 +9,26 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.scene.chart.PieChart;
+import taiga.models.sprint.Sprint;
 
 
 public class TaskDefectDensityService extends Service<Object> {
     private int projectId;
+    private Sprint sprint;
     private final IntegerProperty totalTasks;
     private final IntegerProperty unfinishedTasks;
+    private final ObservableList<PieChart.Data> taskDefectData;
     private final TaskDefectDensityAPI taskddAPI;
 
     public TaskDefectDensityService() {
         this.totalTasks = new SimpleIntegerProperty();
         this.unfinishedTasks = new SimpleIntegerProperty();
+        this.taskDefectData = FXCollections.observableArrayList();
         this.taskddAPI = BostonClient.getTaskDefectDensityAPI();
     }
 

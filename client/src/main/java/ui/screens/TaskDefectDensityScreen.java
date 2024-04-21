@@ -1,6 +1,7 @@
 package ui.screens;
 
 import javafx.scene.layout.Pane;
+import taiga.models.sprint.Sprint;
 import settings.Settings;
 import ui.components.screens.ScreenManager;
 import ui.metrics.taskDefectDensity.TaskDefectDensity;
@@ -14,12 +15,17 @@ public class TaskDefectDensityScreen extends BaseMetricConfiguration {
 
     @Override
     protected void beforeVisualizationMount() {
+        this.taskDD = new TaskDefectDensity();
     }
 
 
     @Override
     protected Pane visualization() {
         return this.taskDD;
+    }
+
+    @Override
+    protected void afterVisualizationMount() {
     }
 
     @Override

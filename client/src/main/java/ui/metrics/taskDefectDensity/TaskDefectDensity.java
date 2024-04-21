@@ -5,6 +5,7 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import taiga.models.sprint.Sprint;
 
 import ui.services.TaskDefectDensityService;
 import javafx.scene.chart.PieChart;
