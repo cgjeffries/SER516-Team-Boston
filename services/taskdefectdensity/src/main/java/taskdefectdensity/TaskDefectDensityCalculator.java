@@ -27,13 +27,24 @@ public class TaskDefectDensityCalculator {
         }
 
         int totalTasks = tasks.get().size();
+
         int closedTasks = tasks.get()
                 .stream()
                 .filter(t -> t.getStatusExtraInfo().getIsClosed())
                 .toList()
                 .size();
-        int unfinishedTasks = totalTasks-closedTasks;
+        
+                int unfinishedTasks = totalTasks - closedTasks;
 
-        return new TaskDefectDensityMetrics(totalTasks, unfinishedTasks);
-    }
+        
+                double tddRatio = (unfinishedTasks == 0 || closedTasks == 0) ? 0.0 : (double) unfinishedTasks / closedTasks * 100.0;
+
+                // Logging the values for debugging
+                System.out.println("Total Tasks: " + totalTasks);
+                System.out.println("Closed Tasks: " + closedTasks);
+                System.out.println("Unfinished Tasks: " + unfinishedTasks);
+                System.out.println("Task Defect Density Ratio (%): " + tddRatio);
+        
+                return new TaskDefectDensityMetrics(totalTasks, unfinishedTasks, tddRatio, closedTasks);
+            }
 }

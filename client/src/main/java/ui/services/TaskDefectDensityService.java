@@ -18,6 +18,7 @@ public class TaskDefectDensityService extends Service<Object> {
     private Sprint sprint;
     private final IntegerProperty totalTasks;
     private final IntegerProperty unfinishedTasks;
+    private final DoubleProperty tddRatio;
     private final ObservableList<PieChart.Data> taskDefectData;
     private final TaskDefectDensityAPI taskddAPI;
     private final BooleanProperty validSprintSelected = new SimpleBooleanProperty(false);
@@ -26,6 +27,7 @@ public class TaskDefectDensityService extends Service<Object> {
     public TaskDefectDensityService() {
         this.totalTasks = new SimpleIntegerProperty();
         this.unfinishedTasks = new SimpleIntegerProperty();
+        this.tddRatio = new SimpleDoubleProperty();
         this.taskDefectData = FXCollections.observableArrayList();
         this.taskddAPI = BostonClient.getTaskDefectDensityAPI();
     }
@@ -38,6 +40,7 @@ public class TaskDefectDensityService extends Service<Object> {
             Platform.runLater(() -> {
                 totalTasks.set(0);
                 unfinishedTasks.set(0);
+                tddRatio.set(0);
                 validSprintSelected.set(false);
             });
         }
@@ -50,12 +53,16 @@ public class TaskDefectDensityService extends Service<Object> {
         return taskDefectData;
     }
 
-    public IntegerProperty totalTasksCount() {
+    public IntegerProperty totalTasksProperty() {
         return totalTasks;
     }
 
-    public IntegerProperty unfinishedTasksCount() {
+    public IntegerProperty unfinishedTasksProperty() {
         return unfinishedTasks;
+    }
+
+    public DoubleProperty tddRatioProperty() {
+        return tddRatio;
     }
 
     @Override
@@ -71,10 +78,10 @@ public class TaskDefectDensityService extends Service<Object> {
                             totalTasks.set(metrics.getTotalTasks());
                             unfinishedTasks.set(metrics.getNewTasks());
                             validSprintSelected.set(metrics.getTotalTasks() > 0);
-
+                            tddRatio.set(metrics.getTddRatio());
                             taskDefectData.setAll(
                                     new PieChart.Data("Unfinished Tasks", metrics.getNewTasks()),
-                                    new PieChart.Data("Finished Tasks", metrics.getTotalTasks()-metrics.getNewTasks())
+                                    new PieChart.Data("Finished Tasks", metrics.getClosedTasks())
                             );
                         });
                     } else {

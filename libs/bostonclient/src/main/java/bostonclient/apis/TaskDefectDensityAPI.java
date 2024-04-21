@@ -5,7 +5,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import bostonhttp.api.APIResponse;
-import bostonmodel.taskexcess.TaskExcessMetrics;
 
 public class TaskDefectDensityAPI extends MetricAPI {
 

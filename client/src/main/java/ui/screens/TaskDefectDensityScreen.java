@@ -30,10 +30,10 @@ public class TaskDefectDensityScreen extends BaseMetricConfiguration {
             if (sprint == null) {
                 return;
             }
-            this.taskDD.calculate(sprint);
+            this.taskDD.recalculate(sprint);
         });
         sprint_combobox.getSelectionModel().selectLast();
-        this.taskDD.calculate(sprint_combobox.getValue());
+        this.taskDD.recalculate(sprint_combobox.getValue());
     }
 
     @Override

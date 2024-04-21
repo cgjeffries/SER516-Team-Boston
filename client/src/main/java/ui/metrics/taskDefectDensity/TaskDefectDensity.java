@@ -22,6 +22,14 @@ public class TaskDefectDensity extends StackPane {
         this.init();
     }
 
+    public void recalculate(Sprint sprint) {
+        this.service.recalculate(sprint);
+    }
+
+    public TaskDefectDensityService getService() {
+        return service;
+    }
+
     private void init() {
         ProgressIndicator progress = new ProgressIndicator(-1d);
         progress.visibleProperty().bind(service.runningProperty());
@@ -30,25 +38,8 @@ public class TaskDefectDensity extends StackPane {
         chart.setAnimated(false);
         chart.setData(service.getTaskPieChartData());
 
-        double unfinishedTasks = 0.0;
-        double finishedTasks = 0.0;
-        ObservableList<PieChart.Data> pieChartData = chart.getData();
-
-        for(PieChart.Data data : pieChartData) {
-            if(data.getName().equals("Unfinished Tasks")) {
-                unfinishedTasks = data.getPieValue();
-            } else if(data.getName().equals("Finished Tasks")) {
-                finishedTasks = data.getPieValue();
-            }
-        }
-
-        double taskDefectRatio = 0.0;
-        if(finishedTasks != 0) {
-            taskDefectRatio = (unfinishedTasks / finishedTasks) * 100.0;
-        }
-
         Label ratio = new Label();
-        ratio.textProperty().bind(Bindings.format("Task Defect Density: %.2f%%", taskDefectRatio));
+        ratio.textProperty().bind(Bindings.format("Task Defect Density: %.2f%%", service.tddRatioProperty()));
 
         Label emptyText = new Label("No task defect density data for the selected sprint.");
         emptyText.visibleProperty().bind(service.validSprintSelectedProperty().not().and(service.runningProperty().not()));
@@ -62,7 +53,4 @@ public class TaskDefectDensity extends StackPane {
         this.service.start();
     }
 
-    public void calculate(Sprint sprint) {
-        this.service.recalculate(sprint);
-    }
 }
