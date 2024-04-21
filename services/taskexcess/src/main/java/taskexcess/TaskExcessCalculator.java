@@ -38,7 +38,7 @@ public class TaskExcessCalculator {
             taskExcess = (double) newTasks / totalTasks;
         } catch (ArithmeticException e) {
             e.printStackTrace();
-            taskExcess = Double.NaN;
+            taskExcess = 0;
         }
 
         return new TaskExcessMetrics(totalTasks, newTasks, taskExcess);
