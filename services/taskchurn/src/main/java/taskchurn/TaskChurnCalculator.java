@@ -1,6 +1,7 @@
 package taskchurn;
 
 import bostonmodel.taskchurn.TaskChurnItem;
+import bostonmodel.taskchurn.TaskChurnMetrics;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class TaskChurnCalculator {
      * @param sprintId the id of thes print whose tasks are being analyzed for churn
      * @return a list of TaskChurnItems which speify a date and the amount of churn on that date for all dates in the sprint.
      */
-    public static List<TaskChurnItem> calculate(Response response, int sprintId) {
+    public static TaskChurnMetrics calculate(Response response, int sprintId) {
         TreeMap<LocalDate, Integer> taskCount = new TreeMap<>();
         TreeMap<LocalDate, Integer> taskModifiedCount = new TreeMap<>();
         TreeMap<LocalDate, Integer> taskChurn = new TreeMap<>();
@@ -40,7 +41,7 @@ public class TaskChurnCalculator {
 
         if (sprintReference.get() == null) {
             response.status(HttpStatus.SC_BAD_REQUEST);
-            return new ArrayList<>();
+            return new TaskChurnMetrics(null);
         }
 
 
@@ -130,6 +131,6 @@ public class TaskChurnCalculator {
         for(LocalDate date : taskChurn.keySet()){
             taskChurnItemList.add(new TaskChurnItem(date, taskChurn.get(date)));
         }
-        return taskChurnItemList;
+        return new TaskChurnMetrics(taskChurnItemList);
     }
 }
