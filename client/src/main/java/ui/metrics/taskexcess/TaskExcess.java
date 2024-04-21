@@ -26,27 +26,27 @@ public class TaskExcess extends StackPane {
     public void recalculate(Sprint sprint) {
         this.service.recalculate(sprint);
     }
-    
+
     private void init() {
         ProgressIndicator progress = new ProgressIndicator(-1d);
         progress.visibleProperty().bind(service.runningProperty());
 
         PieChart chart = new PieChart();
         chart.setAnimated(false);
-        chart.visibleProperty().bind(service.validSprintSelectedProperty().and(service.runningProperty().not()));
         chart.setData(service.getTaskPieChartData());
 
         Label ratio = new Label();
         ratio.textProperty().bind(Bindings.format("Task Excess: %.2f%%", service.taskExcessRatioProperty()));
 
         Label emptyText = new Label("No task excess data for the selected sprint.");
-        emptyText.visibleProperty().bind(service.validSprintSelectedProperty().not());
+        emptyText.visibleProperty().bind(service.validSprintSelectedProperty().not().and(service.runningProperty().not()));
 
         VBox.setVgrow(this, Priority.ALWAYS);
-        VBox root = new VBox();
+        VBox root = new VBox(ratio, chart, emptyText);
+        root.visibleProperty().bind(service.validSprintSelectedProperty().and(service.runningProperty().not()));
         root.setAlignment(Pos.CENTER);
-        root.getChildren().addAll(progress, ratio, chart, emptyText);
-        getChildren().add(root);
+
+        getChildren().addAll(progress, root, emptyText);
         this.service.start();
     }
 }
