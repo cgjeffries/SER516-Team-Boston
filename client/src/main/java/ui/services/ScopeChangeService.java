@@ -42,10 +42,8 @@ public class ScopeChangeService extends Service<Object> {
                 if (sprint == null) {
                     return null;
                 }
-
                 List<ScopeChangeItem> stories = new ArrayList<>(scopeChangeCalculator.calculate(sprint));
                 stories.sort(Comparator.comparing(ScopeChangeItem::getChangeDate));
-
                 Platform.runLater(() -> {
                     scopeChangeStories.setAll(stories);
                 });

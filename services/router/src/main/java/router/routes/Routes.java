@@ -2,6 +2,7 @@ package router.routes;
 
 import java.util.List;
 
+import router.routes.pbchange.PBChangeRoute;
 import router.routes.pbhealth.PBHealthRoute;
 import router.routes.scopechange.ScopeChangeRoute;
 import router.routes.taskdefectdensity.TaskDefectDensityRoute;
@@ -15,6 +16,7 @@ public class Routes {
                 new ScopeChangeRoute(),
                 new TaskExcessRoute(),
                 new TaskInertiaRoute(),
+                new PBChangeRoute(),
                 new TaskDefectDensityRoute()
         );
     }
