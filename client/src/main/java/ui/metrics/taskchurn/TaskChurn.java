@@ -1,5 +1,6 @@
 package ui.metrics.taskchurn;
 
+import javafx.collections.ListChangeListener;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -31,10 +32,7 @@ public class TaskChurn extends StackPane {
 
         XYChart.Series<String, Number> series = new XYChart.Series<>(this.service.getTaskChurnItems());
         series.setName("Task Churn");
-//         series.dataProperty().bind(Bindings.createObjectBinding(() ->
-//             this.service.getTaskChurnItems()
-
-        series.dataProperty().addListener(observable -> {
+        series.getData().addListener((ListChangeListener<? super XYChart.Data<String, Number>>) e -> {
             for (final XYChart.Data<String, Number> data : series.getData()) {
                 Tooltip.install(data.getNode(), new Tooltip("Churn: " + data.getYValue()));
             }
