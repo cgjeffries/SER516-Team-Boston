@@ -14,7 +14,6 @@ import taiga.models.tasks.Task;
 public class TaskExcessCalculator {
     public static TaskExcessMetrics calculate(Request request, Response response, int sprintId) {
         AtomicReference<List<Task>> tasks = new AtomicReference<>(null);
-
         TaigaClient.getTasksAPI().listTasksByMilestone(sprintId, result -> {
             if (result.getStatus() == HttpStatus.SC_OK) {
                 tasks.set(List.of(result.getContent()));
@@ -32,7 +31,16 @@ public class TaskExcessCalculator {
                 .filter(t -> t.getStatusExtraInfo().getName().equalsIgnoreCase("new"))
                 .toList()
                 .size();
-                
-        return new TaskExcessMetrics(totalTasks, newTasks);
+
+        double taskExcess;
+        
+        try {
+            taskExcess = (double) newTasks / totalTasks;
+        } catch (ArithmeticException e) {
+            e.printStackTrace();
+            taskExcess = 0;
+        }
+
+        return new TaskExcessMetrics(totalTasks, newTasks, taskExcess);
     }
 }
