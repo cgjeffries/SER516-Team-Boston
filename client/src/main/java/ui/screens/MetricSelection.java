@@ -99,7 +99,8 @@ public class MetricSelection extends Screen {
         });
         taskchurn_tile.setGraphic(new Icon(BoxiconsRegular.REFRESH, 48));
         taskchurn_tile.setActionHandler(() -> {
-            //TODO
+            Settings.get().getAppModel().setSelectedMetric("Task Churn");
+            screenManager.switchScreen("project_selection");
         });
     }
 
