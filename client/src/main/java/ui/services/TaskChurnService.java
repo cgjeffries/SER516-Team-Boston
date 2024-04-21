@@ -47,6 +47,7 @@ public class TaskChurnService extends Service<Object> {
                         metricsReference.set(new TaskChurnMetrics(
                             new ArrayList<>())); //set to empty (instead of null) so things don't explode
                     }
+                    metricsReference.set(result.getContent());
                 });
 
                 TaskChurnMetrics taskChurnMetrics = metricsReference.get();
