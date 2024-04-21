@@ -19,6 +19,12 @@ import taiga.models.taskhistory.ItemHistoryValuesDiff;
 import taiga.models.tasks.Task;
 
 public class TaskChurnCalculator {
+    /**
+     * Calculates the amount of task churn for each day in the sprint
+     * @param response the response to send any errors to
+     * @param sprintId the id of thes print whose tasks are being analyzed for churn
+     * @return a list of TaskChurnItems which speify a date and the amount of churn on that date for all dates in the sprint.
+     */
     public static List<TaskChurnItem> calculate(Response response, int sprintId) {
         TreeMap<LocalDate, Integer> taskCount = new TreeMap<>();
         TreeMap<LocalDate, Integer> taskModifiedCount = new TreeMap<>();
@@ -108,7 +114,6 @@ public class TaskChurnCalculator {
             taskChurn.put(date, tasksAdded + tasksModified);
 
         }
-
 
         //put days with no churn to 0
         LocalDate start = DateUtil.toLocal(sprintReference.get().getEstimatedStart());
