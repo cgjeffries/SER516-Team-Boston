@@ -8,10 +8,10 @@ import spark.Response;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-public class TaskchurnQueryHandler extends RouteQueryHandler<Object> {
+public class TaskChurnQueryHandler extends RouteQueryHandler<Object> {
     private final TaskchurnAPI api;
 
-    public TaskchurnQueryHandler(TaskchurnAPI api) {
+    public TaskChurnQueryHandler(TaskchurnAPI api) {
         this.api = api;
     }
 

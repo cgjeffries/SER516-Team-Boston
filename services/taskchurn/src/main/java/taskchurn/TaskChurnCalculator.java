@@ -85,7 +85,7 @@ public class TaskChurnCalculator {
             if (taskHistory.getValuesDiff() != null) { //null check
                 ItemHistoryValuesDiff valuesDiff = taskHistory.getValuesDiff();
                 LocalDate createdAt = DateUtil.toLocal(taskHistory.getCreatedAt());
-                if (valuesDiff.getStatus() == null) {
+                if (valuesDiff.getStatus() == null && valuesDiff.getAssignedTo() == null) {
                     if (taskModifiedCount.containsKey(createdAt)) {
                         Integer temp = taskModifiedCount.get(createdAt);
                         taskModifiedCount.put(createdAt, ++temp);
