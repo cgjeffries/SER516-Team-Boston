@@ -47,6 +47,14 @@ services:
       - "9002:9002"
     networks:
       - boston
+  boston-taskchurn:
+    build:
+      dockerfile: ./services/taskchurn/Dockerfile
+      context: ./
+      args:
+        - PORT=9005
+    ports:
+      - "9005:9005"
 networks:
   boston:
     driver: bridge
