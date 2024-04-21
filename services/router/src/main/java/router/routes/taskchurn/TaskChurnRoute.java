@@ -7,11 +7,11 @@ import spark.Response;
 
 import java.util.List;
 
-public class TaskchurnRoute extends Route {
-    private final TaskchurnAPI api;
+public class TaskChurnRoute extends Route {
+    private final TaskChurnAPI api;
 
-    public TaskchurnRoute() {
-        this.api = new TaskchurnAPI(this);
+    public TaskChurnRoute() {
+        this.api = new TaskChurnAPI(this);
     }
 
     @Override

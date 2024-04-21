@@ -1,6 +1,6 @@
 package router.routes.taskchurn;
 
-import bostonmodel.taskchurn.TaskChurnItem;
+import bostonmodel.taskchurn.TaskChurnMetrics;
 import org.apache.http.HttpStatus;
 import router.routes.RouteQueryHandler;
 import spark.Request;
@@ -9,9 +9,9 @@ import spark.Response;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class TaskChurnQueryHandler extends RouteQueryHandler<Object> {
-    private final TaskchurnAPI api;
+    private final TaskChurnAPI api;
 
-    public TaskChurnQueryHandler(TaskchurnAPI api) {
+    public TaskChurnQueryHandler(TaskChurnAPI api) {
         this.api = api;
     }
 
@@ -23,7 +23,7 @@ public class TaskChurnQueryHandler extends RouteQueryHandler<Object> {
 
     @Override
     public Object handle(Request request, Response response) {
-        AtomicReference<TaskChurnItem> apiResult = new AtomicReference<>(null);
+        AtomicReference<TaskChurnMetrics> apiResult = new AtomicReference<>(null);
         api.getTaskChurn(Integer.parseInt(request.queryParams("sprint_id")),
                 result -> {
                     if (result == null) {
