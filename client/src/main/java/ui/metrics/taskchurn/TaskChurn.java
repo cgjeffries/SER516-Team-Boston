@@ -23,20 +23,20 @@ public class TaskChurn extends StackPane {
         CategoryAxis dateAxis = new CategoryAxis();
         dateAxis.setLabel("Date");
         NumberAxis percentAxis = new NumberAxis();
-        percentAxis.setLabel("Task Churn (%)");
+        percentAxis.setLabel("Task Churn (Tasks added/modified)");
 
         LineChart<String, Number> chart = new LineChart<>(dateAxis, percentAxis);
         chart.visibleProperty().bind(this.service.runningProperty().not());
         chart.setAnimated(false);
 
         XYChart.Series<String, Number> series = new XYChart.Series<>(this.service.getTaskChurnItems());
-        series.setName("Task Churn (%)");
+        series.setName("Task Churn");
 //         series.dataProperty().bind(Bindings.createObjectBinding(() ->
 //             this.service.getTaskChurnItems()
 
         series.dataProperty().addListener(observable -> {
             for (final XYChart.Data<String, Number> data : series.getData()) {
-                Tooltip.install(data.getNode(), new Tooltip(String.format("Churn: %.2f%%", (Double) data.getYValue())));
+                Tooltip.install(data.getNode(), new Tooltip("Churn: " + data.getYValue()));
             }
         });
         chart.getData().addAll(series);
