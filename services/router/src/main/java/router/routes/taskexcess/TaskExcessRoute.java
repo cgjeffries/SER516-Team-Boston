@@ -26,8 +26,7 @@ public class TaskExcessRoute extends Route {
 
     @Override
     public String getProductionHost() {
-        // TODO: place an actual production host here
-        return null;
+        return "http://boston-taskexcess.railway.internal:9003/";
     }
 
     @Override

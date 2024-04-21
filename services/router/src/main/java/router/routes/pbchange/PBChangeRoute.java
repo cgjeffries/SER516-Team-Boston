@@ -1,4 +1,4 @@
-package router.routes.taskinertia;
+package router.routes.pbchange;
 
 import java.util.List;
 
@@ -7,27 +7,26 @@ import router.routes.RouteQueryHandler;
 import spark.Request;
 import spark.Response;
 
-public class TaskInertiaRoute extends Route {
+public class PBChangeRoute extends Route {
+    private final PBChangeAPI api;
 
-    private final TaskInertiaAPI api;
-
-    public TaskInertiaRoute() {
-        this.api = new TaskInertiaAPI(this);
+    public PBChangeRoute() {
+        this.api = new PBChangeAPI(this);
     }
 
     @Override
     public String getName() {
-        return "taskinertia";
+        return "pbchange";
     }
 
     @Override
     public String getDevelopmentHost() {
-        return "http://boston-taskinertia:9002/";
+        return "http://boston-pbchange:9004/";
     }
 
     @Override
     public String getProductionHost() {
-        return "http://boston-taskinertia.railway.internal:9002/";
+        return "http://boston-pbchange.railway.internal:9004/";
     }
 
     @Override
@@ -38,8 +37,6 @@ public class TaskInertiaRoute extends Route {
     @Override
     public List<RouteQueryHandler<Object>> getRouteQueryHandlers() {
         return List.of(
-                new TaskInertiaQueryHandler(api));
-
+                new PBChangeQueryHandler(api));
     }
-
 }

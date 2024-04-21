@@ -1,33 +1,33 @@
-package router.routes.taskinertia;
-
-import java.util.List;
+package router.routes.taskdefectdensity;
 
 import router.routes.Route;
 import router.routes.RouteQueryHandler;
 import spark.Request;
 import spark.Response;
 
-public class TaskInertiaRoute extends Route {
+import java.util.List;
 
-    private final TaskInertiaAPI api;
+public class TaskDefectDensityRoute extends Route {
+    private final TaskDefectDensityAPI api;
 
-    public TaskInertiaRoute() {
-        this.api = new TaskInertiaAPI(this);
+    public TaskDefectDensityRoute() {
+        this.api = new TaskDefectDensityAPI(this);
     }
 
     @Override
     public String getName() {
-        return "taskinertia";
+        return "taskdefectdensity";
     }
 
     @Override
     public String getDevelopmentHost() {
-        return "http://boston-taskinertia:9002/";
+        return "http://boston-taskdefectdensity:9005/";
     }
 
     @Override
     public String getProductionHost() {
-        return "http://boston-taskinertia.railway.internal:9002/";
+
+        return "http://boston-taskdefectdensity.railway.internal:9005/";
     }
 
     @Override
@@ -38,8 +38,7 @@ public class TaskInertiaRoute extends Route {
     @Override
     public List<RouteQueryHandler<Object>> getRouteQueryHandlers() {
         return List.of(
-                new TaskInertiaQueryHandler(api));
-
+                new TaskDefectDensityQueryHandler(api)
+        );
     }
-
 }
