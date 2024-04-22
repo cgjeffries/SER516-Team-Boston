@@ -40,6 +40,9 @@
                         <Tile fx:id="taskdefectdensity_tile" 
                               description="Calculate task defect density"
                               title="Task Defect Density"/>
+                        <Tile fx:id="taskinertia_tile"
+                              description="Display the percentage of tasks that do not change state per day"
+                              title="Task Inertia"/>
                         <Separator prefWidth="200.0"/>
                     </children>
                 </VBox>

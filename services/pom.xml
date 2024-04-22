@@ -24,6 +24,7 @@
         <module>router</module>
         <module>taskinertia</module>
         <module>taskdefectdensity</module>
+        <module>taskchurn</module>
     </modules>
     <dependencyManagement>
         <dependencies>

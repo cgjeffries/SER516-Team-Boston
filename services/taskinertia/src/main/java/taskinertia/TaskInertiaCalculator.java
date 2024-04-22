@@ -1,20 +1,19 @@
 package taskinertia;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.apache.http.HttpStatus;
-
 import bostonmodel.taskinertia.TaskInertiaMetrics;
+import org.apache.http.HttpStatus;
 import serviceutil.DateUtil;
 import spark.Response;
 import taiga.TaigaClient;
 import taiga.models.taskhistory.ItemHistory;
 import taiga.models.taskhistory.ItemHistoryValuesDiff;
 import taiga.models.tasks.Task;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TaskInertiaCalculator {
     public static TaskInertiaMetrics calculate(Response response, int projectId, LocalDate startDate, LocalDate endDate) {
@@ -83,7 +82,7 @@ public class TaskInertiaCalculator {
                     if (t.getFinishedDate() == null) {
                         return createdBeforeDate;
                     }
-                    LocalDate finishedDate = DateUtil.toLocal(t.getCreatedDate());
+                    LocalDate finishedDate = DateUtil.toLocal(t.getFinishedDate());
                     return createdBeforeDate && finishedDate.isAfter(date) || finishedDate.isEqual(date);
                 })
                 .toList()
