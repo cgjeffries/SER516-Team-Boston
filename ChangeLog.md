@@ -1,13 +1,76 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [X.X.X] - yyyy-mm-dd
- 
+## [2.1.0](https://github.com/cgjeffries/SER516-Team-Boston/releases/tag/2.1.0) - 2024-04-21
 ### Added
- 
-### Changed
- 
-### Fixed
+- UI for Task Defect Density
+- add UI and client side code for Task Churn
+- New service for task excess
+- New service for scope change
+- New service for task inertia
+- New service for task Density
+- New service for task Burndown
+
+### changed
+- task-515 multiply by 100
+
+### fixed
+- fix groom rate and tdd desc
+- Remove unused code and imports
+
+## [2.0.17](https://github.com/cgjeffries/SER516-Team-Boston/releases/tag/2.0.17) - 2024-04-21
+
+### fixed
+- fix groom rate and tdd desc
+
+## [2.0.16](https://github.com/cgjeffries/SER516-Team-Boston/releases/tag/2.0.16) - 2024-04-21
+
+### changed
+- task-515 multiply by 100
+
+## [2.0.15](https://github.com/cgjeffries/SER516-Team-Boston/releases/tag/2.0.15) - 2024-04-21
+
+
+## [2.0.14](https://github.com/cgjeffries/SER516-Team-Boston/releases/tag/2.0.14) - 2024-04-21
+
+
+## [2.0.13](https://github.com/cgjeffries/SER516-Team-Boston/releases/tag/2.0.13) - 2024-04-21
+
+
+## [2.0.12](https://github.com/cgjeffries/SER516-Team-Boston/releases/tag/2.0.12) - 2024-04-21
+
+### Added
+- UI for Task Defect Density
+
+## [2.0.11](https://github.com/cgjeffries/SER516-Team-Boston/releases/tag/2.0.11) - 2024-04-21
+
+### fixed
+- Remove unused code and imports
+
+## [2.0.10](https://github.com/cgjeffries/SER516-Team-Boston/releases/tag/2.0.10) - 2024-04-21
+
+
+## [2.0.9](https://github.com/cgjeffries/SER516-Team-Boston/releases/tag/2.0.9) - 2024-04-21
+
+### Added
+- add UI and client side code for Task Churn
+
+## [2.0.8](https://github.com/cgjeffries/SER516-Team-Boston/releases/tag/2.0.8) - 2024-04-21
+
+
+## [2.0.7](https://github.com/cgjeffries/SER516-Team-Boston/releases/tag/2.0.7) - 2024-04-21
+
+
+## [2.0.6](https://github.com/cgjeffries/SER516-Team-Boston/releases/tag/2.0.6) - 2024-04-21
+
+
+## [2.0.5](https://github.com/cgjeffries/SER516-Team-Boston/releases/tag/2.0.5) - 2024-04-21
+
+
+## [2.0.4](https://github.com/cgjeffries/SER516-Team-Boston/releases/tag/2.0.4) - 2024-04-20
+
+### Added
+- New service for task excess
 
 ## [2.0.3](https://github.com/cgjeffries/SER516-Team-Boston/releases/tag/2.0.3) - 2024-04-18
  
