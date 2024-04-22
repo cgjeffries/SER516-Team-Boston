@@ -1,4 +1,4 @@
-# SER516-Team-Boston
+# SER516-Team-Boston-Louisville
 
 # Project Documentation and Readme
 
@@ -173,19 +173,16 @@ In case you don't have Maven installed, please refer to following tutorial:
 https://phoenixnap.com/kb/install-maven-windows
 
 ### Team
-
-#### Boston
-
+**Boston**  
 Oluwamayowa Esan,
 Charles Jeffries,
 Michael Kangas,
 Soohwan Kim,
 James Thayer
 
-#### Louisville
-
-Thirulogasankar Pranav Kutralingam,
-Ashish Thanga,
-Jill Bharat Hansalia,
-Harshitha Karur,
+**Louisville**  
+Ashish Thanga
 Akshat Bakliwal
+Jill Bharat Hansalia
+Pranav Kutralingam
+Harshitha Karur

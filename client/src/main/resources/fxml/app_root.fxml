@@ -14,7 +14,7 @@
             <children>
                 <HBox alignment="CENTER" spacing="10.0" styleClass="app-header">
                     <children>
-                        <Label text="boston">
+                        <Label text="boston-louisville">
                             <font>
                                 <Font name="System Bold" size="28.0"/>
                             </font>

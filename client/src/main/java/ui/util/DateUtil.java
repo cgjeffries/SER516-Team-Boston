@@ -7,7 +7,7 @@ import java.util.Date;
 public class DateUtil {
 
     public static LocalDate toLocal(Date date) {
-        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        return date.toInstant().atZone(ZoneId.of("America/Phoenix")).toLocalDate();
     }
 
     public static Date toDate(LocalDate date) {
