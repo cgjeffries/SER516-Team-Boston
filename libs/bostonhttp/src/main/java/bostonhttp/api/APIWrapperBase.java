@@ -1,12 +1,10 @@
 package bostonhttp.api;
 
 import bostonhttp.models.AuthToken;
-import bostonhttp.models.RefreshResponse;
 import bostonhttp.models.Tokens;
 import bostonhttp.util.AuthTokenSingleton;
 import bostonhttp.util.HTTPClientSingleton;
 import bostonhttp.util.LocalDateAdapter;
-import bostonhttp.util.TokenStore;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
@@ -237,54 +235,6 @@ public abstract class APIWrapperBase {
      */
     private String getRequestKey(HttpRequest request) {
         return request.uri().toString();
-    }
-
-    /**
-     * Refreshes the authentication token and retries the query if needed.
-     *
-     * @param <T>               The type of expected response object.
-     * @param query             The query string to be appended to the base API endpoint configured.
-     * @param responseType      The class of expected response object.
-     * @param apiResponse       The reference to the apiwrapper.APIResponse object.
-     * @param retry             Indicates whether to retry the query if authentication token refresh is needed.
-     * @param enable_pagination Indicates whether pagination should be enabled.
-     */
-    private <T> void refreshAuthToken(String query, Class<T> responseType,
-                                      AtomicReference<APIResponse<T>> apiResponse,
-                                      boolean retry, boolean enable_pagination) {
-        AuthAPI auth = new AuthAPI();
-        Tokens tokens = TokenStore.retrieveTokens();
-        String refresh = (tokens == null) ? null : tokens.getRefresh();
-
-        if (refresh != null) {
-            System.out.println("attempting to refresh auth token.");
-
-            AtomicReference<APIResponse<RefreshResponse>> refreshAPIResponse = new AtomicReference<>();
-
-            CompletableFuture<Void> completableFutureRefresh = auth.refresh(refresh, refreshAPIResponse::set);
-
-            completableFutureRefresh.join();
-
-            RefreshResponse refreshResponse = refreshAPIResponse.get().getContent();
-            tokens = new Tokens();
-
-            if (refreshAPIResponse.get().getStatus() == 200) {
-                tokens.setAuth(refreshResponse.getAuthToken());
-                tokens.setRefresh(refreshResponse.getRefresh());
-            } else {
-                tokens.setAuth(null);
-                tokens.setRefresh(null);
-            }
-
-            TokenStore.saveTokens(tokens);
-            AuthTokenSingleton.getInstance().setTokens(tokens);
-
-            CompletableFuture<APIResponse<T>> completableFutureQuery =
-                    queryAsync(query, responseType, false, enable_pagination);
-
-            completableFutureQuery.thenAccept(apiResponse::set);
-            completableFutureQuery.join();
-        }
     }
 
     private <T> void retryWithBackoff(String query, Class<T> responseType,

@@ -11,10 +11,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import taiga.models.sprint.UserStoryDetail;
-import ui.metrics.pbHealth.PBHealthHelper;
-
-import java.util.List;
 
 public class PBHealthService extends Service<Object> {
     private int projectId;

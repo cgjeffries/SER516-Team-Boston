@@ -1,7 +1,6 @@
 package ui.metrics.groomrate;
 
 import taiga.models.sprint.Sprint;
-import taiga.models.sprint.UserStoryDetail;
 import taiga.models.taskhistory.ItemHistory;
 import taigaold.util.timeAnalysis.LeadTimeEntry;
 import taigaold.util.timeAnalysis.LeadTimeHelper;
@@ -10,8 +9,6 @@ import java.util.Date;
 import java.util.List;
 
 public class GroomRateCalculator {
-
-    private List<UserStoryDetail> userStories;
 
     private final LeadTimeHelper leadTimeHelper;
 
