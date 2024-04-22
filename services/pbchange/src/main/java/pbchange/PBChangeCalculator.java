@@ -73,7 +73,7 @@ public class PBChangeCalculator {
         List<PBChangeItem> addedAfterSprint = stories
                 .parallelStream()
                 .filter(s -> s.getCreatedDate().after(sprint.getEstimatedStart())
-                        && s.getCreatedDate().before(sprint.getEstimatedStart()))
+                        && s.getCreatedDate().before(sprint.getEstimatedFinish()))
                 .map(s -> new PBChangeItem(s.getCreatedDate(), s, true))
                 .toList();
 

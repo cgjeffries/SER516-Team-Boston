@@ -1,5 +1,9 @@
 package ui.services;
 
+import bostonclient.BostonClient;
+import bostonmodel.pbchange.PBChangeMetrics;
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -8,7 +12,6 @@ import javafx.concurrent.Task;
 import taiga.models.sprint.Sprint;
 import ui.metrics.pbchange.PBChangeCalculator;
 import ui.metrics.pbchange.PBChangeItem;
-
 import java.util.List;
 
 
@@ -56,7 +59,24 @@ public class PBChangeService extends Service<Object> {
                     return null;
                 }
 
-                List<PBChangeItem> changes = pbChangeCalculator.calculate(sprint.getProject(), sprint);
+                AtomicReference<PBChangeMetrics> metricsReference = new AtomicReference<>();
+                BostonClient.getPBChangeAPI().getPBChange(sprint.getId(), (foo) ->{
+                    if(foo.getStatus() == 200){
+                        metricsReference.set(foo.getContent());
+                    }
+                    else{
+                        System.out.println("Error: PBChange service returned bad response code: " + foo.getStatus());
+                        metricsReference.set(new PBChangeMetrics(new ArrayList<>()));
+                    }
+
+                }).join();
+
+
+                List<PBChangeItem> changes = metricsReference.get().getPbChangeItems().stream()
+                    .map(item -> {
+                        return new PBChangeItem(item.getChangeDate(), item.getStoryDetail(), item.isAddedAfterSprint());
+                    })
+                    .toList();
 
                 Platform.runLater(() -> {
                     addedUserStories.setAll(
