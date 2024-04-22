@@ -1,6 +1,7 @@
-package taskchurn;
+package burndown;
 
 import bostonmodel.util.JsonTransformer;
+import burndown.calculators.BurndownAggregator;
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,20 +15,23 @@ public class Main {
 
     public static void main(String[] args) {
         port(Env.getPort());
-        get("/taskchurn", (request, response) -> {
+        get("/burndown", (request, response) -> {
             response.type("application/json");
-
-            int sprintId;
-
-            try {
-                sprintId = Integer.parseInt(request.queryParams("sprint_id"));
-            } catch (NumberFormatException ex) {
+            String sprintIdParam = request.queryParams("sprint_id");
+            if (sprintIdParam == null) {
+                response.type("application/json");
                 response.status(HttpStatus.SC_BAD_REQUEST);
-                logger.error("sprint_id must be an integer");
+                return "";
+            }
+            int sprintId;
+            try {
+                sprintId = Integer.parseInt(sprintIdParam);
+            } catch (NumberFormatException ex) {
+                logger.error("All sprint ids must be integers", ex);
                 return "";
             }
 
-            return TaskChurnCalculator.calculate(response, sprintId);
+            return BurndownAggregator.calculate(response, sprintId);
         }, new JsonTransformer());
     }
 }

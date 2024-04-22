@@ -2,6 +2,7 @@ package router.routes;
 
 import java.util.List;
 
+import router.routes.burndown.BurndownRoute;
 import router.routes.pbchange.PBChangeRoute;
 import router.routes.pbhealth.PBHealthRoute;
 import router.routes.scopechange.ScopeChangeRoute;
@@ -19,7 +20,8 @@ public class Routes {
                 new TaskInertiaRoute(),
                 new PBChangeRoute(),
                 new TaskDefectDensityRoute(),
-                new TaskChurnRoute()
+                new TaskChurnRoute(),
+                new BurndownRoute()
         );
     }
 }

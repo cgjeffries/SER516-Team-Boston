@@ -52,6 +52,24 @@ Scope Change focuses on identifying user stories added to the Sprint Backlog aft
 metric is vital for understanding changes in sprint scope, helping teams to adapt and re-prioritize work effectively,
 ensuring sprint goals remain achievable despite any alterations to the initially planned scope.
 
+### Task Churn
+
+This metric tracks the frequency and extent to which tasks are modified or added during a time frame in a project. It is a crucial indicator of stability or volatility in project requirements and objectives, providing insights that help teams recognize, adapt to, and effectively manage changes in their project scope or direction. This understanding can guide adjustments to workflow or resource allocation to maintain project continuity.
+
+### Task Defect Density
+
+This metric quantifies the number of defects found in a task relative to its size, such as the amount of work or number of features within the task. It serves as an essential indicator of the quality of the outputs produced during task execution. By monitoring task defect density, teams can pinpoint areas requiring quality enhancement, focus on refining their development practices, and ensure that deliverables meet the expected standards of functionality and reliability.
+
+### Task Inertia
+
+This metric identifies and measures the resistance to change or progression that a task encounters, often influenced by factors such as task complexity, lack of necessary resources, or entrenched organizational practices. It provides valuable insights for project managers and teams to understand where and why bottlenecks occur, enabling them to devise strategies to reduce inertia, enhance efficiency, and improve the overall pace of project execution.
+
+### Task Excess
+
+Task Excess metric evaluates the surplus or deficit of tasks within a given sprint compared to the team's capacity and
+sprint goals. Task Excess can help teams optimize their sprint planning by balancing workload and ensuring realistic 
+commitments, ultimately leading to improved productivity and delivery consistency.
+
 ## Setting up the application
 
 ### Requirements and Setup

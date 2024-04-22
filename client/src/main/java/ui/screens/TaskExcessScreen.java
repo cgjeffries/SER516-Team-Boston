@@ -1,21 +1,9 @@
 package ui.screens;
 
-import atlantafx.base.theme.Styles;
-import javafx.scene.control.DateCell;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import settings.Settings;
 import taiga.models.sprint.Sprint;
 import ui.components.screens.ScreenManager;
 import ui.metrics.taskexcess.TaskExcess;
-import ui.services.TaskExcessService;
-import ui.util.DateUtil;
-
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 
 public class TaskExcessScreen extends BaseMetricConfiguration{
 

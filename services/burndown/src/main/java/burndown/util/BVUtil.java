@@ -1,4 +1,4 @@
-package util;
+package burndown.util;
 
 import taiga.TaigaClient;
 import taiga.models.customattributes.UserStoryCustomAttribute;

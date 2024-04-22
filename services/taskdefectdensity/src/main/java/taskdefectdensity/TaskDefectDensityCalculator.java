@@ -6,11 +6,11 @@ import spark.Request;
 import spark.Response;
 import taiga.TaigaClient;
 import taiga.models.tasks.Task;
-
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class TaskDefectDensityCalculator {
+
     public static TaskDefectDensityMetrics calculate(Request request, Response response, int sprintId) {
 
         AtomicReference<List<Task>> tasks = new AtomicReference<>(null);
@@ -27,13 +27,18 @@ public class TaskDefectDensityCalculator {
         }
 
         int totalTasks = tasks.get().size();
+
         int closedTasks = tasks.get()
                 .stream()
                 .filter(t -> t.getStatusExtraInfo().getIsClosed())
                 .toList()
                 .size();
-        int unfinishedTasks = totalTasks-closedTasks;
+        
+                int unfinishedTasks = totalTasks - closedTasks;
 
-        return new TaskDefectDensityMetrics(totalTasks, unfinishedTasks);
+        
+        double tddRatio = (double) unfinishedTasks / totalTasks * 100.0;
+
+        return new TaskDefectDensityMetrics(totalTasks, unfinishedTasks, tddRatio, closedTasks);
     }
 }

@@ -19,7 +19,7 @@ public class Project {
 
     @SerializedName("blocked_code")
     @Expose
-    private Object blockedCode; // TODO: figure out what type this is supposed to be
+    private Object blockedCode;
 
     @SerializedName("created_date")
     @Expose
