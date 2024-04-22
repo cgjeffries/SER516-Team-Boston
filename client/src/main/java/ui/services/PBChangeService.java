@@ -11,7 +11,7 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import taiga.models.sprint.Sprint;
 import ui.metrics.pbchange.PBChangeCalculator;
-import bostonmodel.pbchange.PBChangeItem;
+import ui.metrics.pbchange.PBChangeItem;
 import java.util.List;
 
 
@@ -72,7 +72,11 @@ public class PBChangeService extends Service<Object> {
                 }).join();
 
 
-                List<bostonmodel.pbchange.PBChangeItem> changes = metricsReference.get().getPbChangeItems();
+                List<PBChangeItem> changes = metricsReference.get().getPbChangeItems().stream()
+                    .map(item -> {
+                        return new PBChangeItem(item.getChangeDate(), item.getStoryDetail(), item.isAddedAfterSprint());
+                    })
+                    .toList();
 
                 Platform.runLater(() -> {
                     addedUserStories.setAll(
