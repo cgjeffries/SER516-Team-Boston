@@ -21,7 +21,7 @@ public class BostonClient {
         taskInertiaAPI = new TaskInertiaAPI(options.getRouterUrl());
     }
 
-    public static PBChangeAPI getPbChangeAPI() {
+    public static PBChangeAPI getPBChangeAPI() {
         return pbChangeAPI;
     }
     public static PBHealthAPI getPBHealthAPI() {
