@@ -2,12 +2,12 @@ package bostonmodel.burndown;
 
 import java.util.List;
 
-public class BurndownCharts {
-    private List<BurnDownEntry> taskBurndown;
-    private List<BurnDownEntry> userStoryBurndown;
-    private List<BurnDownEntry> businessValueBurndown;
+public class BurndownMetrics {
+    private final List<BurnDownEntry> taskBurndown;
+    private final List<BurnDownEntry> userStoryBurndown;
+    private final List<BurnDownEntry> businessValueBurndown;
 
-    public BurndownCharts(List<BurnDownEntry> taskBurndown, List<BurnDownEntry> userStoryBurndown, List<BurnDownEntry> businessValueBurndown) {
+    public BurndownMetrics(List<BurnDownEntry> taskBurndown, List<BurnDownEntry> userStoryBurndown, List<BurnDownEntry> businessValueBurndown) {
         this.taskBurndown = taskBurndown;
         this.userStoryBurndown = userStoryBurndown;
         this.businessValueBurndown = businessValueBurndown;
