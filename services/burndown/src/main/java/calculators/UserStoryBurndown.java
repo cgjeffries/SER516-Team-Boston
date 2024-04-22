@@ -1,7 +1,9 @@
 package calculators;
 
 import bostonmodel.burndown.BurnDownEntry;
+import org.apache.http.HttpStatus;
 import serviceutil.DateUtil;
+import spark.Response;
 import taiga.TaigaClient;
 import taiga.models.history.History;
 import taiga.models.history.ValuesDiff;
@@ -12,6 +14,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class UserStoryBurndown implements BurndownCalculator {
     private final HashMap<Integer, List<History>> histories;
@@ -111,6 +114,22 @@ public class UserStoryBurndown implements BurndownCalculator {
         }
 
         return entries;
+    }
+
+    public List<BurnDownEntry> calculate(Response response, int sprintId) {
+        AtomicReference<Sprint> sprint = new AtomicReference<>();
+        TaigaClient.getSprintAPI().getSprint(sprintId, result -> {
+            if (result.getStatus() == HttpStatus.SC_OK) {
+                sprint.set(result.getContent());
+            }
+        }).join();
+
+        if (sprint.get() == null) {
+            response.status(HttpStatus.SC_BAD_REQUEST);
+            return new ArrayList<>();
+        }
+
+        return calculate(sprint.get());
     }
 
     private static class DoneUserStory {

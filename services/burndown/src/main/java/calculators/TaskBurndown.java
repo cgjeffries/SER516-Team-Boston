@@ -1,6 +1,8 @@
 package calculators;
 
 import bostonmodel.burndown.BurnDownEntry;
+import org.apache.http.HttpStatus;
+import spark.Response;
 import taiga.TaigaClient;
 import taiga.models.sprint.Days;
 import taiga.models.sprint.Sprint;
@@ -28,5 +30,21 @@ public class TaskBurndown implements BurndownCalculator {
                 d -> burndown.add(new BurnDownEntry(Math.max(0, d.getOptimalPoints()), d.getOpenPoints(), d.getDay())));
 
         return burndown;
+    }
+
+    public List<BurnDownEntry> calculate(Response response, int sprintId) {
+        AtomicReference<Sprint> sprint = new AtomicReference<>();
+        TaigaClient.getSprintAPI().getSprint(sprintId, result -> {
+            if (result.getStatus() == HttpStatus.SC_OK) {
+                sprint.set(result.getContent());
+            }
+        }).join();
+
+        if (sprint.get() == null) {
+            response.status(HttpStatus.SC_BAD_REQUEST);
+            return new ArrayList<>();
+        }
+
+        return calculate(sprint.get());
     }
 }
