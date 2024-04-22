@@ -62,7 +62,6 @@ public class PBChange extends StackPane {
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         tabPane.getTabs().setAll(pbChangeAddedAfter, pbChangeRemovedAfter);
         getChildren().add(tabPane);
-        this.service.start();
     }
 
     private <T> Tab createPBChangeTab(String name, Icon icon, ObservableList<T> items, PBChangeCellCreator<T> cellCreator) {
