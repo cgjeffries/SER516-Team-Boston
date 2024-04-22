@@ -1,7 +1,7 @@
 FROM maven:3.9-amazoncorretto-17 AS build
 WORKDIR /opt/app
 COPY . /opt/app/
-RUN --mount=type=cache,target=/root/.m2 mvn -pl services/pbchange -am -DskipTests clean install
+RUN --mount=type=cache,id=s/38609da4-55b8-4457-a877-5d605de9bf51-/root/.m2,target=/root/.m2 mvn -pl services/pbchange -am -DskipTests clean install
 
 FROM eclipse-temurin:17-jre-jammy
 ARG PORT
