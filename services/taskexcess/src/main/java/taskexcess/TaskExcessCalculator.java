@@ -35,7 +35,7 @@ public class TaskExcessCalculator {
         double taskExcess;
         
         try {
-            taskExcess = (double) newTasks / totalTasks;
+            taskExcess = (double) newTasks / totalTasks * 100;
         } catch (ArithmeticException e) {
             e.printStackTrace();
             taskExcess = 0;
