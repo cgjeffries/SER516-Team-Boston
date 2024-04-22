@@ -1,12 +1,14 @@
-package calculators;
+package burndown.calculators;
 
 import bostonmodel.burndown.BurnDownEntry;
+import org.apache.http.HttpStatus;
 import serviceutil.DateUtil;
+import spark.Response;
 import taiga.TaigaClient;
 import taiga.models.sprint.Sprint;
 import taiga.models.sprint.UserStoryDetail;
 import taiga.models.userstories.UserStoryInterface;
-import util.BVUtil;
+import burndown.util.BVUtil;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -79,5 +81,21 @@ public class BusinessValueBurndown implements BurndownCalculator {
         }
 
         return burndown;
+    }
+
+    public List<BurnDownEntry> calculate(Response response, int sprintId) {
+        AtomicReference<Sprint> sprint = new AtomicReference<>();
+        TaigaClient.getSprintAPI().getSprint(sprintId, result -> {
+            if (result.getStatus() == HttpStatus.SC_OK) {
+                sprint.set(result.getContent());
+            }
+        }).join();
+
+        if (sprint.get() == null) {
+            response.status(HttpStatus.SC_BAD_REQUEST);
+            return new ArrayList<>();
+        }
+
+        return calculate(sprint.get());
     }
 }
