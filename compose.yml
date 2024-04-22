@@ -79,6 +79,16 @@ services:
       - "9006:9006"
     networks:
       - boston
+  boston-burndown:
+    build:
+      dockerfile: ./services/burndown/Dockerfile
+      context: ./
+      args:
+        - PORT=9007
+    ports:
+      - "9007:9007"
+    networks:
+      - boston
 networks:
   boston:
     driver: bridge

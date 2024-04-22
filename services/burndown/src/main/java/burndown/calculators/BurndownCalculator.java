@@ -1,4 +1,4 @@
-package calculators;
+package burndown.calculators;
 
 
 import bostonmodel.burndown.BurnDownEntry;

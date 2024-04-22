@@ -1,5 +1,7 @@
+package burndown;
+
 import bostonmodel.util.JsonTransformer;
-import calculators.BurndownAggregator;
+import burndown.calculators.BurndownAggregator;
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

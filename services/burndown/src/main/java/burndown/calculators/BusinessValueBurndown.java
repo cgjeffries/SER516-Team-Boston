@@ -1,4 +1,4 @@
-package calculators;
+package burndown.calculators;
 
 import bostonmodel.burndown.BurnDownEntry;
 import org.apache.http.HttpStatus;
@@ -8,7 +8,7 @@ import taiga.TaigaClient;
 import taiga.models.sprint.Sprint;
 import taiga.models.sprint.UserStoryDetail;
 import taiga.models.userstories.UserStoryInterface;
-import util.BVUtil;
+import burndown.util.BVUtil;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
