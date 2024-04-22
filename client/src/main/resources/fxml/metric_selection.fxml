@@ -43,7 +43,7 @@
                         <Tile fx:id="taskinertia_tile"
                               description="Display the percentage of tasks that do not change state per day"
                               title="Task Inertia"/>
-                        <Tile fx:id="taskchurn_tile" description="Number of tasks added or removed per sprint"
+                        <Tile fx:id="taskchurn_tile" description="Number of tasks added or changed per sprint"
                               title="Task Churn"/>
                         <Separator prefWidth="200.0"/>
                     </children>
