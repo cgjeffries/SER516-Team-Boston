@@ -39,7 +39,9 @@ public class TaskChurnCalculator {
             sprintReference.set(result.getContent());
         }).join();
 
-        if (sprintReference.get() == null) {
+        Sprint sprint = sprintReference.get();
+
+        if (sprint == null) {
             response.status(HttpStatus.SC_BAD_REQUEST);
             return new TaskChurnMetrics(null);
         }
@@ -68,12 +70,22 @@ public class TaskChurnCalculator {
                         }
                         itemHistoryReference.set(List.of(result.getContent()));
                     }).join();
-                    taskHistoryList.addAll(itemHistoryReference.get());
+                    taskHistoryList.addAll(itemHistoryReference.get().stream()
+                        .filter(entry -> {
+                            return entry.getCreatedAt().after(sprint.getEstimatedStart()) && entry.getCreatedAt().before(sprint.getEstimatedFinish());
+                        })
+                        .toList()
+                    );
                 });
+
 
         for (Task task : allTasks) {
             //populate task count
             LocalDate createdDate = DateUtil.toLocal(task.getCreatedDate());
+            if(task.getCreatedDate().before(sprint.getEstimatedStart()) || task.getCreatedDate().after(sprint.getEstimatedFinish())){
+                continue;
+            }
+
             if (taskCount.containsKey(createdDate)) {
                 Integer temp = taskCount.get(createdDate);
                 taskCount.put(createdDate, ++temp);
@@ -117,8 +129,8 @@ public class TaskChurnCalculator {
         }
 
         //put days with no churn to 0
-        LocalDate start = DateUtil.toLocal(sprintReference.get().getEstimatedStart());
-        LocalDate end = DateUtil.toLocal(sprintReference.get().getEstimatedFinish());
+        LocalDate start = DateUtil.toLocal(sprint.getEstimatedStart());
+        LocalDate end = DateUtil.toLocal(sprint.getEstimatedFinish());
         List<LocalDate> dates = start.datesUntil(end.plusDays(1)).toList();
 
         for(LocalDate date : dates){

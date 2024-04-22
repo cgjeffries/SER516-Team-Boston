@@ -8,4 +8,6 @@ ARG PORT
 ENV PORT=${PORT}
 COPY --from=build /opt/app/services/taskchurn/target/taskchurn.jar /opt/app/app.jar
 EXPOSE $PORT
+ENV TZ=America/Phoenix
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ENTRYPOINT ["java", "-jar", "/opt/app/app.jar"]

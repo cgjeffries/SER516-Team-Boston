@@ -59,9 +59,10 @@ public class Launcher extends Application {
         screenManager.addScreen(new ScopeChangeScreen(screenManager, "Scope Change", "metric_configuration"));
         screenManager.addScreen(new TaskExcessScreen(screenManager, "Task Excess", "metric_configuration"));
         screenManager.addScreen(new TaskInertiaScreen(screenManager, "Task Inertia", "metric_configuration"));
+        screenManager.addScreen(new TaskChurnScreen(screenManager, "Task Churn", "metric_configuration"));
         screenManager.addScreen(new TaskDefectDensityScreen(screenManager, "Task Defect Density", "metric_configuration"));
 
-        stage.setTitle("SER516 Team Boston");
+        stage.setTitle("SER516 Team Boston-Louisville");
         stage.setScene(screenManager.getScene());
         stage.show();
     }
