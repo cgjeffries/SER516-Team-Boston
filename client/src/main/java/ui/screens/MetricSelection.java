@@ -32,6 +32,9 @@ public class MetricSelection extends Screen {
     private Tile taskinertia_tile;
     @FXML
     private Tile taskchurn_tile;
+    @FXML
+    private Tile taskdefectdensity_tile;
+
 
     public MetricSelection(ScreenManager screenManager, String id, String fxmlFilename) {
         super(screenManager, id, fxmlFilename);
@@ -92,7 +95,13 @@ public class MetricSelection extends Screen {
              Settings.get().getAppModel().setSelectedMetric("Task Excess");
              screenManager.switchScreen("project_selection");
         });
-        taskinertia_tile.setGraphic(new Icon(BoxiconsRegular.TRANSFER, 48)); // Choose an appropriate icon
+        taskdefectdensity_tile.setGraphic(new Icon(BoxiconsRegular.STATION, 48));
+        taskdefectdensity_tile.setActionHandler(() -> {
+            Settings.get().getAppModel().setSelectedMetric("Task Defect Density");
+            screenManager.switchScreen("project_selection");
+             screenManager.switchScreen("project_selection");
+        });
+        taskinertia_tile.setGraphic(new Icon(BoxiconsRegular.TRANSFER, 48));
         taskinertia_tile.setActionHandler(() -> {
             Settings.get().getAppModel().setSelectedMetric("Task Inertia");
             screenManager.switchScreen("project_selection");

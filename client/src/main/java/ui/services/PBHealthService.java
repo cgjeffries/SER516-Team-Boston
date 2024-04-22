@@ -23,7 +23,7 @@ public class PBHealthService extends Service<Object> {
         this.pbHealthRatio = new SimpleDoubleProperty();
         this.groomedStoryCount = new SimpleIntegerProperty();
         this.totalStoryCount = new SimpleIntegerProperty();
-        this.pbHealthAPI = BostonClient.getPBChangeAPI();
+        this.pbHealthAPI = BostonClient.getPBHealthAPI();
     }
 
     /**
