@@ -30,7 +30,7 @@
                         <Tile fx:id="pbhealth_tile" description="Assess the health and trends of your product backlog"
                               title="PB Health"/>
                         <Tile fx:id="groomrate_tile"
-                              description="Show how often stories were groomed within for a given period of time"
+                              description="Show how often stories were groomed within a given period of time"
                               title="Groom Rate"/>
                         <Tile fx:id="scopechange_tile"
                               description="Display the user stories added after the start of the sprint"
@@ -38,7 +38,7 @@
                         <Tile fx:id="taskexcess_tile" description="Track the ratio of new tasks to total number of tasks"
                               title="Task Excess"/>
                         <Tile fx:id="taskdefectdensity_tile" 
-                              description="Calculate task defect density"
+                              description="The ratio of finished and unfinished tasks"
                               title="Task Defect Density"/>
                         <Tile fx:id="taskinertia_tile"
                               description="Display the percentage of tasks that do not change state per day"
