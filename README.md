@@ -64,6 +64,12 @@ This metric quantifies the number of defects found in a task relative to its siz
 
 This metric identifies and measures the resistance to change or progression that a task encounters, often influenced by factors such as task complexity, lack of necessary resources, or entrenched organizational practices. It provides valuable insights for project managers and teams to understand where and why bottlenecks occur, enabling them to devise strategies to reduce inertia, enhance efficiency, and improve the overall pace of project execution.
 
+### Task Excess
+
+Task Excess metric evaluates the surplus or deficit of tasks within a given sprint compared to the team's capacity and
+sprint goals. Task Excess can help teams optimize their sprint planning by balancing workload and ensuring realistic 
+commitments, ultimately leading to improved productivity and delivery consistency.
+
 ## Setting up the application
 
 ### Requirements and Setup
