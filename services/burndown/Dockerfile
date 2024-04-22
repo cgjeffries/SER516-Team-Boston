@@ -1,7 +1,7 @@
 FROM maven:3.9-amazoncorretto-17 AS build
 WORKDIR /opt/app
 COPY . /opt/app/
-RUN --mount=type=cache,target=/root/.m2 mvn -pl services/burndown -am -DskipTests clean install
+RUN --mount=type=cache,id=s/bf5e0930-4e54-4ea1-a18b-da85c84a597b-/root/.m2,target=/root/.m2 mvn -pl services/burndown -am -DskipTests clean install
 
 FROM eclipse-temurin:17-jre-jammy
 ARG PORT
