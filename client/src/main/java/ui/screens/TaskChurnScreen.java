@@ -4,7 +4,6 @@ import javafx.scene.layout.Pane;
 import taiga.models.sprint.Sprint;
 import ui.components.screens.ScreenManager;
 import ui.metrics.taskchurn.TaskChurn;
-import ui.metrics.taskexcess.TaskExcess;
 
 public class TaskChurnScreen extends BaseMetricConfiguration{
 

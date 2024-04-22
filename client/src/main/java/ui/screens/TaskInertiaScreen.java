@@ -3,17 +3,11 @@ package ui.screens;
 import java.time.LocalDate;
 
 import atlantafx.base.theme.Styles;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import taiga.models.sprint.Sprint;
 import ui.components.screens.ScreenManager;
@@ -87,8 +81,6 @@ public class TaskInertiaScreen extends BaseMetricConfiguration {
             return;
         }
         sprint_combobox.getSelectionModel().selectLast();
-        Sprint selectedSprint = sprint_combobox.getValue();
         taskInertia.recalculate(startDate.getValue(), endDate.getValue());
-        // TODO add method call to recalculate task inertia
     }
 }

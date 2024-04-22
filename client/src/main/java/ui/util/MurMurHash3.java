@@ -8,7 +8,7 @@ package ui.util;
  */
 public class MurMurHash3 {
     public static long hash(String key, int seed) {
-        long h1b, c1b, c2b;
+        long h1b;
 
         int k1;
         int remainder = key.length() & 3; // key.length % 4
