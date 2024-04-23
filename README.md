@@ -74,7 +74,7 @@ commitments, ultimately leading to improved productivity and delivery consistenc
 
 ### Requirements and Setup
 
-- Java 17 or higher
+- Java 17
 - Maven for dependency management and running the project
   - Maven will include JavaFX in its dependencies
 - Docker
