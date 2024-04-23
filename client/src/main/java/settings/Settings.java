@@ -40,7 +40,6 @@ public class Settings {
         try {
             Files.delete(FULL_SETTINGS_PATH);
         } catch (IOException e) {
-            e.printStackTrace();
         }
         System.out.println("Loading settings");
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
