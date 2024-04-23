@@ -61,14 +61,14 @@
                 <executions>
                     <execution>
                         <id>default-cli</id>
-                        <phase>validate</phase>
                         <goals>
                             <goal>enforce</goal>
                         </goals>
                         <configuration>
                             <rules>
                                 <requireJavaVersion>
-                                    <version>17</version>
+                                    <version>[17, 18)</version>
+                                    <message>Java 17 is required to run this application</message>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>
