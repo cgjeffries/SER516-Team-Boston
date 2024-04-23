@@ -2,6 +2,7 @@ package taiga.models.project;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import taiga.TaigaClient;
 import taiga.api.SprintAPI;
 import taiga.models.sprint.Sprint;
 
@@ -251,7 +252,7 @@ public class Project {
 
 
     public CompletableFuture<Void> loadSprints() {
-        return new SprintAPI().listSprints(getId(), result -> {
+        return TaigaClient.getSprintAPI().listSprints(getId(), result -> {
             if (result.getStatus() != 200) {
                 return;
             }
